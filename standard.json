@@ -1,0 +1,23 @@
+// This format is the output of both the Parse and Analytics module. It was made 
+// to promote interoperability between classes and make a standard format.
+
+{
+   "origin": "http://www.foo.bar", // website of origin, ie yelp
+   "name_of_reviewer": "Foo Bar",
+   "date_of_review": "MM/DD/YYYY",
+   "review":"Lorem ipsum",
+   "rating":0.0,
+   "useful":0.0, // yelp only additional information
+   "sentiment":[{ //for database and analytics module
+   		"id":"dolor sit amet",
+   		"score": 0.0,
+   		"magnitude":0.0
+   	}],
+   	"entity": [{ //for database and analytics module
+   		"id": "foo bar",
+   		"name": "Lorem ipsum",
+   		"type": "dolor sit amet",
+   		"metadata": "foo bar",
+   		"salience":"Lorem ipsum"
+   	}]
+}
