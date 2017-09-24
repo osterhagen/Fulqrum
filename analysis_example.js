@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 function analyzeSentimentOfText (text) {
   // [START language_sentiment_string]
@@ -364,8 +364,6 @@ require(`yargs`) // eslint-disable-line
   .example(`node $0 entity-sentiment-text "President Obama is speaking at the White House."`)
   .example(`node $0 entity-sentiment-file my-bucket file.txt`, `Detects sentiment of entities in gs://my-bucket/file.txt`)
   .wrap(120)
-  .recommendCommands()
   .epilogue(`For more information, see https://cloud.google.com/natural-language/docs`)
   .help()
-  .strict()
   .argv;

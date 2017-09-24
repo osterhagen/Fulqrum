@@ -5,6 +5,7 @@
   "main": "server.js",
   "author": "Scotch",
   "dependencies": {
+    "@google-cloud/language": "^0.12.1",
     "body-parser": "^1.18.1",
     "cheerio": "latest",
     "express": "^4.15.4",
