@@ -14,6 +14,11 @@ app.set('port', (process.env.PORT || 5000));  //Will set port to computers desig
 var ParseModuleController = require("./Controllers/ParseModuleController.js");
 ParseModuleController.main(app);
 
+//For debugging
+var WebScraper = require("./Models/ParseModule/WebScraper.js");
+WebScraper.freshScrape("Best Buy");
+//***
+
 app.listen(app.get('port'), function () {
     console.log("Node app is running on port", app.get("port"));
 });
