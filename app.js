@@ -16,7 +16,7 @@ ParseModuleController.main(app);
 
 //For debugging
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
-WebScraper.freshScrape("Best Buy");
+WebScraper.freshScrape("White Castle Review");
 //***
 
 app.listen(app.get('port'), function () {

@@ -18,9 +18,14 @@ function freshScrape(companyName) {
     console.log("Searching for: " + companyName);
 
     //Make an http get request
-    var client = new HttpClient();
+    /*var client = new HttpClient();
     client.get(url, function (response) {
-        console.log(response);
+        var jsonResponse = JSON.parse(response);
+        //console.log(jsonResponse);
+        for (var i = 0; i < jsonResponse["items"].length; i++) {
+            var item = jsonResponse.items[i];
+            console.log(item["htmlFormattedUrl"]);
+        }*/
     });
 }
 
@@ -30,7 +35,7 @@ var HttpClient = function () {
         var anHttpRequest = new XMLHttpRequest();
         anHttpRequest.onreadystatechange = function () {
             if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-                aCallback(anHttpRequest.responseText);
+                aCallback(anHttpRequest.responseXML);
         }
 
         anHttpRequest.open("GET", aUrl, true);
