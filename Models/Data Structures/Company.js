@@ -1,8 +1,8 @@
 exports.company = company;
 var company = {
-    id: null,
+    name: null,
     streetAddress: null,
-    town: null,
+    city: null,
     state: null,
     zipcode: null,
     rating: null,

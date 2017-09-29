@@ -6,6 +6,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var bodyParser = require('body-parser');
 
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('port', (process.env.PORT || 5000));  //Will set port to computers designated
@@ -16,7 +17,11 @@ ParseModuleController.main(app);
 
 //For debugging
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
-WebScraper.freshScrape("White Castle Review");
+var company = {
+    name: "White Castle",
+    city: "Downers Grove"
+}
+WebScraper.freshScrape(company);
 //***
 
 app.listen(app.get('port'), function () {

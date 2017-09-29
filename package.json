@@ -7,9 +7,9 @@
   "dependencies": {
     "@google-cloud/language": "^0.12.1",
     "body-parser": "^1.18.1",
-    "cheerio": "latest",
+    "cheerio": "^1.0.0-rc.2",
     "express": "^4.15.4",
-    "request": "latest",
+    "request": "^2.83.0",
     "xmlhttprequest": "^1.8.0"
   }
 }
