@@ -2,8 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\Controllers",
-    "\\Models"
+    "\\Documents",
+    "\\Middleware",
+    "\\Models",
+    "\\Models\\ParseModule",
+    "\\Views"
   ],
-  "SelectedNode": "\\Models\\WebScraper.js",
+  "SelectedNode": "\\Models\\ParseModule\\WebScraper.js",
   "PreviewInSolutionExplorer": false
 }

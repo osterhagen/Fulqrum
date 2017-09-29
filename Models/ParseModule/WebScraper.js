@@ -1,10 +1,29 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-
-var customSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
-var searchEngineAPI = "000374492695807119950:gsm88fb1qaq";
+var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
+var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
 exports.freshScrape = freshScrape;
-function freshScrape(companyName) {
+//Expects a company object
+function freshScrape(company) {
+    var reviews = [];
+    scrapeYelp(company, reviews);
+}
+
+
+var HttpClient = function () {
+    this.get = function (aUrl, aCallback) {
+        var anHttpRequest = new XMLHttpRequest();
+        anHttpRequest.onreadystatechange = function () {
+            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                aCallback(anHttpRequest.responseXML);
+        }
+
+        anHttpRequest.open("GET", aUrl, true);
+        anHttpRequest.send(null);
+    }
+};
+
+function googleSearchScrape(companyName) {
 
     //Default url for rest API
     var url = "https://www.googleapis.com/customsearch/v1?";
@@ -25,20 +44,6 @@ function freshScrape(companyName) {
         for (var i = 0; i < jsonResponse["items"].length; i++) {
             var item = jsonResponse.items[i];
             console.log(item["htmlFormattedUrl"]);
-        }*/
-    });
-}
-
-
-var HttpClient = function () {
-    this.get = function (aUrl, aCallback) {
-        var anHttpRequest = new XMLHttpRequest();
-        anHttpRequest.onreadystatechange = function () {
-            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-                aCallback(anHttpRequest.responseXML);
         }
-
-        anHttpRequest.open("GET", aUrl, true);
-        anHttpRequest.send(null);
-    }
+    });*/
 }
