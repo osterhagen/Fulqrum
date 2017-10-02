@@ -9,6 +9,12 @@
     "body-parser": "^1.18.1",
     "cheerio": "latest",
     "express": "^4.15.4",
+<<<<<<< HEAD
+    "google-cloud": "^0.56.0",
     "request": "latest"
+=======
+    "request": "latest",
+    "xmlhttprequest": "^1.8.0"
+>>>>>>> origin/master
   }
 }

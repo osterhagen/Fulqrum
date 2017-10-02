@@ -11,12 +11,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.PORT || 5000));  //Will set port to computers designated
 //environment port or port 5000 thousand if environment port is not defined
 
+var ParseModuleController = require("./Controllers/ParseModuleController.js");
+ParseModuleController.main(app);
 
-app.get('/scrape', function (req, res) {
-
-    //All the web scraping magic will happen here
-
-})
+//For debugging
+var WebScraper = require("./Models/ParseModule/WebScraper.js");
+WebScraper.freshScrape("White Castle Review");
+//***
 
 app.listen(app.get('port'), function () {
     console.log("Node app is running on port", app.get("port"));
