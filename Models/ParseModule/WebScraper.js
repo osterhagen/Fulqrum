@@ -39,27 +39,50 @@ function gatherYelpReviews(company, reviews, url, cb) {
         if (!error) {
             var $ = cheerio.load(html);
             var i = 0;
-            var review = new Object();
-            review.origin = url;
-            review.name_of_reviewer = $('div.review a.user-display-name').eq(i).text();
-            console.log("Name of Reviewer: " + review.name_of_reviewer);
-            review.date_of_review = $('div.review div.biz-rating span.rating-qualifier').eq(i).text();
-            console.log("Date: " + review.date_of_review);
-            review.review = $('div.review p').eq(i).text();
-            console.log("Review: " + review.review);
-            review.rating = $('div.review div.i-stars').eq(i).attr('title');
-            console.log("Stars: " + review.rating);
-            review.useful = $('div.review a[rel="useful"] span.count').eq(i).text();
-            //useful is blank if 0
-            if (String(review.useful).length === 0) {
-                review.useful = "0";
+            //Count usernames to find number of reviews
+            var numReviews = $('div.review a.user-display-name').get().length;
+            while (i < numReviews) {
+                var review = new Object();
+                review.origin = url;
+                review.name_of_reviewer = $('div.review a.user-display-name').eq(i).text();
+                //console.log("Name of Reviewer: " + review.name_of_reviewer);
+                review.date_of_review = $('div.review div.biz-rating span.rating-qualifier').eq(i).text().trim();
+                //console.log("Date: " + review.date_of_review);
+                review.review = $('div.review div.review-content p').eq(i).text();
+                //console.log("Review: " + review.review);
+                review.rating = $('div.review div.i-stars').eq(i).attr('title');
+                //console.log("Stars: " + review.rating);
+                review.useful = $('div.review a[rel="useful"] span.count').eq(i).text();
+                //useful is blank if 0
+                if (String(review.useful).length === 0) {
+                    review.useful = "0";
+                }
+                //console.log("Useful: " + review.useful);
+                printReview(review);
+                i++;
             }
-            console.log("Useful: " + review.useful);
         } else {
             cb("ERROR");
         }
     });
     
+}
+
+function printReview(review) {
+    console.log("");
+    console.log("---------------------------");
+    console.log("REVIEW-");
+    console.log("---------------------------");
+    console.log("URL: " + review.origin);
+    console.log("Name of Reviewer: " + review.name_of_reviewer);
+    console.log("Date: " + review.date_of_review);
+    console.log("Review: " + review.review);
+    console.log("Stars: " + review.rating);
+    console.log("Useful: " + review.useful);
+    console.log("---------------------------");
+    console.log("---------------------------");
+    console.log("");
+
 }
 
 function findYelpCompanyPage(company, cb) {
