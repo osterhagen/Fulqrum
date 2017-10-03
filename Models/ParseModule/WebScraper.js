@@ -11,27 +11,31 @@ exports.freshScrape = freshScrape;
 //Expects a company object
 function freshScrape(company) {
     var reviews = [];
+    //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
+        //When done scraping print reviews
         var i = 0;
         while (i < reviews.length) {
-            printReview(reviews[i]);
+            printReview(reviews[i], i+1);
             i++;
         }
+        //Total number of reviews
+        console.log("Final Number of Reviews: " + reviews.length);
     });
     
 }
 
 function scrapeYelp(company, reviews, cb) {
     var companyPageURL;
+
     findYelpCompanyPage(company, function (error, data) {
-        //console.log("Company page url: " + data);
+        //Manipulate URL to match yelps expected GET request
         companyPageURL = data;
         //Note company page url has format https://www.yelp.com/biz/<CompanyName>?osq=<OriginalSearchQuery>
         //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
-        //console.log(typeof (companyPageURL))
-        companyPageURLByDate += "sort_by=date_desc";
-        //console.log("Company page url sorted by dates : " + companyPageURLByDate);
+        companyPageURLByDate += "start=";
+        //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
             console.log("Yelp Scrape Complete");
             cb(null);
@@ -41,14 +45,23 @@ function scrapeYelp(company, reviews, cb) {
 }
 
 function gatherYelpReviews(company, reviews, url, cb) {
-    
-    request(url, function (error, response, html) {
+    var maxReviews = 100;
+    var reviewStartIndex = 0;
+    var plainURL = url;
+    url += reviewStartIndex;
+    reviewStartIndex += 20;
+    console.log(url);
+    request(url, cheerioYelpParser);
+    function cheerioYelpParser(error, response, html) {
         // First we'll check to make sure no errors occurred when making the request
         if (!error) {
             var $ = cheerio.load(html);
             var i = 0;
             //Count usernames to find number of reviews
             var numReviews = $('div.review a.user-display-name').get().length;
+            if (numReviews == 0  || reviewStartIndex >maxReviews) {
+                cb(null);
+            }
             while (i < numReviews) {
                 var review = new Object();
                 review.origin = url;
@@ -69,20 +82,33 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 reviews.push(review);
                 //printReview(review);
                 i++;
+                
+            }//while
+            if (reviewStartIndex < maxReviews) {
+
+                url = plainURL;
+                url += reviewStartIndex;
+                reviewStartIndex += 20;
+                console.log(url);
+                console.log("Number of Reviews: " + reviews.length);
+                request(url, cheerioYelpParser);
+            } else {
+                cb(null);
             }
-            console.log("DONE");
-            cb(null);
         } else {
-            cb("ERROR");
+            cb(null);
         }
-    });
+    }
+
     
 }
 
-function printReview(review) {
+function printReview(review, reviewNumber) {
     console.log("");
     console.log("---------------------------");
-    console.log("REVIEW-");
+    console.log("---------------------------");
+    console.log("REVIEW " + reviewNumber);
+    console.log("---------------------------");
     console.log("---------------------------");
     console.log("URL: " + review.origin);
     console.log("Name of Reviewer: " + review.name_of_reviewer);
