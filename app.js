@@ -18,8 +18,8 @@ ParseModuleController.main(app);
 //For debugging
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
 var company = {
-    name: "White Castle",
-    city: "Downers Grove"
+    name: "Philz Coffee",
+    city: "San Francisco"
 }
 WebScraper.freshScrape(company);
 //***

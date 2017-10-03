@@ -15,6 +15,54 @@ function freshScrape(company) {
 }
 
 function scrapeYelp(company, reviews) {
+    var companyPageURL;
+    findYelpCompanyPage(company, function (error, data) {
+        //console.log("Company page url: " + data);
+        companyPageURL = data;
+        //Note company page url has format https://www.yelp.com/biz/<CompanyName>?osq=<OriginalSearchQuery>
+        //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
+        var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
+        //console.log(typeof (companyPageURL))
+        companyPageURLByDate += "sort_by=date_desc";
+        console.log("Company page url sorted by dates : " + companyPageURLByDate);
+        gatherYelpReviews(company, reviews, companyPageURLByDate, function (error, data) {
+            console.log("Yelp Scrape Complete");
+        });
+
+    });
+}
+
+function gatherYelpReviews(company, reviews, url, cb) {
+    
+    request(url, function (error, response, html) {
+        // First we'll check to make sure no errors occurred when making the request
+        if (!error) {
+            var $ = cheerio.load(html);
+            var i = 0;
+            var review = new Object();
+            review.origin = url;
+            review.name_of_reviewer = $('div.review a.user-display-name').eq(i).text();
+            console.log("Name of Reviewer: " + review.name_of_reviewer);
+            review.date_of_review = $('div.review div.biz-rating span.rating-qualifier').eq(i).text();
+            console.log("Date: " + review.date_of_review);
+            review.review = $('div.review p').eq(i).text();
+            console.log("Review: " + review.review);
+            review.rating = $('div.review div.i-stars').eq(i).attr('title');
+            console.log("Stars: " + review.rating);
+            review.useful = $('div.review a[rel="useful"] span.count').eq(i).text();
+            //useful is blank if 0
+            if (String(review.useful).length === 0) {
+                review.useful = "0";
+            }
+            console.log("Useful: " + review.useful);
+        } else {
+            cb("ERROR");
+        }
+    });
+    
+}
+
+function findYelpCompanyPage(company, cb) {
     var companyName = company.name;
     var address = company.city;
 
@@ -22,7 +70,7 @@ function scrapeYelp(company, reviews) {
     var url = "https://www.yelp.com/search?";
     url += "find_desc=" + companyName;
     url += "&find_loc=" + address;
-    console.log("url: " + url);
+    //console.log("url: " + url);
     request(url, function (error, response, html) {
 
         // First we'll check to make sure no errors occurred when making the request
@@ -32,13 +80,18 @@ function scrapeYelp(company, reviews) {
             //console.log(html);
             var $ = cheerio.load(html);
 
-            //As of 9/29/17 to identify yelps first search result that is not an add is...
+            //As of 9/29/17 to identify yelps first search result that is not an ad is...
             //The first list entry with this class <li class="regular-search-result">
             //Then it is the anchor tag with the class <biz-name> and we need the href
-            
-        }
-    })
+            companyURL = "https://www.yelp.com"
+            companyURL += $('li.regular-search-result a').attr('href');
+            //console.log(companyURL);
+            cb(null, companyURL);
 
+        } else {
+            cb("ERROR");
+        }
+    });
 }
 
 
