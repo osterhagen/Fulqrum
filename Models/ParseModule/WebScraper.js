@@ -11,10 +11,17 @@ exports.freshScrape = freshScrape;
 //Expects a company object
 function freshScrape(company) {
     var reviews = [];
-    scrapeYelp(company, reviews);
+    scrapeYelp(company, reviews, function (error) {
+        var i = 0;
+        while (i < reviews.length) {
+            printReview(reviews[i]);
+            i++;
+        }
+    });
+    
 }
 
-function scrapeYelp(company, reviews) {
+function scrapeYelp(company, reviews, cb) {
     var companyPageURL;
     findYelpCompanyPage(company, function (error, data) {
         //console.log("Company page url: " + data);
@@ -24,9 +31,10 @@ function scrapeYelp(company, reviews) {
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
         //console.log(typeof (companyPageURL))
         companyPageURLByDate += "sort_by=date_desc";
-        console.log("Company page url sorted by dates : " + companyPageURLByDate);
-        gatherYelpReviews(company, reviews, companyPageURLByDate, function (error, data) {
+        //console.log("Company page url sorted by dates : " + companyPageURLByDate);
+        gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
             console.log("Yelp Scrape Complete");
+            cb(null);
         });
 
     });
@@ -58,9 +66,12 @@ function gatherYelpReviews(company, reviews, url, cb) {
                     review.useful = "0";
                 }
                 //console.log("Useful: " + review.useful);
-                printReview(review);
+                reviews.push(review);
+                //printReview(review);
                 i++;
             }
+            console.log("DONE");
+            cb(null);
         } else {
             cb("ERROR");
         }
