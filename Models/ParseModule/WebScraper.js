@@ -19,10 +19,36 @@ function freshScrape(company) {
             printReview(reviews[i], i+1);
             i++;
         }
+        console.log(JSON.stringify(reviews[0]));
         //Total number of reviews
         console.log("Final Number of Reviews: " + reviews.length);
     });
+
+    //TODO
+    //Get reviews object to analytics module
     
+}
+
+exports.rescrape = rescrape;
+function rescrape(company) {
+    var reviews = [];
+    //Scrape Yelp
+    scrapeYelp(company, reviews, function (error) {
+        //When done scraping print reviews
+        var i = 0;
+        while (i < reviews.length) {
+            printReview(reviews[i], i + 1);
+            i++;
+        }
+        console.log(JSON.stringify(reviews[0]));
+        //Total number of reviews
+        console.log("Final Number of Reviews: " + reviews.length);
+    });
+
+    //TODO Get all reviews and analytics currently stored for company
+    //Compare to see what reviews already have analytics
+    //Run analytics on reviews that do not already have them
+
 }
 
 function scrapeYelp(company, reviews, cb) {
@@ -45,7 +71,7 @@ function scrapeYelp(company, reviews, cb) {
 }
 
 function gatherYelpReviews(company, reviews, url, cb) {
-    var maxReviews = 100;
+    var maxReviews = 20;
     var reviewStartIndex = 0;
     var plainURL = url;
     url += reviewStartIndex;
@@ -64,15 +90,18 @@ function gatherYelpReviews(company, reviews, url, cb) {
             }
             while (i < numReviews) {
                 var review = new Object();
+                //Set review parameters
                 review.origin = url;
+
                 review.name_of_reviewer = $('div.review a.user-display-name').eq(i).text();
-                //console.log("Name of Reviewer: " + review.name_of_reviewer);
+
                 review.date_of_review = $('div.review div.biz-rating span.rating-qualifier').eq(i).text().trim();
-                //console.log("Date: " + review.date_of_review);
+
                 review.review = $('div.review div.review-content p').eq(i).text();
-                //console.log("Review: " + review.review);
+
                 review.rating = $('div.review div.i-stars').eq(i).attr('title');
-                //console.log("Stars: " + review.rating);
+                review.rating = String(review.rating).substring(0, String(review.rating).indexOf(" "));
+
                 review.useful = $('div.review a[rel="useful"] span.count').eq(i).text();
                 //useful is blank if 0
                 if (String(review.useful).length === 0) {
