@@ -154,7 +154,9 @@ function printReview(review, reviewNumber) {
 function findYelpCompanyPage(company, cb) {
     var companyName = company.name;
     var address = company.city;
-
+    if (company.city == null) {
+        address = company.zipcode;
+    }
     //First we will search yelp for the business
     var url = "https://www.yelp.com/search?";
     url += "find_desc=" + companyName;
@@ -220,4 +222,57 @@ function googleSearchScrape(companyName) {
             console.log(item["htmlFormattedUrl"]);
         }
     });*/
+}
+exports.findCompetitors = findCompetitors;
+function findCompetitors(companyZipCode) {
+    //just going to use zip code to find 5 nearby competitors.
+    //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
+    var url = "https://www.yelp.com/search?find_desc=&find_loc=";
+    url += "" + companyZipCode;
+    //url += "&ns=1";
+    console.log("THE URL: " + url);
+    var i = 0;
+    var companies = [];
+    or, response, html) {
+
+            // First we'll check to make sure no errors occurred when making the request
+
+            if (!error) {
+                while (i < 5) {
+                    console.log("hello");
+                    var companyURL;
+                    var companyName;
+                    request(url, function (err
+                // Next, we'll utilize the cheerio library on the returned html which will essentially give us jQuery functionality
+                //console.log(html);
+                var $ = cheerio.load(html);
+
+                //As of 9/29/17 to identify yelps first search result that is not an ad is...
+                //The first list entry with this class <li class="regular-search-result">
+                //Then it is the anchor tag with the class <biz-name> and we need the href
+                companyURL = "https://www.yelp.com"
+                companyURL += $('li.regular-search-result a').eq(i).attr('href');
+
+                companyName = $('span.indexed-biz-name a').eq(i).text();
+                console.log("Company name: " + companyName);
+                //console.log(companyURL);
+                //cb(null, companyURL);
+                i++;
+            } else {
+                //cb("ERROR");
+                console.log("ERROR");
+            }
+        });
+        var company = {
+            name: companyName,
+            zipcode: companyZipCode
+        }
+        //freshScrape(company);
+        //scrape
+        companies[i] = companyName;
+    }
+    console.log("Competitors: " + companies[0] + ", " + companies[1] + ", " + companies[2] + ", " +
+    companies[3] + ", " + companies[4]);
+    //basically i need to do this 5 times and maybe print reviews for each one?
+    //i think they all need to be parsed
 }
