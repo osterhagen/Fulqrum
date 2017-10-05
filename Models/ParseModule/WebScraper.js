@@ -19,7 +19,7 @@ function freshScrape(company) {
             printReview(reviews[i], i+1);
             i++;
         }
-        console.log(JSON.stringify(reviews[0]));
+        //console.log(JSON.stringify(reviews[0]));
         //Total number of reviews
         console.log("Final Number of Reviews: " + reviews.length);
     });
@@ -71,7 +71,7 @@ function scrapeYelp(company, reviews, cb) {
 }
 
 function gatherYelpReviews(company, reviews, url, cb) {
-    var maxReviews = 20;
+    var maxReviews = 100;
     var reviewStartIndex = 0;
     var plainURL = url;
     url += reviewStartIndex;
@@ -96,6 +96,16 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 review.name_of_reviewer = $('div.review a.user-display-name').eq(i).text();
 
                 review.date_of_review = $('div.review div.biz-rating span.rating-qualifier').eq(i).text().trim();
+                var updatedReviewIndex = String(review.date_of_review).indexOf("Updated review");
+                if (updatedReviewIndex != -1) {
+                    review.date_of_review = String(review.date_of_review).substring(0, updatedReviewIndex).trim();
+                    
+                }
+                var previousReviewIndex = String(review.date_of_review).indexOf("Previous review");
+                if (previousReviewIndex != -1) {
+                    review.date_of_review = String(review.date_of_review).substring(0, previousReviewIndex).trim();
+
+                }
 
                 review.review = $('div.review div.review-content p').eq(i).text();
 

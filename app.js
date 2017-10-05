@@ -18,7 +18,7 @@ ParseModuleController.main(app);
 //For debugging
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
 var company = {
-    name: "Philz Coffee",
+    name: "Starbucks",
     city: "San Francisco"
 }
 WebScraper.freshScrape(company);
