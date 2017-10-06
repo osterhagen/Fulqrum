@@ -7,7 +7,7 @@ var Review = require("../Data Structures/Review.js");
 var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
 var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
-var maxReview = 100;
+var maxReviews = 100;
 
 exports.freshScrape = freshScrape;
 //Expects a company object
@@ -78,7 +78,9 @@ function gatherYelpReviews(company, reviews, url, cb) {
     var plainURL = url;
     url += reviewStartIndex;
     reviewStartIndex += 20;
-    console.log(url);
+    console.log("Currently have 0 reviews scraped");
+    console.log("Now scraping: " + url);
+    console.log("\n");    
     request(url, cheerioYelpParser);
     function cheerioYelpParser(error, response, html) {
         // First we'll check to make sure no errors occurred when making the request
@@ -130,8 +132,9 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 url = plainURL;
                 url += reviewStartIndex;
                 reviewStartIndex += 20;
-                console.log(url);
-                console.log("Number of Reviews: " + reviews.length);
+                console.log("Currently have " + reviews.length + " reviews scraped");
+                console.log("Now scraping: " + url);
+                console.log("\n");
                 request(url, cheerioYelpParser);
             } else {
                 cb(null);

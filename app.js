@@ -22,10 +22,7 @@ var company = {
 }
   
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
-//WebScraper.findCompetitors(company.zipcode);
-WebScraper.findYelpCompanyPage(company, function(error, data) {
-    console.log(data);
-});
+WebScraper.freshScrape(company);
     
 app.listen(app.get('port'), function () {
     console.log("Node app is running on port", app.get("port"));
