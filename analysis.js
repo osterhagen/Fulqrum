@@ -72,7 +72,7 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
     var contents = fs.readFileSync(file);
     var jsonContent = JSON.parse(contents);
     var new_file = require(file);
-    var entity_arr = []
+    var entity_arr = [];
 
     jsonContent.sentences.forEach((sentence) => {
       var sent = sentence["Sentence"];
@@ -82,34 +82,34 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
           "type": 'PLAIN_TEXT'
         }
       };
-
-      sent_dict = []
+      var sent_dict = []
       language.analyzeEntitySentiment(request)
         .then((results) => {
           const entities = results[0].entities;
           console.log(`Entities and sentiments:`);
-
-          entities.forEach((entity) => {
-            console.log(`  Name: ${entity.name}`);
-            console.log(`  Type: ${entity.type}`);
-            console.log(`  Score: ${entity.sentiment.score}`);
-            console.log(`  Magnitude: ${entity.sentiment.magnitude}`);
-            sent_dict.push({
-              Name: entity.name,
-              Type: entity.type,
-              Score: entity.sentiment.score,
-              Magnitude: entity.sentiment.magnitude
+          if(entities[0] != undefined) {
+            entities.forEach((entity) => {
+              console.log(`  Name: ${entity.name}`);
+              console.log(`  Type: ${entity.type}`);
+              console.log(`  Score: ${entity.sentiment.score}`);
+              console.log(`  Magnitude: ${entity.sentiment.magnitude}`);
+              sent_dict.push({
+                Name: entity.name,
+                Type: entity.type,
+                Score: entity.sentiment.score,
+                Magnitude: entity.sentiment.magnitude
+              });
+              console.log(sent_dict);
             });
-          });
-        })
-        .catch((err) => {
+          }
+        }).catch((err) => {
           console.error('ERROR:', err);
         });
-        entity_arr.push(sent_dict)
-        new_file.entities = entity_arr;
-        fs.writeFileSync(file, JSON.stringify(new_file, null, 2));
+        entity_arr.push(sent_dict);
     })
 
+    new_file.entities = entity_arr;
+    fs.writeFileSync(file, JSON.stringify(new_file, null, 2));
 
     // [END language_entity_sentiment_string]
   }
@@ -117,7 +117,10 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
 // Main function, arguments require a relative filepath to the authentication api JSON key
 // Also requires the absolute filepath to the json file to be read
 const argv = require('yargs').argv;
-if (argv.auth_fp && argv.file) {
+
+if (argv.auth_fp && argv.file && argv.sentence) {
+  analyzeSentences(argv.auth_fp, argv.file);
+} else if (argv.auth_fp && argv.file && argv.entity) {
   analyzeSentences(argv.auth_fp, argv.file);
   analyzeEntitySentimentOfText(argv.auth_fp, argv.file);
 }

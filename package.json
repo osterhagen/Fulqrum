@@ -6,6 +6,7 @@
   "author": "Scotch",
   "dependencies": {
     "@google-cloud/language": "^0.12.1",
+    "arraylist": "^0.1.0",
     "body-parser": "^1.18.1",
     "cheerio": "latest",
     "express": "^4.15.4",
