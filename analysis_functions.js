@@ -9,6 +9,9 @@ function analyzeSentimentOfText (text) {
 
   // Instantiates a client
   const language = Language();
+  const language = Language({
+    fulqrum-primary1-e7b8999dd98c: '/Users/ThomasHuang/Desktop/CS307/Fulqrum'
+  });
 
   // The text to analyze, e.g. "Hello, world!"
   // const text = 'Hello, world!';
