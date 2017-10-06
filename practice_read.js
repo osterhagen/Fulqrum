@@ -12,6 +12,5 @@ console.log("Origin:", jsonContent.origin);
 console.log("name_of_reviewer:", jsonContent.name_of_reviewer);
 console.log("date_of_review:", jsonContent.date_of_review);
 console.log("review:", jsonContent.review)
-console.log("rating", jsonContent.rating)
-console.log("useful", jsonContent.useful)
-console.log("\n *EXIT* \n");
+console.log("rating:", jsonContent.rating,"\n")
+console.log("useful:", jsonContent.useful,"\n")
