@@ -239,9 +239,12 @@ function findYelpCompetitors(companyZipCode) {
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
                     //console.log("Company URL: " + company.companyURL);
-
+                    company.streetAddress = $('div.secondary-attributes').eq(i).text();
+                    var endOfAddress = String(company.streetAddress).indexOf("Phone number");
+                    company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    //console.log("Company name: " + company.companyName);
+                    console.log("Company name: " + company.companyName);
+                    console.log("Company address: " + company.streetAddress);
                     i++;
 
                     companies.push(company);

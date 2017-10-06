@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var request = require('request');
-var cheerio = require('cheerio');``
+var cheerio = require('cheerio');
 var bodyParser = require('body-parser');
 
 
@@ -23,7 +23,7 @@ var company = {
   
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
 WebScraper.freshScrape(company);
-    
+//WebScraper.findYelpCompetitors(company.zipcode);
 app.listen(app.get('port'), function () {
     console.log("Node app is running on port", app.get("port"));
 });
