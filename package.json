@@ -12,7 +12,6 @@
     "express": "^4.15.4",
     "google-cloud": "^0.56.0",
     "jsonfile": "^4.0.0",
-    "request": "latest"
     "request": "latest",
     "xmlhttprequest": "^1.8.0"
   }
