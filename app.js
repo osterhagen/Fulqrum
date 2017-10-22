@@ -16,14 +16,14 @@ var ParseModuleController = require("./Controllers/ParseModuleController.js");
 ParseModuleController.main(app);
 
 var company = {
-    name: "Philz Coffee",
+    name: "Big Belly Deli",
     city: "San Francisco",
     zipcode: "94080"
 }
-  
+
 var WebScraper = require("./Models/ParseModule/WebScraper.js");
 WebScraper.freshScrape(company);
-    
+//WebScraper.findYelpCompetitors(company.zipcode);
 app.listen(app.get('port'), function () {
     console.log("Node app is running on port", app.get("port"));
 });

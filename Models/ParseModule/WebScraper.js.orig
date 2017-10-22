@@ -239,17 +239,13 @@ function findYelpCompetitors(companyZipCode) {
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
 <<<<<<< HEAD
-                    //console.log("Company URL: " + company.companyURL);
+                    console.log("Company URL: " + company.companyURL);
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    //console.log("Company name: " + company.companyName);
-                    i++;
-
+                    console.log("Company name: " + company.companyName);
 =======
-                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    
-			
-		company.streetAddress = $('div.secondary-attributes').eq(i).text();
+                    //console.log("Company URL: " + company.companyURL);
+                    company.streetAddress = $('div.secondary-attributes').eq(i).text();
                     var endOfAddress = String(company.streetAddress).indexOf("Phone number");
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
@@ -258,7 +254,6 @@ function findYelpCompetitors(companyZipCode) {
 >>>>>>> 5818066f6a3ae096445add29fbf2f15b1f37f5a2
                     i++;
 
->>>>>>> yelpScraper
                     companies.push(company);
                 }
             } else {
@@ -269,8 +264,4 @@ function findYelpCompetitors(companyZipCode) {
         
     });
     
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> yelpScraper
