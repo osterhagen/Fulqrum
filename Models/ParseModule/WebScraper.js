@@ -238,10 +238,10 @@ function findYelpCompetitors(companyZipCode) {
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
-                    //console.log("Company URL: " + company.companyURL);
+                    console.log("Company URL: " + company.companyURL);
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    //console.log("Company name: " + company.companyName);
+                    console.log("Company name: " + company.companyName);
                     i++;
 
                     companies.push(company);

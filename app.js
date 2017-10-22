@@ -16,7 +16,7 @@ var ParseModuleController = require("./Controllers/ParseModuleController.js");
 ParseModuleController.main(app);
 
 var company = {
-    name: "Philz Coffee",
+    name: "Big Belly Deli",
     city: "San Francisco",
     zipcode: "94080"
 }
