@@ -29,7 +29,7 @@ function freshScrape(company) {
 
     //TODO
     //Get reviews object to analytics module
-    
+
 }
 
 exports.rescrape = rescrape;
@@ -80,7 +80,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
     reviewStartIndex += 20;
     console.log("Currently have 0 reviews scraped");
     console.log("Now scraping: " + url);
-    console.log("\n");    
+    console.log("\n");
     request(url, cheerioYelpParser);
     function cheerioYelpParser(error, response, html) {
         // First we'll check to make sure no errors occurred when making the request
@@ -103,7 +103,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 var updatedReviewIndex = String(review.date_of_review).indexOf("Updated review");
                 if (updatedReviewIndex != -1) {
                     review.date_of_review = String(review.date_of_review).substring(0, updatedReviewIndex).trim();
-                    
+
                 }
                 var previousReviewIndex = String(review.date_of_review).indexOf("Previous review");
                 if (previousReviewIndex != -1) {
@@ -125,7 +125,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 reviews.push(review);
                 //printReview(review);
                 i++;
-                
+
             }//while
             if (reviewStartIndex < maxReviews) {
 
@@ -144,7 +144,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
         }
     }
 
-    
+
 }
 
 function printReview(review, reviewNumber) {
@@ -238,39 +238,29 @@ function findYelpCompetitors(companyZipCode) {
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
-<<<<<<< HEAD
                     //console.log("Company URL: " + company.companyURL);
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
                     //console.log("Company name: " + company.companyName);
                     i++;
 
-=======
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    
-			
-		company.streetAddress = $('div.secondary-attributes').eq(i).text();
+		                company.streetAddress = $('div.secondary-attributes').eq(i).text();
                     var endOfAddress = String(company.streetAddress).indexOf("Phone number");
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
                     console.log("Company name: " + company.companyName);
                     console.log("Company address: " + company.streetAddress);
->>>>>>> 5818066f6a3ae096445add29fbf2f15b1f37f5a2
                     i++;
 
->>>>>>> yelpScraper
                     companies.push(company);
                 }
-            } else {
+          } else {
                 //cb("ERROR");
                 console.log("ERROR");
-        }
+          }
         return companies;
-        
+
     });
-    
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> yelpScraper
