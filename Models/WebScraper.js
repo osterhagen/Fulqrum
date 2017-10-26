@@ -2,34 +2,52 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
-var Review = require("../Data Structures/Review.js");
+//var Review = require("../Data Structures/Review.js");
 
 var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
 var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
 var maxReviews = 100;
 
+function scrape(company) {
+    //Subject to change based on how we want to receive the company name
+    var companyName = request.body["CompanyName"];
+
+    var hasPriorAnalytics = false;
+    //TODO Check if company analytics are already in database
+
+    if (hasPriorAnalytics === false) {
+        WebScraper.freshScrape(companyName, function(reviews) {
+            //The review will be returned in an array of objects
+            
+        });
+    } else {
+        //TODO call WebScraper Method for when analytics already exist
+    }
+
+}
+
 exports.freshScrape = freshScrape;
 //Expects a company object
-function freshScrape(company) {
+function freshScrape(company, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
         //When done scraping print reviews
-        var i = 0;
-        while (i < reviews.length) {
+        //var i = 0;
+        /*while (i < reviews.length) {
             printReview(reviews[i], i+1);
             i++;
-        }
+        }*/
         //console.log(JSON.stringify(reviews[0]));
         //Total number of reviews
         console.log("Final Number of Reviews: " + reviews.length);
-        return reviews;
+        cb(reviews);
     });
 
     //TODO
     //Get reviews object to analytics module
-    
+
 }
 
 exports.rescrape = rescrape;
@@ -80,7 +98,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
     reviewStartIndex += 20;
     console.log("Currently have 0 reviews scraped");
     console.log("Now scraping: " + url);
-    console.log("\n");    
+    console.log("\n");
     request(url, cheerioYelpParser);
     function cheerioYelpParser(error, response, html) {
         // First we'll check to make sure no errors occurred when making the request
@@ -103,7 +121,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 var updatedReviewIndex = String(review.date_of_review).indexOf("Updated review");
                 if (updatedReviewIndex != -1) {
                     review.date_of_review = String(review.date_of_review).substring(0, updatedReviewIndex).trim();
-                    
+
                 }
                 var previousReviewIndex = String(review.date_of_review).indexOf("Previous review");
                 if (previousReviewIndex != -1) {
@@ -125,7 +143,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 reviews.push(review);
                 //printReview(review);
                 i++;
-                
+
             }//while
             if (reviewStartIndex < maxReviews) {
 
@@ -144,7 +162,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
         }
     }
 
-    
+
 }
 
 function printReview(review, reviewNumber) {
@@ -238,30 +256,29 @@ function findYelpCompetitors(companyZipCode) {
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
-<<<<<<< HEAD
-                    console.log("Company URL: " + company.companyURL);
+                    //console.log("Company URL: " + company.companyURL);
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    console.log("Company name: " + company.companyName);
-=======
-                    //console.log("Company URL: " + company.companyURL);
-                    company.streetAddress = $('div.secondary-attributes').eq(i).text();
+                    //console.log("Company name: " + company.companyName);
+                    i++;
+
+                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
+		                company.streetAddress = $('div.secondary-attributes').eq(i).text();
                     var endOfAddress = String(company.streetAddress).indexOf("Phone number");
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
                     console.log("Company name: " + company.companyName);
                     console.log("Company address: " + company.streetAddress);
->>>>>>> 5818066f6a3ae096445add29fbf2f15b1f37f5a2
                     i++;
 
                     companies.push(company);
                 }
-            } else {
+          } else {
                 //cb("ERROR");
                 console.log("ERROR");
-        }
+          }
         return companies;
-        
+
     });
-    
+
 }

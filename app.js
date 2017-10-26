@@ -6,8 +6,9 @@ var request = require('request');
 var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 
-
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.set('port', (process.env.PORT || 5000));  //Will set port to computers designated
 //environment port or port 5000 thousand if environment port is not defined

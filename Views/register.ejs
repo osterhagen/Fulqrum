@@ -14,8 +14,10 @@
     <input name="city" class="form-control form-horizontal" placeholder="Town/City">
     <input name="zipCode" class="form-control form-horizontal" placeholder="Zipcode">
     <input name="state" class="form-control form-horizontal" placeholder="State">
-    
     <input type="submit" class = "form-control form-horizontal" value="Submit">
   </form>
+  <%if (error) { %>
+    <h3><%=error%></h3>
+  <% } %>
 
 <% include partials/footer %>
