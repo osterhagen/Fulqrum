@@ -49,6 +49,9 @@ module.exports = function (app) {
         //Login user
         try{
             //Login
+            Database.login(response.body.username, response.body.password, function(token) {
+                //If successful user should now have login token
+            });
 
         }catch(error) {
             var message = ServerErrorHandler.convertErrorToMessage(error);
