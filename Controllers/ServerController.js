@@ -8,7 +8,7 @@ module.exports = function (app) {
         response.render("welcome");
     });
 
-    app.get("/:id", function(request, response){
+    app.get("/homepage/:id", function(request, response){
         //Home page when logged in
         response.render("homepage");
 
@@ -35,7 +35,7 @@ module.exports = function (app) {
     });
 
     app.get("/analytics/:id", function(request, response){
-        //New user register screen
+        //Get analytics for the user
 
     });
 
