@@ -9,6 +9,24 @@ var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
 var maxReviews = 100;
 
+function scrape(company) {
+    //Subject to change based on how we want to receive the company name
+    var companyName = request.body["CompanyName"];
+
+    var hasPriorAnalytics = false;
+    //TODO Check if company analytics are already in database
+
+    if (hasPriorAnalytics === false) {
+        WebScraper.freshScrape(companyName, function(reviews) {
+            //The review will be returned in an array of objects
+            
+        });
+    } else {
+        //TODO call WebScraper Method for when analytics already exist
+    }
+
+}
+
 exports.freshScrape = freshScrape;
 //Expects a company object
 function freshScrape(company, cb) {

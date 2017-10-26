@@ -12,8 +12,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.PORT || 5000));  //Will set port to computers designated
 //environment port or port 5000 thousand if environment port is not defined
 
-var ParseModuleController = require("./Controllers/ParseModuleController.js");
-ParseModuleController.main(app);
+app.set("views", __dirname + "/Views");
+app.set("view engine", "ejs");
+
+var ServerController = require("./Controllers/ServerController.js");
+ServerController(app);
 
 app.listen(app.get('port'), function () {
     console.log("Node app is running on port", app.get("port"));
