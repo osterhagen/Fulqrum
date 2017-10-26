@@ -11,14 +11,11 @@
     "cheerio": "^1.0.0-rc.2",
     "eslint": "^4.8.0",
     "express": "^4.15.4",
-<<<<<<< HEAD
     "jQuery": "^1.7.4",
     "request": "^2.83.0",
-=======
     "google-cloud": "^0.56.0",
     "jsonfile": "^4.0.0",
     "request": "latest",
->>>>>>> 0135ea75e47e9caba71e99d516a8d5288eee7e9a
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {

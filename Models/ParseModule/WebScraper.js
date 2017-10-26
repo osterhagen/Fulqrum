@@ -11,20 +11,20 @@ var maxReviews = 100;
 
 exports.freshScrape = freshScrape;
 //Expects a company object
-function freshScrape(company) {
+function freshScrape(company, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
         //When done scraping print reviews
-        var i = 0;
-        while (i < reviews.length) {
+        //var i = 0;
+        /*while (i < reviews.length) {
             printReview(reviews[i], i+1);
             i++;
-        }
+        }*/
         //console.log(JSON.stringify(reviews[0]));
         //Total number of reviews
         console.log("Final Number of Reviews: " + reviews.length);
-        return reviews;
+        cb(reviews);
     });
 
     //TODO

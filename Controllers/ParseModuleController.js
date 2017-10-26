@@ -10,7 +10,12 @@ exports.main = function main(app) {
         //TODO Check if company analytics are already in database
 
         if (hasPriorAnalytics === false) {
-            WebScraper.freshScrape(companyName);
+            WebScraper.freshScrape(companyName, function(reviews) {
+                //The review will be returned in an array of objects
+                for(var i = 0; i < reviews.length; i++) {
+                    //Send each review to get analyzed
+                }
+            });
         } else {
             //TODO call WebScraper Method for when analytics already exist
         }
