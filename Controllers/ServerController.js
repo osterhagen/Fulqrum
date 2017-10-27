@@ -1,3 +1,9 @@
+/*
+ * This handles basic control and flow of 
+ * server logic.  All communication between
+ * server and client occur here.
+ */ 
+
 var WebScraper = require("../Models/WebScraper.js");
 var ServerParser = require("../Models/ServerParser.js");
 var ServerErrorHandler = require("../Models/ServerErrorHandler.js");
@@ -6,8 +12,24 @@ var Database = require("../Models/Database.js")
 
 module.exports = function (app) {
     app.get("/", function(request, response) {
-        //Welcome screen
-        response.render("welcome");
+        //Check if user is logged in if so send to homepage
+        //Else send to welcome screen
+        var token = req.cookies["token"];
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    res.clearCookie("token");                   
+                    response.render("welcome");
+                }else {
+                    response.render("homepage", {company : company});
+                }
+            })
+        };
     });
 
     app.get("/homepage/:id", function(request, response){
@@ -64,6 +86,15 @@ module.exports = function (app) {
     app.get("/analytics/:id", function(request, response){
         //Get analytics for the user with specific ID
 
+    });
+
+    app.get("/settings/:id", function(request, response){
+        //Get company settings
+
+    });
+
+    app.put("/setting/:id", function(request, response) {
+        //Update company settings
     });
 
 

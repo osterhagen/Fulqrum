@@ -1,4 +1,4 @@
-var WebScraper = require("../Models/ParseModule/WebScraper.js");
+var WebScraper = require("../Models/WebScraper.js");
 
 describe("Find company on yelp: ", function() {
     it("Find Phiz Coffee", function() {

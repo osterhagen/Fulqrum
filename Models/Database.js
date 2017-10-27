@@ -45,3 +45,16 @@ function login(username, password, cb) {
     loggedInCompanies.put(loggedInCompany);
     cb(company, token);    
 }
+
+exports.getCompany = getCompany;
+function getCompany(token) {
+    //Search for company
+    for(var i = 0; i < loggedInCompanies.length; i++) {
+        if(loggedInCompanies.token === token) {
+            //Token match, return company
+            return loggedInCompanies.company;
+        }
+    }
+    //Token not found so invalid
+    return undefined;
+}
