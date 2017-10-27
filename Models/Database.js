@@ -50,11 +50,22 @@ exports.getCompany = getCompany;
 function getCompany(token) {
     //Search for company
     for(var i = 0; i < loggedInCompanies.length; i++) {
-        if(loggedInCompanies.token === token) {
+        if(loggedInCompanies[i].token === token) {
             //Token match, return company
-            return loggedInCompanies.company;
+            return loggedInCompanies[i].company;
         }
     }
     //Token not found so invalid
     return undefined;
+}
+
+exports.removeLoggedInCompany = removeLoggedInCompany;
+function removeLoggedInCompany(token) {
+    for(var i = 0; i < loggedInCompanies.length; i++) {
+        if(loggedInCompanies[i].token === token) {
+            //Token match, return company
+            loggedInCompanies.splice(i,1);
+            return;
+        }
+    }
 }

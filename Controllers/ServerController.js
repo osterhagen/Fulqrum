@@ -32,12 +32,6 @@ module.exports = function (app) {
         };
     });
 
-    app.get("/homepage/:id", function(request, response){
-        //Home page when logged in
-        response.render("homepage");
-
-    });
-
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})
@@ -80,6 +74,18 @@ module.exports = function (app) {
         }catch(error) {
             var message = ServerErrorHandler.convertErrorToMessage(error);
             response.render("login", {error : message});
+        }
+    });
+
+    app.put("/logout", function(request, response) {
+        var token = req.cookies["token"];
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            Database.removeLoggedInCompany(token);
+            res.clearCookie("token");                               
+            response.render("welcome");
         }
     });
 
