@@ -49,8 +49,10 @@ module.exports = function (app) {
         //Login user
         try{
             //Login
-            Database.login(response.body.username, response.body.password, function(token) {
+            Database.login(response.body.username, response.body.password, function(company, cookie) {
                 //If successful user should now have login token
+                response.add(cookie);
+                response.render("homepage");
             });
 
         }catch(error) {

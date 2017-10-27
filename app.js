@@ -1,4 +1,9 @@
-//Main Server
+/*
+ * This is where the server begins running
+ * and setting for the server are chosen
+ */ 
+
+
 var express = require('express');
 var app = express();
 var fs = require('fs');

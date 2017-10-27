@@ -1,5 +1,14 @@
-var randtoken = require('rand-token');
+/*
+ * This take's care of database logic 
+ * such as verification of inputs
+ * retrieving info from database
+ * and updating info to database
+ * 
+ */ 
 
+
+var randtoken = require('rand-token');
+//Keeps track of cookies of companies that are logged in
 var loggedInCompanies = [];
 
 exports.registerCompany = registerCompany;
@@ -26,6 +35,7 @@ function login(username, password, cb) {
         throw "BlankFieldsError";
     }
     var company;
+    //Valid  info get the company from database
 
     //Generate token to keep user logged in
     var token = randtoken.generate(16);
@@ -33,5 +43,5 @@ function login(username, password, cb) {
     loggedInCompany.token = token;
     loggedInCompany.company = company;
     loggedInCompanies.put(loggedInCompany);
-    cb(token);    
+    cb(company, token);    
 }

@@ -1,3 +1,10 @@
+/*
+ * This will parse information
+ * received from the client
+ * and make it useable for
+ * the server
+ */ 
+
 exports.createCompany = createCompany;
 function createCompany(json) {
     var company = new Object();

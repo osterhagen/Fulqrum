@@ -1,3 +1,9 @@
+/*
+ * This will scrape and gather reviews about companies from 
+ * the internet
+ */
+
+
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var fs = require('fs');
 var request = require('request');
