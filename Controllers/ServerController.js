@@ -11,6 +11,7 @@ var Database = require("../Models/Database.js")
 
 
 module.exports = function (app) {
+    Database.listCompanies();
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
@@ -43,7 +44,7 @@ module.exports = function (app) {
     app.post("/register", function(request, response){
         //Add the user to the database if they do not exist
         var company = ServerParser.createCompany(request.body);
-       
+       console.log(company);
         try {
             //Attempt to put company into database
             Database.registerCompany(company, function(){
