@@ -14,7 +14,9 @@ module.exports = function (app) {
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
-        var token = req.cookies["token"];
+        if(request.cookies != undefined) {
+            var token = request.cookies["token"];
+        }
         if(token === undefined) {
             //Welcome screen
             response.render("welcome");

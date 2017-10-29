@@ -11,6 +11,16 @@ var request = require('request');
 var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 
+//Database setup
+var MongoClient = require('mongodb').MongoClient;
+var uri = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-01-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-02-o5o8f.mongodb.net:27017/test?ssl=true&replicaSet=fulqrumCluster-shard-0&authSource=admin";
+MongoClient.connect(uri, function(err, db) {
+    // Paste the following examples here
+  
+    db.close();
+  });
+//
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
