@@ -1,0 +1,23 @@
+<% include partials/header %>
+<h1 id="welcome" style="font-size:60px;">Welcome!</h1>
+<h1 id="welcome" style="font-size:60px;">Create an account</h1>
+
+
+<form method="POST" action="/register">
+    <input name="name" class="form-control form-horizontal" placeholder="Company Name">
+    <input name="username" class="form-control form-horizontal" placeholder="Company Username">    
+    <input name="email" class="form-control form-horizontal" placeholder="Company Email">
+    <input name="phone" class="form-control form-horizontal" placeholder="Phone Number">
+    <input name="password" type="password" class="form-control form-horizontal" placeholder="Password">
+    <input name="cPassword" type="password" class="form-control form-horizontal" placeholder="Confirm Password">
+    <input name="streetAddress" class="form-control form-horizontal" placeholder="Street Address">
+    <input name="city" class="form-control form-horizontal" placeholder="Town/City">
+    <input name="zipCode" class="form-control form-horizontal" placeholder="Zipcode">
+    <input name="state" class="form-control form-horizontal" placeholder="State">
+    <input type="submit" class = "form-control form-horizontal" value="Submit">
+  </form>
+  <%if (error) { %>
+    <h3><%=error%></h3>
+  <% } %>
+
+<% include partials/footer %>
