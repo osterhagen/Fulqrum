@@ -104,33 +104,6 @@ function listCompanies() {
       });
 }
 
-exports.companyExists = companyExists;
-function companyExists(company, callback) {
-    //See if company is already in database
-    var findCompany = function(db, callback) {
-        var cursor =db.collection('companies').find( { "name": company.name } );
-        var exists = false;    
-        cursor.each(function(err, doc) {
-        assert.equal(err, null);
-        if (doc != null) {
-                //One exists
-                exists =  true;
-            } else {
-            callback(exists);
-        }
-        });
-    };
-
-    MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
-    
-        findCompany(db, function(exists) {
-            db.close();
-            callback(exists);
-        });
-    });
-}
-
 
 exports.clearDatabase = clearDatabase;
 function clearDatabase() {
