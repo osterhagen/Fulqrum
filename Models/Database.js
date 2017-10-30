@@ -23,40 +23,21 @@ var randtoken = require('rand-token');
 var loggedInCompanies = [];
 
 exports.registerCompany = registerCompany;
-function registerCompany(company, cb) {
-    console.log("Company:" + company);
-    //console.log(Object.keys(company).length);
-    //Verify credentials
-    //Check for blank fields
-    for (var key in company) {
-        if (!company.hasOwnProperty(key)) {
-            throw "BlankFieldsError";
-        }
-    }
-
-    companyExists(company, function(exists) {
-        if(exists === true) {
-            
-        }else {
-        //Else company does not exist
-            /*The collection is called companies and we will store a new
-                company in that collection.  Here we define the function that will do that.
-            */
-            var insertCompany = function(db, callback) {
-                db.collection("companies").insertOne( company, function(err, result) {
-                    assert.equal(err, null);
-                    console.log("Inserted Company");
-                    callback();
+function registerCompany(company, callback) {
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+    
+        db.collection('companies').findOne( { "name": company.name, "password" : company.password }, function(err, result) {
+            if(result == null) {
+                //Company doesn't exist
+                db.collection('companies').insertOne(company, function(err, result) {
+                    console.log("Company Inserted");
                 });
-            };
-            //Now connect to the database and use our function to insert the company  
-            MongoClient.connect(url, function(err, db) {
-                assert.equal(null, err);
-                insertCompany(db, function() {
-                    db.close();
-                });        
-            });
-        }
+            }else {
+                //Company exists
+                console.log(result);
+            }
+        });
     });
     
    
@@ -64,20 +45,18 @@ function registerCompany(company, cb) {
 
 exports.login = login;
 function login(username, password, cb) {
+    console.log(username);
+    console.log(password);
     //Verify credentials
-    if(username === undefined || password === undefined || username === "" || password === "") {
-        throw "BlankFieldsError";
-    }
-    var company;
-    //Valid  info get the company from database
 
-    //Generate token to keep user logged in
-    var token = randtoken.generate(16);
-    var loggedInCompany = new Object();
-    loggedInCompany.token = token;
-    loggedInCompany.company = company;
-    loggedInCompanies.put(loggedInCompany);
-    cb(company, token);    
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+    
+        db.collection('companies').findOne( { "name": username, "password" : password }, function(err, result) {
+            cb(result);
+        });
+    });
+
 }
 
 exports.getCompany = getCompany;
@@ -127,29 +106,29 @@ function listCompanies() {
 
 exports.companyExists = companyExists;
 function companyExists(company, callback) {
-    var exists = false;
- //See if company is already in database
- var findCompany = function(db, callback) {
-    var cursor =db.collection('companies').find( { "name": company.name } );
-    cursor.each(function(err, doc) {
-       assert.equal(err, null);
-       if (doc != null) {
-            //One exists
-            exists =  true;
-        } else {
-          callback(exists);
-       }
-    });
-};
+    //See if company is already in database
+    var findCompany = function(db, callback) {
+        var cursor =db.collection('companies').find( { "name": company.name } );
+        var exists = false;    
+        cursor.each(function(err, doc) {
+        assert.equal(err, null);
+        if (doc != null) {
+                //One exists
+                exists =  true;
+            } else {
+            callback(exists);
+        }
+        });
+    };
 
-MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-  
-    findCompany(db, function(exists) {
-        db.close();
-        callback(exists);
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+    
+        findCompany(db, function(exists) {
+            db.close();
+            callback(exists);
+        });
     });
-});
 }
 
 
