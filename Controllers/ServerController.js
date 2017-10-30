@@ -84,8 +84,12 @@ module.exports = function (app) {
             //Login
             
             Database.login(request.body.username, request.body.password, function(company) {
-                //If successful user should now have login token
-                response.render("homepage", {company : company});
+                if(company == null) {
+                    response.render("login", {error : "Invalid Login Credentials"});
+                }else {
+                    //If successful user should now have login token
+                    response.render("homepage", {company : company});
+                }
             });
 
         }catch(error) {
