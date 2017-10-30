@@ -23,52 +23,40 @@ var randtoken = require('rand-token');
 var loggedInCompanies = [];
 
 exports.registerCompany = registerCompany;
-function registerCompany(company, cb) {
-    //console.log(Object.keys(company).length);
-    //Verify credentials
-    //Check for blank fields
-    /*for (var key in company) {
-        if (!company.hasOwnProperty(key)) {
-            throw "BlankFieldsError";
-        }
-    }*/
-
-    //See if company is already in database
-    //For now assume no
-    var insertCompany = function(db, callback) {
-        db.collection("companies").insertOne( {
-            "CompanyName" : "Connor's Chicken"
-        }, function(err, result) {
-            assert.equal(err, null);
-            console.log("Inserted Company");
-            callback();
-        });
-    };
+function registerCompany(company, callback) {
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
-        insertCompany(db, function() {
-            db.close();
-        });        
+    
+        db.collection('companies').findOne( { "name": company.name, "password" : company.password }, function(err, result) {
+            if(result == null) {
+                //Company doesn't exist
+                db.collection('companies').insertOne(company, function(err, result) {
+                    console.log("Company Inserted");
+                });
+            }else {
+                //Company exists
+                console.log(result);
+            }
+        });
     });
+    
    
 }
 
 exports.login = login;
 function login(username, password, cb) {
+    console.log(username);
+    console.log(password);
     //Verify credentials
-    if(username === undefined || password === undefined || username === "" || password === "") {
-        throw "BlankFieldsError";
-    }
-    var company;
-    //Valid  info get the company from database
 
-    //Generate token to keep user logged in
-    var token = randtoken.generate(16);
-    var loggedInCompany = new Object();
-    loggedInCompany.token = token;
-    loggedInCompany.company = company;
-    loggedInCompanies.put(loggedInCompany);
-    cb(company, token);    
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+    
+        db.collection('companies').findOne( { "name": username, "password" : password }, function(err, result) {
+            cb(result);
+        });
+    });
+
 }
 
 exports.getCompany = getCompany;
@@ -114,4 +102,22 @@ function listCompanies() {
             db.close();
         });
       });
+}
+
+
+exports.clearDatabase = clearDatabase;
+function clearDatabase() {
+    var removeAll = function(db, callback) {
+        db.collection('companies').deleteMany( {}, function(err, results) {
+           console.log(results);
+           callback();
+        });
+     };
+     MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+      
+        removeAll(db, function() {
+            db.close();
+        });
+    });
 }

@@ -11,7 +11,21 @@ var Database = require("../Models/Database.js")
 
 
 module.exports = function (app) {
-    Database.listCompanies();
+    var company = {
+        name: "clementine",
+        streetAddress: "123 Street",
+        city: "San Francisco",
+        zipcode: "94080",
+        password: "123"
+    }
+    /*try {
+          Database.registerCompany(company);
+    }catch (error) {
+        console.log(error);
+    }*/
+    //Database.registerCompany(company);
+    //Database.listCompanies();
+    //Database.clearDatabase();
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
@@ -68,10 +82,14 @@ module.exports = function (app) {
         //Login user
         try{
             //Login
-            Database.login(response.body.username, response.body.password, function(company, cookie) {
-                //If successful user should now have login token
-                response.add(cookie);
-                response.render("homepage");
+            
+            Database.login(request.body.username, request.body.password, function(company) {
+                if(company == null) {
+                    response.render("login", {error : "Invalid Login Credentials"});
+                }else {
+                    //If successful user should now have login token
+                    response.render("homepage", {company : company});
+                }
             });
 
         }catch(error) {
