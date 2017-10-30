@@ -23,7 +23,7 @@ module.exports = function (app) {
     }catch (error) {
         console.log(error);
     }*/
-    Database.registerCompany(company);
+    //Database.registerCompany(company);
     //Database.listCompanies();
     //Database.clearDatabase();
     app.get("/", function(request, response) {
@@ -83,9 +83,9 @@ module.exports = function (app) {
         try{
             //Login
             
-            Database.login(request.body.username, request.body.password, function(company, cookie) {
+            Database.login(request.body.username, request.body.password, function(company) {
                 //If successful user should now have login token
-                response.render("homepage");
+                response.render("homepage", {company : company});
             });
 
         }catch(error) {
