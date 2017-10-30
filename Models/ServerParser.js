@@ -11,8 +11,9 @@ function createCompany(json) {
     company.name = json.name;
     company.username = json.username;
     company.email = json.email;
-    company.phoneNumber = json.phoneNumber;
+    company.phoneNumber = json.phone;
     company.password = json.password;
+    company.cpassword = json.cPassword;
     company.streetAddress = json.streetAddress;
     company.city = json.city;
     company.state = json.state;

@@ -1,0 +1,5 @@
+{
+    CompanyName : <Name of Company>,
+    Company : <Company Object>,
+    Reviews : <{Array of reviews}>
+}

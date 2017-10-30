@@ -6,6 +6,17 @@
  * 
  */ 
 
+ var assert = require("assert");
+ //Database setup
+ var MongoClient = require('mongodb').MongoClient,
+ test = require('assert');
+// Connection url
+var url = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-01-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-02-o5o8f.mongodb.net:27017/test?ssl=true&replicaSet=fulqrumCluster-shard-0&authSource=admin";
+// Connect using MongoClient
+MongoClient.connect(url, function(err, db) {
+ db.close();
+});
+
 
 var randtoken = require('rand-token');
 //Keeps track of cookies of companies that are logged in
@@ -13,19 +24,33 @@ var loggedInCompanies = [];
 
 exports.registerCompany = registerCompany;
 function registerCompany(company, cb) {
+    //console.log(Object.keys(company).length);
     //Verify credentials
     //Check for blank fields
-    for(var i = 0; i < Object.keys(company).length; i++) {
-        if(company[i]===undefined || company[i] === "") {
+    /*for (var key in company) {
+        if (!company.hasOwnProperty(key)) {
             throw "BlankFieldsError";
         }
-    }
+    }*/
 
     //See if company is already in database
-
-
-    //Credentials verified add to database
-    cb();
+    //For now assume no
+    var insertCompany = function(db, callback) {
+        db.collection("companies").insertOne( {
+            "CompanyName" : "Connor's Chicken"
+        }, function(err, result) {
+            assert.equal(err, null);
+            console.log("Inserted Company");
+            callback();
+        });
+    };
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        insertCompany(db, function() {
+            db.close();
+        });        
+    });
+   
 }
 
 exports.login = login;
@@ -68,4 +93,25 @@ function removeLoggedInCompany(token) {
             return;
         }
     }
+}
+
+exports.listCompanies = listCompanies;
+function listCompanies() {
+    var findCompanies = function(db, callback) {
+        var cursor =db.collection('companies').find( );
+        cursor.each(function(err, doc) {
+           assert.equal(err, null);
+           if (doc != null) {
+              console.dir(doc);
+           } else {
+              callback();
+           }
+        });
+     };
+     MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        findCompanies(db, function() {
+            db.close();
+        });
+      });
 }
