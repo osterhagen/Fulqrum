@@ -11,7 +11,21 @@ var Database = require("../Models/Database.js")
 
 
 module.exports = function (app) {
+    var company = {
+        name: "Company 1",
+        streetAddress: "123 Street",
+        city: "San Francisco",
+        zipcode: "94080"
+    }
+    /*try {
+          Database.registerCompany(company);
+    }catch (error) {
+        console.log(error);
+    }*/
+    Database.registerCompany(company);
     //Database.listCompanies();
+    //Database.clearDatabase();
+    //console.log(Database.companyExists(company));
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen

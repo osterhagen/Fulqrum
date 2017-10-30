@@ -24,6 +24,7 @@ var loggedInCompanies = [];
 
 exports.registerCompany = registerCompany;
 function registerCompany(company, cb) {
+    console.log("Company:" + company);
     //console.log(Object.keys(company).length);
     //Verify credentials
     //Check for blank fields
@@ -33,50 +34,31 @@ function registerCompany(company, cb) {
         }
     }
 
-    var companyAlreadyExists = false;
-    //See if company is already in database
-    var findCompany = function(db, callback) {
-        var cursor =db.collection('companies').find( { "name": company.name, "streetAddress" : company.streetAddress  } );
-        cursor.each(function(err, doc) {
-           assert.equal(err, null);
-           if (doc != null) {
-                companyAlreadyExists = true;
-            } else {
-              callback();
-           }
-        });
-    };
-
-    MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
-      
-        findRestaurants(db, function() {
-            db.close();
-        });
+    companyExists(company, function(exists) {
+        if(exists === true) {
+            
+        }else {
+        //Else company does not exist
+            /*The collection is called companies and we will store a new
+                company in that collection.  Here we define the function that will do that.
+            */
+            var insertCompany = function(db, callback) {
+                db.collection("companies").insertOne( company, function(err, result) {
+                    assert.equal(err, null);
+                    console.log("Inserted Company");
+                    callback();
+                });
+            };
+            //Now connect to the database and use our function to insert the company  
+            MongoClient.connect(url, function(err, db) {
+                assert.equal(null, err);
+                insertCompany(db, function() {
+                    db.close();
+                });        
+            });
+        }
     });
-
-    if(companyAlreadyExists) {
-        throw "CompanyExistsError";
-    }
-
-    //Else company does not exist
-    /*The collection is called companies and we will store a new
-        company in that collection.  Here we define the function that will do that.
-    */
-    var insertCompany = function(db, callback) {
-        db.collection("companies").insertOne( company, function(err, result) {
-            assert.equal(err, null);
-            console.log("Inserted Company");
-            callback();
-        });
-    };
-    //Now connect to the database and use our function to insert the company  
-    MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
-        insertCompany(db, function() {
-            db.close();
-        });        
-    });
+    
    
 }
 
@@ -141,4 +123,49 @@ function listCompanies() {
             db.close();
         });
       });
+}
+
+exports.companyExists = companyExists;
+function companyExists(company, callback) {
+    var exists = false;
+ //See if company is already in database
+ var findCompany = function(db, callback) {
+    var cursor =db.collection('companies').find( { "name": company.name } );
+    cursor.each(function(err, doc) {
+       assert.equal(err, null);
+       if (doc != null) {
+            //One exists
+            exists =  true;
+        } else {
+          callback(exists);
+       }
+    });
+};
+
+MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+  
+    findCompany(db, function(exists) {
+        db.close();
+        callback(exists);
+    });
+});
+}
+
+
+exports.clearDatabase = clearDatabase;
+function clearDatabase() {
+    var removeAll = function(db, callback) {
+        db.collection('companies').deleteMany( {}, function(err, results) {
+           console.log(results);
+           callback();
+        });
+     };
+     MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+      
+        removeAll(db, function() {
+            db.close();
+        });
+    });
 }
