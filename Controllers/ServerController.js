@@ -11,7 +11,7 @@ var Database = require("../Models/Database.js")
 
 
 module.exports = function (app) {
-    Database.listCompanies();
+    //Database.listCompanies();
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen

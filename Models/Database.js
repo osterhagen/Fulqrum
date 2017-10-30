@@ -27,23 +27,50 @@ function registerCompany(company, cb) {
     //console.log(Object.keys(company).length);
     //Verify credentials
     //Check for blank fields
-    /*for (var key in company) {
+    for (var key in company) {
         if (!company.hasOwnProperty(key)) {
             throw "BlankFieldsError";
         }
-    }*/
+    }
 
+    var companyAlreadyExists = false;
     //See if company is already in database
-    //For now assume no
+    var findCompany = function(db, callback) {
+        var cursor =db.collection('companies').find( { "name": company.name, "streetAddress" : company.streetAddress  } );
+        cursor.each(function(err, doc) {
+           assert.equal(err, null);
+           if (doc != null) {
+                companyAlreadyExists = true;
+            } else {
+              callback();
+           }
+        });
+    };
+
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+      
+        findRestaurants(db, function() {
+            db.close();
+        });
+    });
+
+    if(companyAlreadyExists) {
+        throw "CompanyExistsError";
+    }
+
+    //Else company does not exist
+    /*The collection is called companies and we will store a new
+        company in that collection.  Here we define the function that will do that.
+    */
     var insertCompany = function(db, callback) {
-        db.collection("companies").insertOne( {
-            "CompanyName" : "Connor's Chicken"
-        }, function(err, result) {
+        db.collection("companies").insertOne( company, function(err, result) {
             assert.equal(err, null);
             console.log("Inserted Company");
             callback();
         });
     };
+    //Now connect to the database and use our function to insert the company  
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
         insertCompany(db, function() {
