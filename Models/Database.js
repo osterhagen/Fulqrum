@@ -54,7 +54,10 @@ function login(username, password, cb) {
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
     
-        db.collection('companies').findOne( { "name": username, "password" : password }, function(err, result) {
+        db.collection('companies').findOne( { "username": username, "password" : password }, function(err, result) {
+            //if(result === null) {
+              //  result = "NONE";
+            //}
             cb(result);
         });
     });
