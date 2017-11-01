@@ -54,21 +54,6 @@ module.exports = function (app) {
         //Add the user to the database if they do not exist
       console.log(request.body);
         var company = ServerParser.createCompany(request.body);
-<<<<<<< HEAD
-       console.log(company);
-        try {
-            //Attempt to put company into database
-            Database.registerCompany(company, function(){
-                //Success
-                response.render("welcome");
-            });
-        }catch(error) {
-            var message = ServerErrorHandler.convertErrorToMessage(error);
-
-            response.render("register", {error : message});
-        }
-
-=======
         console.log("Server Sent Company:\n" + company + "\n");
         //Attempt to put company into database
         Database.registerCompany(company, function(error){
@@ -76,11 +61,10 @@ module.exports = function (app) {
                 response.render("welcome");
             }else {
                 //Error occured
-                response.render("register", {error : error});    
-            }                
+                response.render("register", {error : error});
+            }
         });
-        
->>>>>>> origin/master
+
     });
 
     app.get("/login", function(request, response){
@@ -90,19 +74,6 @@ module.exports = function (app) {
 
     app.post("/login", function(request, response){
         //Login user
-<<<<<<< HEAD
-        try{
-            //Login
-
-            Database.login(request.body.username, request.body.password, function(company) {
-                if(company == null) {
-                    response.render("login", {error : "Invalid Login Credentials"});
-                }else {
-                    //If successful user should now have login token
-                    response.render("homepage", {company : company});
-                }
-            });
-=======
         Database.login(request.body.username, request.body.password, function(company) {
             if(company == null) {
                 response.render("login", {error : "Invalid Login Credentials"});
@@ -111,7 +82,6 @@ module.exports = function (app) {
                 response.render("homepage", {company : company});
             }
         });
->>>>>>> origin/master
 
     });
 
