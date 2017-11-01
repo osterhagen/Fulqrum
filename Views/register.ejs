@@ -5,68 +5,79 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+
         <div class="row">
           <div class="col text-center">
             <h1>Register</h1>
             <p> One free account gets you full access to fulqrum's services.</p>
           </div>
         </div>
-        <div class="row align-items-center">
-          <div class="col mt-4">
-            <input type="text" class="form-control" placeholder="Company Name">
-          </div>
-        </div>
-        <div class="row align-items-center">
-          <div class="col mt-4">
-              <select class="form-control" required>
-                <option value="">Select Company Type</option>
-                <option value="1">Restaurant</option>
-                <option value="2">Auto Repair</option>
-                <option value="3">Nightlife</option>
-                <option value="4">Retail</option>
-                <option value="5">Fitness</option>
-              </select>
+
+        <form method="POST" action="/register">
+          <div class="row align-items-center">
+            <div class="col mt-4">
+              <input name="name" type="text" class="form-control" placeholder="Company Name" required>
             </div>
-        </div>
-        <div class="row align-items-center mt-4">
-          <div class="col">
-            <input type="email" class="form-control" placeholder="Email">
           </div>
-        </div>
-        <div class="row align-items-center mt-4">
-          <div class="col">
-            <input type="phonenumber" class="form-control" placeholder="Phone Number">
+
+          <div class="row align-items-center">
+            <div class="col mt-4">
+                <select name="Industry" class="form-control" required>
+                  <option value="">Select Company Type</option>
+                  <option value="1">Restaurant</option>
+                  <option value="2">Auto Repair</option>
+                  <option value="3">Nightlife</option>
+                  <option value="4">Retail</option>
+                  <option value="5">Fitness</option>
+                </select>
+              </div>
           </div>
-        </div>
-        <div class="row align-items-center mt-4">
-          <div class="col">
-            <input type="username" class="form-control" placeholder="Username">
+
+          <div class="row align-items-center mt-4">
+            <div class="col">
+              <input name="email" class="form-control" placeholder="Email" required>
+            </div>
           </div>
-        </div>
-        <div class="row align-items-center mt-4">
-          <div class="col">
-            <input type="password" class="form-control" placeholder="Password">
+
+          <div class="row align-items-center mt-4">
+            <div class="col">
+              <input name="phone" class="form-control" placeholder="Phone Number" required>
+            </div>
           </div>
-          <div class="col">
-            <input type="password" class="form-control" placeholder="Confirm Password">
+
+          <div class="row align-items-center mt-4">
+            <div class="col">
+              <input name="username" class="form-control" placeholder="Username" required>
+            </div>
           </div>
-        </div>
-        <div class="row align-items-center mt-4">
-          <div class="col">
-            <input type="address" class="form-control" placeholder="Street Address">
+
+          <div class="row align-items-center mt-4">
+            <div class="col">
+              <input name="password" type="password" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="col">
+              <input name="cPassword" type="password" class="form-control" placeholder="Confirm Password" required>
+            </div>
           </div>
-        </div>
-        <div class="row align-items-center mt-4">
-          <div class="col">
-            <input type="zipcode" class="form-control" placeholder="Zipcode">
+
+          <div class="row align-items-center mt-4">
+            <div class="col">
+              <input name="streetAddress" class="form-control" placeholder="Street Address" required>
+            </div>
           </div>
-          <div class="col">
-            <input type="City" class="form-control" placeholder="City">
+
+          <div class="row align-items-center mt-4">
+            <div class="col">
+              <input name="zipcode" class="form-control" placeholder="Zipcode" required>
+            </div>
+            <div class="col">
+              <input name="city" class="form-control" placeholder="City" required>
+            </div>
+            <div class="col">
+              <input name="state" class="form-control" placeholder="State" required>
+            </div>
           </div>
-          <div class="col">
-            <input type="state" class="form-control" placeholder="State">
-          </div>
-        </div>
+
         <div class="row justify-content-start mt-4">
           <div class="col">
             <div class="form-check">
@@ -78,6 +89,8 @@
             <button type="submit" class="btn mt-4">Submit</button>
           </div>
         </div>
+
+      </form>
       </div>
     </div>
   </div>
