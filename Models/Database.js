@@ -24,6 +24,7 @@ var loggedInCompanies = [];
 
 exports.registerCompany = registerCompany;
 function registerCompany(company, callback) {
+
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
     
@@ -32,10 +33,11 @@ function registerCompany(company, callback) {
                 //Company doesn't exist
                 db.collection('companies').insertOne(company, function(err, result) {
                     console.log("Company Inserted");
+                    callback(false);
                 });
             }else {
                 //Company exists
-                console.log(result);
+                callback("CompanyAlreadyExists");
             }
         });
     });

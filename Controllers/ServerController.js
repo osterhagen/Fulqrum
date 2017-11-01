@@ -18,11 +18,6 @@ module.exports = function (app) {
         zipcode: "94080",
         password: "123"
     }
-    /*try {
-          Database.registerCompany(company);
-    }catch (error) {
-        console.log(error);
-    }*/
     //Database.registerCompany(company);
     //Database.listCompanies();
     //Database.clearDatabase();
@@ -58,18 +53,16 @@ module.exports = function (app) {
     app.post("/register", function(request, response){
         //Add the user to the database if they do not exist
         var company = ServerParser.createCompany(request.body);
-       console.log(company);
-        try {
-            //Attempt to put company into database
-            Database.registerCompany(company, function(){
-                //Success
-                response.render("welcome");                
-            });
-        }catch(error) {
-            var message = ServerErrorHandler.convertErrorToMessage(error);
-
-            response.render("register", {error : message});
-        }
+        console.log("Server Sent Company:\n" + company + "\n");
+        //Attempt to put company into database
+        Database.registerCompany(company, function(error){
+            if(!error) {
+                response.render("welcome");
+            }else {
+                //Error occured
+                response.render("register", {error : error});    
+            }                
+        });
         
     });
 
@@ -80,22 +73,15 @@ module.exports = function (app) {
 
     app.post("/login", function(request, response){
         //Login user
-        try{
-            //Login
-            
-            Database.login(request.body.username, request.body.password, function(company) {
-                if(company == null) {
-                    response.render("login", {error : "Invalid Login Credentials"});
-                }else {
-                    //If successful user should now have login token
-                    response.render("homepage", {company : company});
-                }
-            });
+        Database.login(request.body.username, request.body.password, function(company) {
+            if(company == null) {
+                response.render("login", {error : "Invalid Login Credentials"});
+            }else {
+                //If successful user should now have login token
+                response.render("homepage", {company : company});
+            }
+        });
 
-        }catch(error) {
-            var message = ServerErrorHandler.convertErrorToMessage(error);
-            response.render("login", {error : message});
-        }
     });
 
     app.put("/logout", function(request, response) {
