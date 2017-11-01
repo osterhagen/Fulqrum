@@ -55,3 +55,42 @@ describe("Register Company: ", function() {
 
     
 });
+
+describe("Login Company: ", function() {
+    it("Login Company 1", function() {
+        Database.clearDatabase();        
+        var company = {
+            name: "Company 1",
+            streetAddress: "123 Street",
+            city: "San Francisco",
+            zipcode: "94080",
+            username: "Chicken",
+            password: "123"
+        }
+
+        Database.registerCompany(company, function(error) {
+            Database.login(company.username, company.password, function(result) {
+                console.log(result);
+                expect(result.username).toBe(password.username);
+            });
+        });
+        
+        
+    });
+    it("Login Nonexistent company", function() {
+        Database.clearDatabase();        
+        var username = "abc";
+        var password = "123";
+        Database.login(username, password, function(result) {
+            console.log(result);
+            expect(result).toBe(null);
+        });
+        
+        
+        
+    });
+    
+    
+
+    
+});
