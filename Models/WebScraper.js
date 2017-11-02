@@ -36,9 +36,9 @@ function scrape(company, hasPriorAnalytics, cb) {
                         cb(reviews);
                     });
                 }else {
-                    //Analysis.analyze(reviews[i], function(review) {
+                    Analysis.analyze(reviews[i], function(review) {
 
-                    //}
+                    });
                 }
 
             }

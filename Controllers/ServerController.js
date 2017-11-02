@@ -108,12 +108,14 @@ module.exports = function (app) {
         //Update analytics
         //Get analytics
         //TODO Check if company has any reviews
-
+        var company;
         var hasReviews = false;
         
         WebScraper.scrape(company, hasReviews, function(reviews) {
             //Update database with new reviews
-
+            Database.updateReviews(reviews, function(){
+                
+            });
             //Render analytics page with new reviews
             
         });

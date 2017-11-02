@@ -126,3 +126,12 @@ function clearDatabase() {
         });
     });
 }
+
+exports.updateReviews = updateReviews;
+function updateReviews(reviews, cb){
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        db.collection('companies')
+        
+    });
+}
