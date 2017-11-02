@@ -112,11 +112,11 @@ module.exports = function (app) {
         var hasReviews = false;
         
         WebScraper.scrape(company, hasReviews, function(reviews) {
+            company.reviews = reviews;
             //Update database with new reviews
-            Database.updateReviews(reviews, function(){
-                
+            Database.updateCompany(company, function(){
+                            //Render analytics page with new reviews
             });
-            //Render analytics page with new reviews
             
         });
     });

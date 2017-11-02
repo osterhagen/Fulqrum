@@ -127,11 +127,13 @@ function clearDatabase() {
     });
 }
 
-exports.updateReviews = updateReviews;
-function updateReviews(reviews, cb){
+exports.updateCompany = updateCompany;
+function updateCompany(company, cb){
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
-        db.collection('companies')
+        db.collection('companies').update({_id:company._id}, company, function() {
+            db.close();
+        });
         
     });
 }
