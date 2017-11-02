@@ -59,11 +59,7 @@ function analyzeSentences (json, cb) {
       console.error('ERROR:', err);
     });
     //[END analyzeSentiment]
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 48122f8e04e53b2aa48c1bb36bcc43e25fa1ca7d
 }
 
 function analyzeEntitySentimentOfText (auth_fp, file) {
