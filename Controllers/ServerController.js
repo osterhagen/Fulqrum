@@ -7,7 +7,9 @@
 var WebScraper = require("../Models/WebScraper.js");
 var ServerParser = require("../Models/ServerParser.js");
 var ServerErrorHandler = require("../Models/ServerErrorHandler.js");
-var Database = require("../Models/Database.js")
+var Database = require("../Models/Database.js");
+var Analysis = require("../Models/analysis_module/analysis.js");
+
 
 
 module.exports = function (app) {
@@ -97,9 +99,24 @@ module.exports = function (app) {
         }
     });
 
-    app.get("/analytics/:id", function(request, response){
+    app.get("/analytics", function(request, response){
         //Get analytics for the user with specific ID
+        //Get Company through cookie and return there reviews object
 
+    });
+    app.put("/analytics", function(request, resposne) {
+        //Update analytics
+        //Get analytics
+        //TODO Check if company has any reviews
+
+        var hasReviews = false;
+        
+        WebScraper.scrape(company, hasReviews, function(reviews) {
+            //Update database with new reviews
+
+            //Render analytics page with new reviews
+            
+        });
     });
 
     app.get("/settings/:id", function(request, response){

@@ -36,9 +36,9 @@ function analyzeSentences (json, cb) {
       json.reviewMagnitude = sentiment.magnitude
       //fs.writeFileSync(file, JSON.stringify(json, null, 2));
       var sent_arr = [];
-      console.log(`Document sentiment:`);
-      console.log(`  Score: ${sentiment.score}`);
-      console.log(`  Magnitude: ${sentiment.magnitude}`);
+      //console.log(`Document sentiment:`);
+      //console.log(`  Score: ${sentiment.score}`);
+      //console.log(`  Magnitude: ${sentiment.magnitude}`);
       const sentences = results[0].sentences;
 
       sentences.forEach((sentence) => {
@@ -47,18 +47,19 @@ function analyzeSentences (json, cb) {
           Score: sentence.sentiment.score,
           Magnitude: sentence.sentiment.magnitude
         });
-        console.log(`Sentence: ${sentence.text.content}`);
-        console.log(`  Score: ${sentence.sentiment.score}`);
-        console.log(`  Magnitude: ${sentence.sentiment.magnitude}`);
+        //console.log(`Sentence: ${sentence.text.content}`);
+        //console.log(`  Score: ${sentence.sentiment.score}`);
+        //console.log(`  Magnitude: ${sentence.sentiment.magnitude}`);
       });
       json.sentences = sent_arr;
       //fs.writeFileSync(file, JSON.stringify(json, null, 2));
+      cb(json);
     })
     .catch((err) => {
       console.error('ERROR:', err);
     });
     //[END analyzeSentiment]
-    cb(json);
+    
 }
 
 function analyzeEntitySentimentOfText (auth_fp, file) {

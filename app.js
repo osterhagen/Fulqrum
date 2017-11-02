@@ -15,8 +15,8 @@ var Analysis = require("./Models/analysis_module/analysis.js");
 var json = {
   review: "This place sucks!"
 };
-Analysis.analyze(json, function(review) {
-  console.log(review);
+Analysis.analyze(json, function(potoat) {
+  console.log(json);
 });
 //Database setup
   var MongoClient = require('mongodb').MongoClient,
