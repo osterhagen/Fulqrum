@@ -44,6 +44,12 @@ module.exports = function (app) {
         };
     });
 
+    app.get("/analytics", function(request, response){
+        //New user register screen
+        response.render("analytics", {error : undefined})
+        //response.render("homepage");
+    });
+
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})

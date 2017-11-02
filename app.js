@@ -11,6 +11,7 @@ var request = require('request');
 var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 var assert = require("assert");
+/*
 var Analysis = require("./Models/analysis_module/analysis.js");
 var json = {
   review: "This place sucks!"
@@ -18,6 +19,8 @@ var json = {
 Analysis.analyze(json, function(review) {
   console.log(review);
 });
+*/
+
 //Database setup
   var MongoClient = require('mongodb').MongoClient,
   test = require('assert');
