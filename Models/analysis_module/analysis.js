@@ -55,7 +55,7 @@ function analyzeSentences (json, cb) {
       //fs.writeFileSync(file, JSON.stringify(json, null, 2));
       cb(json);
     })
-    .catch((err)n => {
+    .catch((err) => {
       console.error('ERROR:', err);
     });
     //[END analyzeSentiment]

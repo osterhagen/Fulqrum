@@ -94,9 +94,9 @@ module.exports = function (app) {
 
     });
 
-    app.put("/logout", function(request, response) {
+    app.get("/logout", function(request, response) {
         response.clearCookie("token");
-        response.render("welcome");
+        response.redirect("/");
     });
 
     app.get("/analytics", function(request, response){
@@ -153,11 +153,42 @@ module.exports = function (app) {
 
     app.get("/settings", function(request, response){
         //Get company settings
-
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.render("welcome");
+                }else {
+                    response.render("settings", {company : company});
+                }
+            })
+        };
     });
 
     app.put("/settings", function(request, response) {
         //Update company settings
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.render("welcome");
+                }else {
+                    response.render("settings", {company : company});
+                }
+            })
+        };
     });
 
 
