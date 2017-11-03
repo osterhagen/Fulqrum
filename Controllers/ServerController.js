@@ -43,10 +43,6 @@ module.exports = function (app) {
         };
     });
 
-    app.get("/analytics", function(request, response){
-        response.render("analytics", {error : undefined})
-    });
-
     app.get("/settings", function(requrest, response){
       response.render("settings", {error : undefined})
     });
@@ -64,7 +60,7 @@ module.exports = function (app) {
             //Attempt to put company into database
             Database.registerCompany(company, function(error){
                 if(!error) {
-                    response.render("welcome");
+                    response.redirect("/");
                 }else {
                     //Error occured
                     response.render("register", {error : error});
@@ -88,7 +84,7 @@ module.exports = function (app) {
             }else {
                 //If successful user should now have login token
                 response.cookie("token", company.token);
-                response.render("./homepage", {company : company});
+                response.redirect("/");
             }
         });
 
@@ -112,9 +108,9 @@ module.exports = function (app) {
                 if(company === undefined) {
                     //Token wasn't valid so delete token
                     response.clearCookie("token");
-                    response.render("welcome");
+                    response.redirect("/");
                 }else {
-                    response.render("analytics", {company : company});
+                    response.render("/analytics", {company : company});
                 }
             })
         };
