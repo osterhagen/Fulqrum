@@ -21,6 +21,7 @@ module.exports = function (app) {
     //Database.registerCompany(company);
     //Database.listCompanies();
     //Database.clearDatabase();
+    
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
@@ -69,7 +70,7 @@ module.exports = function (app) {
                 }
             });
         });
-        
+
 
     });
 
@@ -140,13 +141,13 @@ module.exports = function (app) {
                                         //Render analytics page with new reviews
                                         response.render("analytics", {company:company});
                         });
-                        
+
                     });
                 }
             })
         };
-        
-        
+
+
     });
 
     app.get("/settings", function(request, response){
@@ -189,6 +190,9 @@ module.exports = function (app) {
         };
     });
 
+    app.get("/contact", function(request, response) {
+        response.render("contact", {error : undefined});
+    });
 
     app.get("*", function(request, response){
         //All requests that don't match one of the above
