@@ -16,8 +16,18 @@ var url = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.
 
 
 var randtoken = require('rand-token');
-//Keeps track of cookies of companies that are logged in
-var loggedInCompanies = [];
+
+exports.encryptPassword = encryptPassword;
+function encryptPassword(password, cb) {
+    // a basic caesar cypher
+    //return password.replace(/[A-Z]/g, L => String.fromCharCode((L.charCodeAt(0) % 26) + 65));
+    var out = "";
+    for (var i = 0; i < password.length; i++) {
+        out += String.fromCharCode(password[i].charCodeAt(0)+3);
+
+    }
+    cb(out);
+}
 
 exports.registerCompany = registerCompany;
 function registerCompany(company, callback) {
@@ -47,17 +57,19 @@ function login(username, password, cb) {
     console.log(username);
     console.log(password);
     //Verify credentials
-
-    MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
-    
-        db.collection('companies').findOne( { "username": username, "password" : password }, function(err, result) {
-            //if(result === null) {
-              //  result = "NONE";
-            //}
-            cb(result);
+    encryptPassword(password, function(encryptedPassword) {
+        MongoClient.connect(url, function(err, db) {
+            assert.equal(null, err);
+        
+            db.collection('companies').findOne( { "username": username, "password" : encryptedPassword }, function(err, result) {
+                //if(result === null) {
+                  //  result = "NONE";
+                //}
+                cb(result);
+            });
         });
     });
+    
 
 }
 
@@ -67,7 +79,8 @@ function getCompany(token, cb) {
         assert.equal(null, err);
     
         db.collection('companies').findOne( { "token": token }, function(err, result) {
-            if(result == null) {
+            console.log(result);
+            if(result === null || result === undefined) {
                 //Company doesn't exist
                 cb(null);
             }else {
