@@ -54,8 +54,6 @@ function registerCompany(company, callback) {
 
 exports.login = login;
 function login(username, password, cb) {
-    console.log(username);
-    console.log(password);
     //Verify credentials
     encryptPassword(password, function(encryptedPassword) {
         MongoClient.connect(url, function(err, db) {
@@ -79,7 +77,6 @@ function getCompany(token, cb) {
         assert.equal(null, err);
     
         db.collection('companies').findOne( { "token": token }, function(err, result) {
-            console.log(result);
             if(result === null || result === undefined) {
                 //Company doesn't exist
                 cb(null);
@@ -135,6 +132,7 @@ function updateCompany(company, cb){
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
         db.collection('companies').update({_id:company._id}, company, function() {
+            console.log("Company Updated");
             db.close();
         });
         

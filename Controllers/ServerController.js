@@ -182,7 +182,39 @@ module.exports = function (app) {
                     response.clearCookie("token");
                     response.render("welcome");
                 }else {
-                    response.render("settings", {company : company});
+                    ServerParser.verifyNewPassword(request.body, function(newPassword){
+                        if(newPassword === undefined || newPassword === null) {
+                            response.render("settings");
+                        }else {
+                            Database.encryptPassword(newPassword, function(encryptedPassword){
+                                company.password = encryptedPassword;
+                                Database.updateCompany(company);
+                                response.render("settings");
+                            });
+                        }
+                    });
+                }
+            })
+        };
+    });
+
+    app.post("/email", function(request, response) {
+        //Update company settings
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.render("welcome");
+                }else {
+                    company.email = request.body.email;
+                    Database.updateCompany(company);
+                    response.render("settings");
                 }
             })
         };

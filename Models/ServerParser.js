@@ -41,6 +41,15 @@ function createCompany(json,cb) {
     });
 }
 
+exports.verifyNewPassword = verifyNewPassword;
+function verifyNewPassword(json, cb) {
+  if(json.password === json.password_confirmation){
+    cb(json.password);
+  }else {
+    cb(null);
+  }
+}
+
 exports.sortReviews = sortReviews;
 function sortReviews(reviews, option, cb) {
   if(reviews === undefined || reviews === null) {

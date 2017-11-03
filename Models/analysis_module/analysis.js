@@ -11,7 +11,7 @@ function analyzeSentences (json, cb) {
   });
 
   // Reading in file
-  console.log('Reading Files...');
+  //console.log('Reading Files...');
   /*var fs = require('fs');
   var contents = fs.readFileSync(file);
   var jsonContent = JSON.parse(contents);
@@ -25,7 +25,7 @@ function analyzeSentences (json, cb) {
   //TODO: implement hashID's for each of the sentences
 
 
-  console.log('Starting Analysis...')
+  //console.log('Starting Analysis...')
 
   language.analyzeSentiment({ document: document })
     .then((results) => {
@@ -70,7 +70,7 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
     });
 
     // Reading in file
-    console.log('Reading Files...');
+    //console.log('Reading Files...');
     var fs = require('fs');
     var contents = fs.readFileSync(file);
     var jsonContent = JSON.parse(contents);
@@ -89,20 +89,20 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
       language.analyzeEntitySentiment(request)
         .then((results) => {
           const entities = results[0].entities;
-          console.log(`Entities and sentiments:`);
+          //console.log(`Entities and sentiments:`);
           if(entities[0] != undefined) {
             entities.forEach((entity) => {
-              console.log(`  Name: ${entity.name}`);
-              console.log(`  Type: ${entity.type}`);
-              console.log(`  Score: ${entity.sentiment.score}`);
-              console.log(`  Magnitude: ${entity.sentiment.magnitude}`);
+              //console.log(`  Name: ${entity.name}`);
+              //console.log(`  Type: ${entity.type}`);
+              //console.log(`  Score: ${entity.sentiment.score}`);
+              //console.log(`  Magnitude: ${entity.sentiment.magnitude}`);
               sent_dict.push({
                 Name: entity.name,
                 Type: entity.type,
                 Score: entity.sentiment.score,
                 Magnitude: entity.sentiment.magnitude
               });
-              console.log(sent_dict);
+              //console.log(sent_dict);
             });
           }
         }).catch((err) => {
