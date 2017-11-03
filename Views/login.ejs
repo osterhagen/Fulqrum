@@ -1,19 +1,59 @@
 <% include partials/header %>
 
 <div id="container">
-  <h1 id="welcome" style="font-size:60px;">Welcome!</h1>
-  <h1 id="welcome" style="font-size:60px;">Login to an account</h1>
 
-
+    <!--
     <form method="POST" action="/login">
       <input name="username" class="form-control form-horizontal" placeholder="Company Username">
       <input name="password" type="password" class="form-control form-horizontal" placeholder="Password">
       <input type="submit" class = "form-control form-horizontal" value="Submit">
     </form>
+    -->
 
-    <%if (error) { %>
-      <h3><%=error%></h3>
-    <% } %>
+    <section class="fdb-block" style="background-image: url(./imgs/bg_0.svg)">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-7 col-xl-5 text-center">
+          <div class="fdb-box fdb-touch">
+            <div class="row">
+              <div class="col">
+                <h1>Log In</h1>
+              </div>
+            </div>
+            <form method="POST" action="/login">
+
+            <div class="row mt-4">
+              <div class="col">
+                <input name="username" class="form-control form-horizontal" placeholder="Username">
+              </div>
+            </div>
+
+
+            <div class="row mt-4">
+              <div class="col">
+                <input name="password" type="password" class="form-control mb-1 form-horizontal" placeholder="Password">
+                <!-- <p class="text-right"><a>Recover Password</a></p> -->
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col">
+                <button class="form-control form-horizontal" value="Submit" type="submit">Submit</button>
+              </div>
+            </div>
+
+            </form>
+            <div class="row mt-4">
+              <%if (error) { %>
+                <h6><%=error%></h6>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
 </div>
 
  <% include partials/footer %>
