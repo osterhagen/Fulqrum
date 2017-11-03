@@ -4,7 +4,7 @@
  * and make it useable for
  * the server
  */
-
+var randToken = require("rand-token");
 exports.createCompany = createCompany;
 function createCompany(json) {
     var company = new Object();
@@ -18,6 +18,7 @@ function createCompany(json) {
     company.city = json.city;
     company.state = json.state;
     company.zipcode = json.zipcode;
+    company.token = randToken.generate(16);
     if(json.Industry === "1") {
       company.industry = "Restaurant";
     } else if (json.Industry === "2") {

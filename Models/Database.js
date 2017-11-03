@@ -12,10 +12,7 @@
  test = require('assert');
 // Connection url
 var url = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-01-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-02-o5o8f.mongodb.net:27017/test?ssl=true&replicaSet=fulqrumCluster-shard-0&authSource=admin";
-// Connect using MongoClient
-MongoClient.connect(url, function(err, db) {
- db.close();
-});
+
 
 
 var randtoken = require('rand-token');
@@ -65,27 +62,20 @@ function login(username, password, cb) {
 }
 
 exports.getCompany = getCompany;
-function getCompany(token) {
-    //Search for company
-    for(var i = 0; i < loggedInCompanies.length; i++) {
-        if(loggedInCompanies[i].token === token) {
-            //Token match, return company
-            return loggedInCompanies[i].company;
-        }
-    }
-    //Token not found so invalid
-    return undefined;
-}
-
-exports.removeLoggedInCompany = removeLoggedInCompany;
-function removeLoggedInCompany(token) {
-    for(var i = 0; i < loggedInCompanies.length; i++) {
-        if(loggedInCompanies[i].token === token) {
-            //Token match, return company
-            loggedInCompanies.splice(i,1);
-            return;
-        }
-    }
+function getCompany(token, cb) {
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+    
+        db.collection('companies').findOne( { "token": token }, function(err, result) {
+            if(result == null) {
+                //Company doesn't exist
+                cb(null);
+            }else {
+                //Company exists
+                cb(result);
+            }
+        });
+    });
 }
 
 exports.listCompanies = listCompanies;

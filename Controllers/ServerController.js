@@ -11,7 +11,6 @@ var Database = require("../Models/Database.js");
 var Analysis = require("../Models/analysis_module/analysis.js");
 
 
-
 module.exports = function (app) {
     var company = {
         name: "clementine",
@@ -26,9 +25,7 @@ module.exports = function (app) {
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
-        if(request.cookies != undefined) {
-            var token = request.cookies["token"];
-        }
+        var token = request.cookies.token;
         if(token === undefined) {
             //Welcome screen
             response.render("welcome");
@@ -37,7 +34,7 @@ module.exports = function (app) {
             Database.getCompany(token, function(company) {
                 if(company === undefined) {
                     //Token wasn't valid so delete token
-                    res.clearCookie("token");
+                    response.clearCookie("token");
                     response.render("welcome");
                 }else {
                     response.render("homepage", {company : company});
@@ -54,7 +51,6 @@ module.exports = function (app) {
 
     app.post("/register", function(request, response){
         //Add the user to the database if they do not exist
-      console.log(request.body);
         var company = ServerParser.createCompany(request.body);
         console.log("Server Sent Company:\n" + company + "\n");
         //Attempt to put company into database
@@ -81,6 +77,7 @@ module.exports = function (app) {
                 response.render("login", {error : "Invalid Login Credentials"});
             }else {
                 //If successful user should now have login token
+                response.cookie("token", company.token);
                 response.render("homepage", {company : company});
             }
         });
@@ -88,15 +85,8 @@ module.exports = function (app) {
     });
 
     app.put("/logout", function(request, response) {
-        var token = req.cookies["token"];
-        if(token === undefined) {
-            //Welcome screen
-            response.render("welcome");
-        } else {
-            Database.removeLoggedInCompany(token);
-            res.clearCookie("token");
-            response.render("welcome");
-        }
+        response.clearCookie("token");
+        response.render("welcome");
     });
 
     app.get("/analytics", function(request, response){
@@ -121,12 +111,12 @@ module.exports = function (app) {
         });
     });
 
-    app.get("/settings/:id", function(request, response){
+    app.get("/settings", function(request, response){
         //Get company settings
 
     });
 
-    app.put("/setting/:id", function(request, response) {
+    app.put("/setting", function(request, response) {
         //Update company settings
     });
 
