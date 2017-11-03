@@ -9,8 +9,7 @@ var ServerParser = require("../Models/ServerParser.js");
 var ServerErrorHandler = require("../Models/ServerErrorHandler.js");
 var Database = require("../Models/Database.js");
 var Analysis = require("../Models/analysis_module/analysis.js");
-
-
+var Email = require("../Models/Email.js");
 module.exports = function (app) {
     var company = {
         name: "clementine",
@@ -60,6 +59,9 @@ module.exports = function (app) {
             //Attempt to put company into database
             Database.registerCompany(company, function(error){
                 if(!error) {
+                    var subject = "Account Registered!";
+                    var message = "Hello" + company.name + ",\nYour account has been created";
+                    Email.sendEmail(company.email, subject, message);
                     response.redirect("/");
                 }else {
                     //Error occured
