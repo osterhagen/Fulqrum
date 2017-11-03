@@ -1,0 +1,42 @@
+<% include partials/header %>
+
+
+  <div id="container" class="container">
+    <div class="row">
+      <div class="col-md-9  admin-content" id="change-password">
+        <form action="/password" method="post">
+            <div class="panel-heading">
+              <h3 class="panel-title"><label for="new_password" class="control-label panel-title">New Password</label></h3>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" name="password" id="new_password">
+                </div>
+              </div>
+            </div>
+            <div class="panel-heading">
+              <h3 class="panel-title"><label for="confirm_password" class="control-label panel-title">Confirm password</label></h3>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" name="password_confirmation" id="confirm_password">
+                </div>
+              </div>
+          </div>
+
+
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="pull-left">
+                  <input type="submit" class="form-control btn btn-primary" name="submit" id="submit">
+                </div>
+              </div>
+            </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+<% include partials/footer %>

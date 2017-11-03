@@ -43,6 +43,14 @@ module.exports = function (app) {
         };
     });
 
+    app.get("/analytics", function(request, response){
+        response.render("analytics", {error : undefined})
+    });
+
+    app.get("/settings", function(requrest, response){
+      response.render("settings", {error : undefined})
+    });
+
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})
@@ -148,7 +156,7 @@ module.exports = function (app) {
 
     });
 
-    app.put("/setting", function(request, response) {
+    app.put("/settings", function(request, response) {
         //Update company settings
     });
 
