@@ -43,7 +43,6 @@ module.exports = function (app) {
         };
     });
 
-<<<<<<< HEAD
     app.get("/analytics", function(request, response){
         response.render("analytics", {error : undefined})
     });
@@ -52,8 +51,6 @@ module.exports = function (app) {
       response.render("settings", {error : undefined})
     });
 
-=======
->>>>>>> origin/master
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})
@@ -111,22 +108,12 @@ module.exports = function (app) {
         //TODO Check if company has any reviews
         var company;
         var hasReviews = false;
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> origin/master
         WebScraper.scrape(company, hasReviews, function(reviews) {
             company.reviews = reviews;
             //Update database with new reviews
             Database.updateCompany(company, function(){
                             //Render analytics page with new reviews
             });
-<<<<<<< HEAD
-
-=======
-            
->>>>>>> origin/master
         });
     });
 
@@ -135,7 +122,7 @@ module.exports = function (app) {
 
     });
 
-    app.put("/setting", function(request, response) {
+    app.put("/settings", function(request, response) {
         //Update company settings
     });
 
