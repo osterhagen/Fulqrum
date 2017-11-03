@@ -11,14 +11,7 @@ var Database = require("../Models/Database.js");
 var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 module.exports = function (app) {
-    var company = {
-        name: "clementine",
-        streetAddress: "123 Street",
-        city: "San Francisco",
-        zipcode: "94080",
-        password: "123"
-    }
-    //Database.registerCompany(company);
+    
     //Database.listCompanies();
     //Database.clearDatabase();
     app.get("/", function(request, response) {
@@ -60,7 +53,7 @@ module.exports = function (app) {
             Database.registerCompany(company, function(error){
                 if(!error) {
                     var subject = "Account Registered!";
-                    var message = "Hello" + company.name + ",\nYour account has been created";
+                    var message = "Hello " + company.name + ",\nYour account has been created";
                     Email.sendEmail(company.email, subject, message);
                     response.redirect("/");
                 }else {
@@ -112,7 +105,7 @@ module.exports = function (app) {
                     response.clearCookie("token");
                     response.redirect("/");
                 }else {
-                    response.render("/analytics", {company : company});
+                    response.render("analytics", {company : company, reviews:company.reviews});
                 }
             })
         };
