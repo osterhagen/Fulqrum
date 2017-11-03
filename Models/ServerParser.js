@@ -34,6 +34,7 @@ function createCompany(json,cb) {
     } else if (json.Industry === "5") {
       company.industry = "Fitness";
     }
+    company.reviews = {};
 
     Database.encryptPassword(json.password, function(encryptedPwd) {
         company.password = encryptedPwd;

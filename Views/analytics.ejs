@@ -7,7 +7,7 @@
   <form method="POST" action="/analytics">
     <button class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Update</button>
   </form>
-  <% if(company.reviews != null && company.reviews.length != undefined) {
+  <% if(company.reviews != null && company.reviews != undefined) {
       for(var i = 0; i < company.reviews.length; i++) {%>
      <p><%- JSON.stringify(reviews[i]) %></p>
   <%   } 
