@@ -1,23 +1,12 @@
 
 
 <% include partials/header %>
-<h1>Welcome to Your Homepage</h2>
 
-<div id="list-example" class="list-group">
-  <a class="list-group-item list-group-item-action" href="#list-item-1">Item 1</a>
-  <a class="list-group-item list-group-item-action" href="#list-item-2">Item2</a>
-  <a class="list-group-item list-group-item-action" href="#list-item-3">Item 3</a>
-  <a class="list-group-item list-group-item-action" href="#list-item-4">Item 4</a>
-</div>
-<div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy-example">
-  <h4 id="list-item-1">Item 1</h4>
-  <p>This is the first item</p>
-  <h4 id="list-item-2">Item 2</h4>
-  <p>This is the second item</p>
-  <h4 id="list-item-3">Item 3</h4>
-  <p>This is the third item</p>
-  <h4 id="list-item-4">Item 4</h4>
-  <p>This is the fourth item</p>
+<div >
+  <a class="btn btn-primary btn-empty ml-md-3">Update</a>
+  <% for(var i = 0; i < reviews.length; i++) {%>
+     <p><%- JSON.stringify(reviews[i]) %></p>
+  <% } %>
 </div>
 
 <% include partials/footer %>

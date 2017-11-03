@@ -11,16 +11,7 @@ var request = require('request');
 var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 var assert = require("assert");
-/*
-var Analysis = require("./Models/analysis_module/analysis.js");
-var json = {
-  review: "This place sucks!"
-};
-Analysis.analyze(json, function(review) {
-  console.log(review);
-});
-*/
-
+var cookieParser = require('cookie-parser');
 //Database setup
   var MongoClient = require('mongodb').MongoClient,
   test = require('assert');
@@ -33,7 +24,7 @@ MongoClient.connect(url, function(err, db) {
   db.close();
 });
 //
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

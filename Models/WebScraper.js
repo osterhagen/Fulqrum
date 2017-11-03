@@ -8,6 +8,8 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
+var Analysis = require("./analysis_module/analysis.js");
+
 //var Review = require("../Data Structures/Review.js");
 
 var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
@@ -15,7 +17,7 @@ var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
 var maxReviews = 100;
 
-function scrape(company) {
+function scrape(company, hasPriorAnalytics, cb) {
     //Subject to change based on how we want to receive the company name
     var companyName = request.body["CompanyName"];
 
@@ -25,7 +27,21 @@ function scrape(company) {
     if (hasPriorAnalytics === false) {
         WebScraper.freshScrape(companyName, function(reviews) {
             //The review will be returned in an array of objects
-            
+            //When done scraping print reviews
+            for(var i = 0; i < reviews.length; i++) {
+                if(i === reviews.length-1) {
+                    //Last review
+                    Analysis.analyze(reviews[i], function(review) {
+                        
+                        cb(reviews);
+                    });
+                }else {
+                    Analysis.analyze(reviews[i], function(review) {
+
+                    });
+                }
+
+            }
         });
     } else {
         //TODO call WebScraper Method for when analytics already exist
@@ -57,7 +73,7 @@ function freshScrape(company, cb) {
 }
 
 exports.rescrape = rescrape;
-function rescrape(company) {
+function rescrape(company, reviews, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {

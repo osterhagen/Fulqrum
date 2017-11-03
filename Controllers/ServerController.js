@@ -7,7 +7,8 @@
 var WebScraper = require("../Models/WebScraper.js");
 var ServerParser = require("../Models/ServerParser.js");
 var ServerErrorHandler = require("../Models/ServerErrorHandler.js");
-var Database = require("../Models/Database.js")
+var Database = require("../Models/Database.js");
+var Analysis = require("../Models/analysis_module/analysis.js");
 
 
 module.exports = function (app) {
@@ -24,9 +25,7 @@ module.exports = function (app) {
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
-        if(request.cookies != undefined) {
-            var token = request.cookies["token"];
-        }
+        var token = request.cookies.token;
         if(token === undefined) {
             //Welcome screen
             response.render("welcome");
@@ -35,7 +34,7 @@ module.exports = function (app) {
             Database.getCompany(token, function(company) {
                 if(company === undefined) {
                     //Token wasn't valid so delete token
-                    res.clearCookie("token");
+                    response.clearCookie("token");
                     response.render("welcome");
                 }else {
                     response.render("homepage", {company : company});
@@ -45,9 +44,11 @@ module.exports = function (app) {
     });
 
     app.get("/analytics", function(request, response){
-        //New user register screen
         response.render("analytics", {error : undefined})
-        //response.render("homepage");
+    });
+
+    app.get("/settings", function(requrest, response){
+      response.render("settings", {error : undefined})
     });
 
     app.get("/register", function(request, response){
@@ -58,7 +59,6 @@ module.exports = function (app) {
 
     app.post("/register", function(request, response){
         //Add the user to the database if they do not exist
-      console.log(request.body);
         var company = ServerParser.createCompany(request.body);
         console.log("Server Sent Company:\n" + company + "\n");
         //Attempt to put company into database
@@ -85,6 +85,7 @@ module.exports = function (app) {
                 response.render("login", {error : "Invalid Login Credentials"});
             }else {
                 //If successful user should now have login token
+                response.cookie("token", company.token);
                 response.render("homepage", {company : company});
             }
         });
@@ -92,28 +93,38 @@ module.exports = function (app) {
     });
 
     app.put("/logout", function(request, response) {
-        var token = req.cookies["token"];
-        if(token === undefined) {
-            //Welcome screen
-            response.render("welcome");
-        } else {
-            Database.removeLoggedInCompany(token);
-            res.clearCookie("token");
-            response.render("welcome");
-        }
+        response.clearCookie("token");
+        response.render("welcome");
     });
 
-    app.get("/analytics/:id", function(request, response){
+    app.get("/analytics", function(request, response){
         //Get analytics for the user with specific ID
+        //Get Company through cookie and return there reviews object
 
     });
+    app.put("/analytics", function(request, resposne) {
+        //Update analytics
+        //Get analytics
+        //TODO Check if company has any reviews
+        var company;
+        var hasReviews = false;
 
-    app.get("/settings/:id", function(request, response){
+        WebScraper.scrape(company, hasReviews, function(reviews) {
+            company.reviews = reviews;
+            //Update database with new reviews
+            Database.updateCompany(company, function(){
+                            //Render analytics page with new reviews
+            });
+
+        });
+    });
+
+    app.get("/settings", function(request, response){
         //Get company settings
 
     });
 
-    app.put("/setting/:id", function(request, response) {
+    app.put("/setting", function(request, response) {
         //Update company settings
     });
 
