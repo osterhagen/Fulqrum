@@ -16,21 +16,20 @@ var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
 var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
 var maxReviews = 100;
-
+exports.scrape = scrape;
 function scrape(company, hasPriorAnalytics, cb) {
     //Subject to change based on how we want to receive the company name
-    var companyName = request.body["CompanyName"];
 
-    var hasPriorAnalytics = false;
     //TODO Check if company analytics are already in database
 
     if (hasPriorAnalytics === false) {
-        WebScraper.freshScrape(companyName, function(reviews) {
+        freshScrape(company, function(reviews) {
             //The review will be returned in an array of objects
             //When done scraping print reviews
             for(var i = 0; i < reviews.length; i++) {
-                if(i === reviews.length-1) {
+                if(i >= reviews.length-1) {
                     //Last review
+                    console.log("Last Review");
                     Analysis.analyze(reviews[i], function(review) {
                         
                         cb(reviews);
@@ -77,15 +76,7 @@ function rescrape(company, reviews, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        //When done scraping print reviews
-        var i = 0;
-        while (i < reviews.length) {
-            printReview(reviews[i], i + 1);
-            i++;
-        }
-        //console.log(JSON.stringify(reviews[0]));
-        //Total number of reviews
-        console.log("Final Number of Reviews: " + reviews.length);
+        
     });
 
     //TODO Get all reviews and analytics currently stored for company
@@ -106,7 +97,6 @@ function scrapeYelp(company, reviews, cb) {
         companyPageURLByDate += "start=";
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
-            console.log("Yelp Scrape Complete");
             cb(null);
         });
 
@@ -163,6 +153,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 }
                 //console.log("Useful: " + review.useful);
                 reviews.push(review);
+                //console.log(review);
                 //printReview(review);
                 i++;
 
@@ -216,7 +207,7 @@ function findYelpCompanyPage(company, cb) {
     var url = "https://www.yelp.com/search?";
     url += "find_desc=" + companyName;
     url += "&find_loc=" + address;
-    //console.log("url: " + url);
+    console.log("url: " + url);
     request(url, function (error, response, html) {
 
         // First we'll check to make sure no errors occurred when making the request

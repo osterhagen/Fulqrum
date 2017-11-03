@@ -49,7 +49,6 @@ module.exports = function (app) {
     app.post("/register", function(request, response){
         //Add the user to the database if they do not exist
         ServerParser.createCompany(request.body, function(company) {
-            console.log("Server Sent Company:\n" + company + "\n");
             //Attempt to put company into database
             Database.registerCompany(company, function(error){
                 if(!error) {
@@ -106,12 +105,17 @@ module.exports = function (app) {
                     response.clearCookie("token");
                     response.redirect("/");
                 }else {
-                    response.render("analytics", {company : company, reviews:company.reviews});
+                    //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
+                    //3 = by rating high
+                    var option = "3";
+                    ServerParser.sortReviews(company.reviews, option, function() {
+                        response.render("analytics", {company : company, reviews:company.reviews});                        
+                    });
                 }
             })
         };
     });
-    app.put("/analytics", function(request, resposne) {
+    app.post("/analytics", function(request, resposne) {
         //Update analytics
         //Get analytics
         var token = request.cookies.token;
@@ -129,6 +133,7 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
+                        //response.render("analytics",{company:company});
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
@@ -163,7 +168,7 @@ module.exports = function (app) {
         };
     });
 
-    app.put("/settings", function(request, response) {
+    app.post("/settings", function(request, response) {
         //Update company settings
         var token = request.cookies.token;
         if(token === undefined) {
