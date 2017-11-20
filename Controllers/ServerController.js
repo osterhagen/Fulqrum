@@ -209,7 +209,7 @@ module.exports = function (app) {
         };
     });
 
-    app.post("/emailSettings", function(request, response) {
+    app.post("/emailPreferenceSettings", function(request, response) {
         console.log("Request to change email settings");
         //Update company settings
         var token = request.cookies.token;
@@ -225,6 +225,32 @@ module.exports = function (app) {
                     response.redirect("welcome");
                 }else {
                     company.sendEmails = request.body.sendEmails;
+                    
+                    console.log(company.sendEmails);
+                    Database.updateCompany(company, function(){
+                        response.redirect("settings");                        
+                    });
+                }
+            })
+        };
+    });
+
+    app.post("/emailSettings", function(request, response) {
+        console.log("Request to change email settings");
+        //Update company settings
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.redirect("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("welcome");
+                }else {
+                    company.email = request.body.email;
                     
                     console.log(company.sendEmails);
                     Database.updateCompany(company, function(){
