@@ -36,6 +36,7 @@ module.exports = function (app) {
                     response.clearCookie("token");
                     response.render("welcome");
                 }else {
+                    console.log(company.sendEmails);
                     response.render("homepage", {company : company});
                 }
             })
@@ -60,8 +61,9 @@ module.exports = function (app) {
                 if(!error) {
                     var subject = "Account Registered!";
                     var message = "Hello " + company.name + ",\nYour account has been created";
-                    Email.sendEmail(company.email, subject, message);
-                    response.redirect("/");
+                        Email.sendEmail(company.email, subject, message);
+                        response.redirect("/");
+                    
                 }else {
                     //Error occured
                     response.render("register", {error : error});
@@ -139,14 +141,11 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
-                        console.log("Chicken");
                         //response.render("analytics",{company:company});
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
-                                        console.log("MADE IT");
                                         //Render analytics page with new reviews
                                         response.render("analytics", {company:company, reviews:company.reviews});
-                                        //response.render("welcome");
                                         
                         });
 
@@ -178,7 +177,8 @@ module.exports = function (app) {
         };
     });
 
-    app.post("/settings", function(request, response) {
+    app.post("/passwordSettings", function(request, response) {
+        console.log("Request to change password");
         //Update company settings
         var token = request.cookies.token;
         if(token === undefined) {
@@ -194,12 +194,13 @@ module.exports = function (app) {
                 }else {
                     ServerParser.verifyNewPassword(request.body, function(newPassword){
                         if(newPassword === undefined || newPassword === null) {
-                            response.render("settings");
+                            response.redirect("settings");
                         }else {
                             Database.encryptPassword(newPassword, function(encryptedPassword){
                                 company.password = encryptedPassword;
-                                Database.updateCompany(company);
-                                response.render("settings");
+                                Database.updateCompany(company, function() {
+                                    response.redirect("settings");                                    
+                                });
                             });
                         }
                     });
@@ -208,23 +209,75 @@ module.exports = function (app) {
         };
     });
 
-    app.post("/email", function(request, response) {
+    app.post("/emailSettings", function(request, response) {
+        console.log("Request to change email settings");
         //Update company settings
         var token = request.cookies.token;
         if(token === undefined) {
             //Welcome screen
-            response.render("welcome");
+            response.redirect("welcome");
         } else {
             //Use token to get company information
             Database.getCompany(token, function(company) {
                 if(company === undefined) {
                     //Token wasn't valid so delete token
                     response.clearCookie("token");
-                    response.render("welcome");
+                    response.redirect("welcome");
                 }else {
-                    company.email = request.body.email;
-                    Database.updateCompany(company);
-                    response.render("settings");
+                    company.sendEmails = request.body.sendEmails;
+                    
+                    console.log(company.sendEmails);
+                    Database.updateCompany(company, function(){
+                        response.redirect("settings");                        
+                    });
+                }
+            })
+        };
+    });
+
+    app.post("/emailSettings", function(request, response) {
+        console.log("Request to change email settings");
+        //Update company settings
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.redirect("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("welcome");
+                }else {
+                    company.sendEmails = request.body.sendEmails;
+                    Database.updateCompany(company, function(){
+                        response.redirect("settings");                        
+                    });
+                }
+            })
+        };
+    });
+
+    app.post("/usernameSettings", function(request, response) {
+        console.log("Request to change email settings");
+        //Update company settings
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.redirect("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("welcome");
+                }else {
+                    company.username = request.body.username;
+                    Database.updateCompany(company, function(){
+                        response.redirect("settings");                        
+                    });
                 }
             })
         };
