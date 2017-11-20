@@ -309,6 +309,15 @@ module.exports = function (app) {
         };
     });
 
+    app.post("/feedback", function(request, response) {
+        var subject = "User feedback from " + request.body.firstName + " " + request.body.lastName + " ";
+        subject += "about " + request.body.subject;
+        var message = request.body.message;
+        message += "\n\nThe user can be reached at: " + request.body.email;
+        Email.sendEmail("fulqrumpurdue@gmail.com", subject, message);
+        response.redirect("contact");
+    });
+
     app.get("/contact", function(request, response) {
         response.render("contact", {error : undefined});
     });

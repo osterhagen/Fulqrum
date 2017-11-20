@@ -27,30 +27,30 @@
         </div>
 
         <div class="col-12 col-md-6 ml-auto pt-5 pt-md-0">
-          <form>
+          <form action="/feedback" method="POST">
             <div class="row">
               <div class="col">
-                <input type="text" class="form-control" placeholder="First name">
+                <input type="text" name="firstName" class="form-control" placeholder="First name" required>
               </div>
               <div class="col">
-                <input type="text" class="form-control" placeholder="Last name">
-              </div>
-            </div>
-
-            <div class="row mt-4">
-              <div class="col">
-                <input type="email" class="form-control" placeholder="Enter email">
+                <input type="text" name="lastName" class="form-control" placeholder="Last name" required>
               </div>
             </div>
 
             <div class="row mt-4">
               <div class="col">
-                <input type="email" class="form-control"  placeholder="Subject">
+                <input name="email" type="email" class="form-control" placeholder="Enter email" required>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col">
+                <input  name="subject" class="form-control"  placeholder="Subject" required>
               </div>
             </div>
             <div class="row mt-4">
               <div class="col">
-                <textarea class="form-control" name="message" rows="3" placeholder="How can we help?"></textarea>
+                <input class="form-control" name="message" rows="3" placeholder="How can we help?" required>
               </div>
             </div>
             <div class="row mt-4">
