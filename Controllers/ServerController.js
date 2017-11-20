@@ -11,6 +11,12 @@ var Database = require("../Models/Database.js");
 var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 module.exports = function (app) {
+    /*var company = new Object();
+    company.name = "KFC";
+    company.city = "Downers Grove";
+    WebScraper.freshScrape(company, function() {
+        console.log("Hello");
+    });*/
     
     //Database.listCompanies();
     //Database.clearDatabase();
@@ -115,7 +121,7 @@ module.exports = function (app) {
             })
         };
     });
-    app.post("/analytics", function(request, resposne) {
+    app.post("/analytics", function(request, response) {
         //Update analytics
         //Get analytics
         var token = request.cookies.token;
@@ -133,11 +139,15 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
+                        console.log("Chicken");
                         //response.render("analytics",{company:company});
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
+                                        console.log("MADE IT");
                                         //Render analytics page with new reviews
-                                        response.render("analytics", {company:company});
+                                        response.render("analytics", {company:company, reviews:company.reviews});
+                                        //response.render("welcome");
+                                        
                         });
 
                     });

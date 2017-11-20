@@ -26,8 +26,8 @@ function scrape(company, hasPriorAnalytics, cb) {
         freshScrape(company, function(reviews) {
             //The review will be returned in an array of objects
             //When done scraping print reviews
-            for(var i = 0; i < reviews.length; i++) {
-                if(i >= reviews.length-1) {
+            //for(var i = 0; i < reviews.length; i++) {
+                /*if(i >= reviews.length-1) {
                     //Last review
                     console.log("Last Review");
                     Analysis.analyze(reviews[i], function(review) {
@@ -38,9 +38,11 @@ function scrape(company, hasPriorAnalytics, cb) {
                     Analysis.analyze(reviews[i], function(review) {
 
                     });
-                }
+                }*/
 
-            }
+            //}
+            cb(reviews);
+            
         });
     } else {
         //TODO call WebScraper Method for when analytics already exist
@@ -54,20 +56,10 @@ function freshScrape(company, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        //When done scraping print reviews
-        //var i = 0;
-        /*while (i < reviews.length) {
-            printReview(reviews[i], i+1);
-            i++;
-        }*/
-        //console.log(JSON.stringify(reviews[0]));
-        //Total number of reviews
+        
         console.log("Final Number of Reviews: " + reviews.length);
         cb(reviews);
     });
-
-    //TODO
-    //Get reviews object to analytics module
 
 }
 
@@ -95,6 +87,7 @@ function scrapeYelp(company, reviews, cb) {
         //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
         companyPageURLByDate += "start=";
+        
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
             cb(null);
@@ -158,7 +151,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 i++;
 
             }//while
-            if (reviewStartIndex < maxReviews) {
+            if (reviewStartIndex < maxReviews && reviews.length%20 === 0 ) {
 
                 url = plainURL;
                 url += reviewStartIndex;
@@ -254,7 +247,6 @@ function findYelpCompetitors(companyZipCode) {
     var url = "https://www.yelp.com/search?find_desc=&find_loc=";
     url += "" + companyZipCode;
     //url += "&ns=1";
-    console.log("THE URL: " + url);
     var companies = [];
     request(url, function (error, response, html) {
             // First we'll check to make sure no errors occurred when making the request
@@ -269,10 +261,8 @@ function findYelpCompetitors(companyZipCode) {
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
-                    //console.log("Company URL: " + company.companyURL);
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    //console.log("Company name: " + company.companyName);
                     i++;
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
@@ -280,15 +270,13 @@ function findYelpCompetitors(companyZipCode) {
                     var endOfAddress = String(company.streetAddress).indexOf("Phone number");
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    console.log("Company name: " + company.companyName);
-                    console.log("Company address: " + company.streetAddress);
+                    
                     i++;
 
                     companies.push(company);
                 }
           } else {
                 //cb("ERROR");
-                console.log("ERROR");
           }
         return companies;
 

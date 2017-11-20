@@ -114,7 +114,6 @@ exports.clearDatabase = clearDatabase;
 function clearDatabase() {
     var removeAll = function(db, callback) {
         db.collection('companies').deleteMany( {}, function(err, results) {
-           console.log(results);
            callback();
         });
      };
@@ -134,6 +133,7 @@ function updateCompany(company, cb){
         db.collection('companies').update({_id:company._id}, company, function() {
             console.log("Company Updated");
             db.close();
+            cb();
         });
         
     });
