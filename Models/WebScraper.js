@@ -8,23 +8,40 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
+var Analysis = require("./analysis_module/analysis.js");
+
 //var Review = require("../Data Structures/Review.js");
 
 var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
 var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
 var maxReviews = 100;
-
-function scrape(company) {
+exports.scrape = scrape;
+function scrape(company, hasPriorAnalytics, cb) {
     //Subject to change based on how we want to receive the company name
-    var companyName = request.body["CompanyName"];
 
-    var hasPriorAnalytics = false;
     //TODO Check if company analytics are already in database
 
     if (hasPriorAnalytics === false) {
-        WebScraper.freshScrape(companyName, function(reviews) {
+        freshScrape(company, function(reviews) {
             //The review will be returned in an array of objects
+            //When done scraping print reviews
+            //for(var i = 0; i < reviews.length; i++) {
+                /*if(i >= reviews.length-1) {
+                    //Last review
+                    console.log("Last Review");
+                    Analysis.analyze(reviews[i], function(review) {
+                        
+                        cb(reviews);
+                    });
+                }else {
+                    Analysis.analyze(reviews[i], function(review) {
+
+                    });
+                }*/
+
+            //}
+            cb(reviews);
             
         });
     } else {
@@ -39,37 +56,19 @@ function freshScrape(company, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        //When done scraping print reviews
-        //var i = 0;
-        /*while (i < reviews.length) {
-            printReview(reviews[i], i+1);
-            i++;
-        }*/
-        //console.log(JSON.stringify(reviews[0]));
-        //Total number of reviews
+        
         console.log("Final Number of Reviews: " + reviews.length);
         cb(reviews);
     });
 
-    //TODO
-    //Get reviews object to analytics module
-
 }
 
 exports.rescrape = rescrape;
-function rescrape(company) {
+function rescrape(company, reviews, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        //When done scraping print reviews
-        var i = 0;
-        while (i < reviews.length) {
-            printReview(reviews[i], i + 1);
-            i++;
-        }
-        //console.log(JSON.stringify(reviews[0]));
-        //Total number of reviews
-        console.log("Final Number of Reviews: " + reviews.length);
+        
     });
 
     //TODO Get all reviews and analytics currently stored for company
@@ -88,9 +87,9 @@ function scrapeYelp(company, reviews, cb) {
         //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
         companyPageURLByDate += "start=";
+        
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
-            console.log("Yelp Scrape Complete");
             cb(null);
         });
 
@@ -147,11 +146,12 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 }
                 //console.log("Useful: " + review.useful);
                 reviews.push(review);
+                //console.log(review);
                 //printReview(review);
                 i++;
 
             }//while
-            if (reviewStartIndex < maxReviews) {
+            if (reviewStartIndex < maxReviews && reviews.length%20 === 0 ) {
 
                 url = plainURL;
                 url += reviewStartIndex;
@@ -200,7 +200,7 @@ function findYelpCompanyPage(company, cb) {
     var url = "https://www.yelp.com/search?";
     url += "find_desc=" + companyName;
     url += "&find_loc=" + address;
-    //console.log("url: " + url);
+    console.log("url: " + url);
     request(url, function (error, response, html) {
 
         // First we'll check to make sure no errors occurred when making the request
@@ -241,19 +241,27 @@ function googleSearchScrape(companyName) {
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
-function findYelpCompetitors(companyZipCode) {
+function findYelpCompetitors(company, radius) {
     //just going to use zip code to find 5 nearby competitors.
     //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
+    var tagAddress = company.streetAddress.replace(/ /g, "+");
+    var tagCity = company.city.replace(/ /g, "+");
+    var tagState = company.state.replace(/ /g, "+");
+
     var url = "https://www.yelp.com/search?find_desc=&find_loc=";
-    url += "" + companyZipCode;
+    url += "" + tagAddress + "+" + tagCity + "+" + tagState + "+" + company.zipcode;
+    url += "&radius=" + radius;
+    //console.log("competitor search address " + url);
     //url += "&ns=1";
-    console.log("THE URL: " + url);
     var companies = [];
     request(url, function (error, response, html) {
             // First we'll check to make sure no errors occurred when making the request
+        //console.log("sup bitch");
         if (!error) {
             var i = 0;
+            //html.replace(/<br\s?\/?>/gi, " ");
             var $ = cheerio.load(html);
+
                 while (i < 5) {
                     var company = new Object();
 
@@ -262,27 +270,51 @@ function findYelpCompetitors(companyZipCode) {
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
-                    //console.log("Company URL: " + company.companyURL);
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    //console.log("Company name: " + company.companyName);
-                    i++;
+                    //i++;
+                    //now to change the <br> to a space so the street addr and city
+                    //aren't right next to each other
+                    $('div.secondary-attributes').find('br').replaceWith(", ");
+                    //company.companyName = $('span.indexed-biz-name a').eq(i).text();
+		            company.streetAddress = $('div.secondary-attributes').eq(i).text();
 
-                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
-		                company.streetAddress = $('div.secondary-attributes').eq(i).text();
+                    //company.streetAddress = $('div.secondary-attributes').eq(i).text();
                     var endOfAddress = String(company.streetAddress).indexOf("Phone number");
+                    // had to get rid of leading thing which was a neighborhood option
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
-                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    console.log("Company name: " + company.companyName);
-                    console.log("Company address: " + company.streetAddress);
-                    i++;
+                    var endNeighbor = String(company.streetAddress).lastIndexOf('\n');
+                    console.log("last tab at: " + endNeighbor);
 
+                    company.streetAddress = String(company.streetAddress).substring(endNeighbor);
+                    company.streetAddress = String(company.streetAddress).trim();
+
+
+
+                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
+                    
+                    i++;
+                    console.log("i: " + i);
+                    console.log("company name: " + company.companyName);
+
+                    //split adddress into different fields.
+                    var finAddress = String(company.streetAddress).split(", ");
+                    company.streetAddress = finAddress[0];
+                    company.city = finAddress[1];
+                    var stateZip = String(finAddress[2]).split(" ");
+                    company.state = stateZip[0];
+                    company.zipcode = stateZip[1];
+                    // console.log("company street address: " + company.streetAddress);
+                    // console.log("company street address: " + company.city);
+                    // console.log("company street address: " + company.state);
+                    // console.log("company street address: " + company.zipcode);
                     companies.push(company);
                 }
           } else {
                 //cb("ERROR");
                 console.log("ERROR");
           }
+        //console.log("what the fuck");
         return companies;
 
     });

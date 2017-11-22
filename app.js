@@ -1,7 +1,7 @@
 /*
  * This is where the server begins running
  * and setting for the server are chosen
- */ 
+ */
 
 
 var express = require('express');
@@ -11,7 +11,7 @@ var request = require('request');
 var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 var assert = require("assert");
-
+var cookieParser = require('cookie-parser');
 //Database setup
   var MongoClient = require('mongodb').MongoClient,
   test = require('assert');
@@ -24,9 +24,10 @@ MongoClient.connect(url, function(err, db) {
   db.close();
 });
 //
-
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('./Views'))
 
 
 app.set('port', (process.env.PORT || 5000));  //Will set port to computers designated

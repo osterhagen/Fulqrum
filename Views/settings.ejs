@@ -1,0 +1,121 @@
+<% include partials/header %>
+
+
+  <div id="container" class="container">
+    <div class="row">
+      <div class="col-md-9  admin-content" id="change-password">
+
+          <form action="/usernameSettings" method="POST">
+            <div class="panel-heading">
+              <h3 class="panel-title"><label for="new_username" class="control-label panel-title">New Username</label></h3>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <input  class="form-control" name="username" id="new_username">
+                </div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="pull-left">
+                  <input type="submit" class="form-control btn btn-primary" name="submit" id="submit">
+                </div>
+              </div>
+            </div>
+  
+        </form>
+        <br />
+        <br />
+        <br />
+        <br />
+        
+        
+        <form action="/emailSettings" method="POST">
+          <div class="panel-heading">
+            <h3 class="panel-title"><label for="new_username" class="control-label panel-title">New Email</label></h3>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <div class="col-sm-10">
+                <input  class="form-control" name="email" id="new_username">
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <div class="pull-left">
+                <input type="submit" class="form-control btn btn-primary" name="submit" id="submit">
+              </div>
+            </div>
+          </div>
+
+      </form>
+      <br />
+      <br />
+      <br />
+      <br />
+        <form action="/passwordSettings" method="post">
+            <div class="panel-heading">
+              <h3 class="panel-title"><label for="new_password" class="control-label panel-title">New Password</label></h3>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" name="password" id="new_password">
+                </div>
+              </div>
+            </div>
+            <div class="panel-heading">
+              <h3 class="panel-title"><label for="confirm_password" class="control-label panel-title">Confirm password</label></h3>
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" name="password_confirmation" id="confirm_password">
+                </div>
+              </div>
+          </div>
+
+
+            <div class="panel-body">
+              <div class="form-group">
+                <div class="pull-left">
+                  <input type="submit" class="form-control btn btn-primary" name="submit" id="submit">
+                </div>
+              </div>
+            </div>
+
+        </form>
+        <br /><br />
+        <br />
+        <br />
+        
+        <form action="/emailPreferenceSettings" method="POST">
+          <div class="panel-heading">
+            <h3 class="panel-title"><label for="confirm_password" class="control-label panel-title">I would like to receive emails</label></h3>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <div class="col-sm-10">
+                  <input name="sendEmails" value='on' type="checkbox"  class="form-check-input">
+                </div>
+            </div>
+        </div>
+
+
+          <div class="panel-body">
+            <div class="form-group">
+              <div class="pull-left">
+                <input type="submit" class="form-control btn btn-primary" name="submit" id="submit">
+              </div>
+            </div>
+          </div>
+
+      </form>
+
+
+      </div>
+    </div>
+  </div>
+<% include partials/footer %>

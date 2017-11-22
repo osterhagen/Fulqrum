@@ -12,18 +12,26 @@
  test = require('assert');
 // Connection url
 var url = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-01-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-02-o5o8f.mongodb.net:27017/test?ssl=true&replicaSet=fulqrumCluster-shard-0&authSource=admin";
-// Connect using MongoClient
-MongoClient.connect(url, function(err, db) {
- db.close();
-});
+
 
 
 var randtoken = require('rand-token');
-//Keeps track of cookies of companies that are logged in
-var loggedInCompanies = [];
+
+exports.encryptPassword = encryptPassword;
+function encryptPassword(password, cb) {
+    // a basic caesar cypher
+    //return password.replace(/[A-Z]/g, L => String.fromCharCode((L.charCodeAt(0) % 26) + 65));
+    var out = "";
+    for (var i = 0; i < password.length; i++) {
+        out += String.fromCharCode(password[i].charCodeAt(0)+3);
+
+    }
+    cb(out);
+}
 
 exports.registerCompany = registerCompany;
 function registerCompany(company, callback) {
+
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
     
@@ -32,10 +40,11 @@ function registerCompany(company, callback) {
                 //Company doesn't exist
                 db.collection('companies').insertOne(company, function(err, result) {
                     console.log("Company Inserted");
+                    callback(false);
                 });
             }else {
                 //Company exists
-                console.log(result);
+                callback("CompanyAlreadyExists");
             }
         });
     });
@@ -45,42 +54,38 @@ function registerCompany(company, callback) {
 
 exports.login = login;
 function login(username, password, cb) {
-    console.log(username);
-    console.log(password);
     //Verify credentials
-
-    MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
-    
-        db.collection('companies').findOne( { "name": username, "password" : password }, function(err, result) {
-            cb(result);
+    encryptPassword(password, function(encryptedPassword) {
+        MongoClient.connect(url, function(err, db) {
+            assert.equal(null, err);
+        
+            db.collection('companies').findOne( { "username": username, "password" : encryptedPassword }, function(err, result) {
+                //if(result === null) {
+                  //  result = "NONE";
+                //}
+                cb(result);
+            });
         });
     });
+    
 
 }
 
 exports.getCompany = getCompany;
-function getCompany(token) {
-    //Search for company
-    for(var i = 0; i < loggedInCompanies.length; i++) {
-        if(loggedInCompanies[i].token === token) {
-            //Token match, return company
-            return loggedInCompanies[i].company;
-        }
-    }
-    //Token not found so invalid
-    return undefined;
-}
-
-exports.removeLoggedInCompany = removeLoggedInCompany;
-function removeLoggedInCompany(token) {
-    for(var i = 0; i < loggedInCompanies.length; i++) {
-        if(loggedInCompanies[i].token === token) {
-            //Token match, return company
-            loggedInCompanies.splice(i,1);
-            return;
-        }
-    }
+function getCompany(token, cb) {
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+    
+        db.collection('companies').findOne( { "token": token }, function(err, result) {
+            if(result === null || result === undefined) {
+                //Company doesn't exist
+                cb(null);
+            }else {
+                //Company exists
+                cb(result);
+            }
+        });
+    });
 }
 
 exports.listCompanies = listCompanies;
@@ -109,7 +114,6 @@ exports.clearDatabase = clearDatabase;
 function clearDatabase() {
     var removeAll = function(db, callback) {
         db.collection('companies').deleteMany( {}, function(err, results) {
-           console.log(results);
            callback();
         });
      };
@@ -119,5 +123,18 @@ function clearDatabase() {
         removeAll(db, function() {
             db.close();
         });
+    });
+}
+
+exports.updateCompany = updateCompany;
+function updateCompany(company, cb){
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        db.collection('companies').update({_id:company._id}, company, function() {
+            console.log("Company Updated");
+            db.close();
+            cb();
+        });
+        
     });
 }

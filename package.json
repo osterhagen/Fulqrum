@@ -9,16 +9,24 @@
     "arraylist": "^0.1.0",
     "body-parser": "^1.18.1",
     "cheerio": "^1.0.0-rc.2",
+    "cookie-parser": "^1.4.3",
     "ejs": "^2.5.7",
     "eslint": "^4.8.0",
     "express": "^4.15.4",
+    "fs": "0.0.1-security",
     "google-cloud": "^0.56.0",
+    "google-nlp": "^0.5.6",
     "jQuery": "^1.7.4",
+    "jquery": "^3.2.1",
+    "js-cookie": "^2.2.0",
     "jsonfile": "^4.0.0",
     "mongodb": "^2.2.33",
+    "nodemailer": "^4.3.1",
+    "pbkdf2-password": "^1.2.1",
     "rand-token": "^0.3.0",
     "request": "^2.83.0",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "yargs": "^10.0.3"
   },
   "devDependencies": {
     "jasmine": "^2.8.0"
