@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Scrape le web.",
   "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },   
   "author": "Scotch",
   "dependencies": {
     "@google-cloud/language": "^0.12.1",
