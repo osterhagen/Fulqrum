@@ -241,18 +241,27 @@ function googleSearchScrape(companyName) {
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
-function findYelpCompetitors(companyZipCode) {
+function findYelpCompetitors(company, radius) {
     //just going to use zip code to find 5 nearby competitors.
     //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
+    var tagAddress = company.streetAddress.replace(/ /g, "+");
+    var tagCity = company.city.replace(/ /g, "+");
+    var tagState = company.state.replace(/ /g, "+");
+
     var url = "https://www.yelp.com/search?find_desc=&find_loc=";
-    url += "" + companyZipCode;
+    url += "" + tagAddress + "+" + tagCity + "+" + tagState + "+" + company.zipcode;
+    url += "&radius=" + radius;
+    //console.log("competitor search address " + url);
     //url += "&ns=1";
     var companies = [];
     request(url, function (error, response, html) {
             // First we'll check to make sure no errors occurred when making the request
+        //console.log("sup bitch");
         if (!error) {
             var i = 0;
+            //html.replace(/<br\s?\/?>/gi, " ");
             var $ = cheerio.load(html);
+
                 while (i < 5) {
                     var company = new Object();
 
@@ -263,21 +272,49 @@ function findYelpCompetitors(companyZipCode) {
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
 
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    i++;
+                    //i++;
+                    //now to change the <br> to a space so the street addr and city
+                    //aren't right next to each other
+                    $('div.secondary-attributes').find('br').replaceWith(", ");
+                    //company.companyName = $('span.indexed-biz-name a').eq(i).text();
+		            company.streetAddress = $('div.secondary-attributes').eq(i).text();
 
-                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
-		                company.streetAddress = $('div.secondary-attributes').eq(i).text();
+                    //company.streetAddress = $('div.secondary-attributes').eq(i).text();
                     var endOfAddress = String(company.streetAddress).indexOf("Phone number");
+                    // had to get rid of leading thing which was a neighborhood option
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
+                    var endNeighbor = String(company.streetAddress).lastIndexOf('\n');
+                    console.log("last tab at: " + endNeighbor);
+
+                    company.streetAddress = String(company.streetAddress).substring(endNeighbor);
+                    company.streetAddress = String(company.streetAddress).trim();
+
+
+
                     company.companyName = $('span.indexed-biz-name a').eq(i).text();
                     
                     i++;
+                    console.log("i: " + i);
+                    console.log("company name: " + company.companyName);
 
+                    //split adddress into different fields.
+                    var finAddress = String(company.streetAddress).split(", ");
+                    company.streetAddress = finAddress[0];
+                    company.city = finAddress[1];
+                    var stateZip = String(finAddress[2]).split(" ");
+                    company.state = stateZip[0];
+                    company.zipcode = stateZip[1];
+                    // console.log("company street address: " + company.streetAddress);
+                    // console.log("company street address: " + company.city);
+                    // console.log("company street address: " + company.state);
+                    // console.log("company street address: " + company.zipcode);
                     companies.push(company);
                 }
           } else {
                 //cb("ERROR");
+                console.log("ERROR");
           }
+        //console.log("what the fuck");
         return companies;
 
     });
