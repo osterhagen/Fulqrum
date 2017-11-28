@@ -1,0 +1,71 @@
+<div class="container" style="margin-top: 30px;">
+
+	<div class="row">
+
+		<!-- Control Form -->
+		<div class="col-sm-12 col-md-6 col-lg-4">
+
+			<form class="form-horizontal">
+
+				<!-- Base Layers -->
+				<div class="form-group">
+					<label class="control-label col-sm-4 col-lg-4">
+						Base Layers
+					</label>
+					<div class="radio col-sm-8 col-lg-8"
+					     [class.col-sm-offset-4]="i !== 0"
+					     [class.col-lg-offset-4]="i !== 0"
+					     *ngFor="let layer of model.baseLayers; let i = index">
+						<label>
+							<input type="radio"
+							       [name]="layer.id"
+							       [(ngModel)]="model.baseLayer"
+							       [value]="layer.id">
+							{{layer.name}}
+						</label>
+					</div>
+				</div>
+
+				<!-- Overlay Layers -->
+				<div *ngIf="null != model.overlayLayers && model.overlayLayers.length > 0" class="form-group">
+					<label class="control-label col-sm-4 col-lg-4">
+						Control Layers
+					</label>
+					<div class="checkbox col-sm-8 col-lg-8"
+					     [class.col-sm-offset-4]="i !== 0"
+					     [class.col-lg-offset-4]="i !== 0"
+					     *ngFor="let layer of model.overlayLayers; let i = index">
+						<label>
+							<input type="checkbox"
+							       [name]="layer.id"
+							       [(ngModel)]="model.overlayLayers[i].enabled" >
+							{{layer.name}}
+						</label>
+					</div>
+				</div>
+
+				<button type="button"
+				        class="pull-left btn btn-default col-sm-offset-4 col-lg-offset-4"
+				        (click)="onApply()">Apply</button>
+
+			</form>
+		</div>
+
+		<!-- Map -->
+		<div class="col-sm-12 col-md-6 col-lg-8" style="margin-top:16px;">
+
+			<div leaflet style="height: 300px;"
+			     [leafletOptions]="options"
+			     [leafletLayers]="layers"
+			     [leafletLayersControl]="layersControl">
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+
+
