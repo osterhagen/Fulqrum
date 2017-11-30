@@ -18,16 +18,10 @@ function analyze (json, cb) {
   
     language.analyzeSentiment({ document: document })
       .then((results) => {
-        //[START analyzeSentiment]
         const sentiment = results[0].documentSentiment;
         json.reviewScore = sentiment.score
-        //fs.writeFileSync(file, JSON.stringify(json, null, 2));
         json.reviewMagnitude = sentiment.magnitude
-        //fs.writeFileSync(file, JSON.stringify(json, null, 2));
         var sent_arr = [];
-        //console.log(`Document sentiment:`);
-        //console.log(`  Score: ${sentiment.score}`);
-        //console.log(`  Magnitude: ${sentiment.magnitude}`);
         const sentences = results[0].sentences;
   
         sentences.forEach((sentence) => {
@@ -48,24 +42,17 @@ function analyze (json, cb) {
                   type: 'PLAIN_TEXT'
                 }
               };
-              //var sent_dict = []
               language.analyzeEntitySentiment(request)
                 .then((results) => {
                   const entities = results[0].entities;
-                  //console.log(`Entities and sentiments:`);
                   if(entities[0] != undefined) {
                     entities.forEach((entity) => {
-                      //console.log(`  Name: ${entity.name}`);
-                      //console.log(`  Type: ${entity.type}`);
-                      //console.log(`  Score: ${entity.sentiment.score}`);
-                      //console.log(`  Magnitude: ${entity.sentiment.magnitude}`);
                       entity_arr.push({
                         Name: entity.name,
                         Type: entity.type,
                         Score: entity.sentiment.score,
                         Magnitude: entity.sentiment.magnitude
                       });
-                      //console.log(sent_dict);
                     });
                   }
                 }).catch((err) => {
