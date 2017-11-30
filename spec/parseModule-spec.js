@@ -24,7 +24,7 @@ describe("Find company on yelp: ", function() {
         });
     })
 });
-
+/*
 describe("Find competitors on yelp: ", function() {
     it("Ensure 5 competitors found: ", function() {
         var company = {
@@ -38,3 +38,4 @@ describe("Find competitors on yelp: ", function() {
         });
     });
 });
+*/

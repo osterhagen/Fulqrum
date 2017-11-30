@@ -10,6 +10,8 @@ var ServerErrorHandler = require("../Models/ServerErrorHandler.js");
 var Database = require("../Models/Database.js");
 var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
+var Stat = require("../Models/Stat.js");
+
 module.exports = function (app) {
     /*var company = new Object();
     company.name = "KFC";
@@ -115,8 +117,8 @@ module.exports = function (app) {
                 }else {
                     //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
                     //3 = by rating high
-                    var option = "3";
-                    ServerParser.sortReviews(company.reviews, option, function() {
+                    var option = "5";
+                    Stat.sortReviews(company.reviews, option, function() {
                         response.render("analytics", {company : company, reviews:company.reviews});                        
                     });
                 }

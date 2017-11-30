@@ -15,7 +15,7 @@ function analyze (json, cb) {
       'content': json.review,
       type: 'PLAIN_TEXT'
     };
-  
+    var totalSentiment = 0;
     language.analyzeSentiment({ document: document })
       .then((results) => {
         const sentiment = results[0].documentSentiment;
@@ -25,6 +25,7 @@ function analyze (json, cb) {
         const sentences = results[0].sentences;
   
         sentences.forEach((sentence) => {
+          totalSentiment += parseFloat(sentence.sentiment.score);
           sent_arr.push({
             Sentence: sentence.text.content,
             Score: sentence.sentiment.score,
@@ -32,6 +33,12 @@ function analyze (json, cb) {
           });
         });
         json.sentences = sent_arr;
+        if(json.sentences.length != 0) {
+          json.sentimentAverage = totalSentiment / json.sentences.length;          
+        }else {
+          json.sentimentAverage = 0;
+        }
+
         var entity_arr = [];
         
             json.sentences.forEach((sentence) => {
