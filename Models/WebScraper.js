@@ -26,8 +26,8 @@ function scrape(company, hasPriorAnalytics, cb) {
         freshScrape(company, function(reviews) {
             //The review will be returned in an array of objects
             //When done scraping print reviews
-            //for(var i = 0; i < reviews.length; i++) {
-                /*if(i >= reviews.length-1) {
+            for(var i = 0; i < reviews.length; i++) {
+                if(i >= reviews.length-1) {
                     //Last review
                     console.log("Last Review");
                     Analysis.analyze(reviews[i], function(review) {
@@ -38,10 +38,10 @@ function scrape(company, hasPriorAnalytics, cb) {
                     Analysis.analyze(reviews[i], function(review) {
 
                     });
-                }*/
+                }
 
-            //}
-            cb(reviews);
+            }
+            //cb(reviews);
             
         });
     } else {

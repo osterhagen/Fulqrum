@@ -1,5 +1,81 @@
 #! /usr/bin/env node
-exports.analyze = analyzeSentences;
+exports.analyze = analyze;
+
+function analyze (json, cb) {
+    // Imports the Google Cloud client library
+  const Language = require('@google-cloud/language');
+  
+    // Instantiates a client
+    var auth = "./Models/analysis_module/gcloud_auth_key.json"
+    const language = Language({
+      keyFilename: auth
+    });
+  
+    const document = {
+      'content': json.review,
+      type: 'PLAIN_TEXT'
+    };
+    var totalSentiment = 0;
+    language.analyzeSentiment({ document: document })
+      .then((results) => {
+        const sentiment = results[0].documentSentiment;
+        json.reviewScore = sentiment.score
+        json.reviewMagnitude = sentiment.magnitude
+        var sent_arr = [];
+        const sentences = results[0].sentences;
+  
+        sentences.forEach((sentence) => {
+          totalSentiment += parseFloat(sentence.sentiment.score);
+          sent_arr.push({
+            Sentence: sentence.text.content,
+            Score: sentence.sentiment.score,
+            Magnitude: sentence.sentiment.magnitude
+          });
+        });
+        json.sentences = sent_arr;
+        if(json.sentences.length != 0) {
+          json.sentimentAverage = totalSentiment / json.sentences.length;          
+        }else {
+          json.sentimentAverage = 0;
+        }
+
+        var entity_arr = [];
+        
+            json.sentences.forEach((sentence) => {
+              var sent = sentence["Sentence"];
+              const request = {
+                document: {
+                  'content': json.review,
+                  type: 'PLAIN_TEXT'
+                }
+              };
+              language.analyzeEntitySentiment(request)
+                .then((results) => {
+                  const entities = results[0].entities;
+                  if(entities[0] != undefined) {
+                    entities.forEach((entity) => {
+                      entity_arr.push({
+                        Name: entity.name,
+                        Type: entity.type,
+                        Score: entity.sentiment.score,
+                        Magnitude: entity.sentiment.magnitude
+                      });
+                    });
+                  }
+                }).catch((err) => {
+                  console.error('ERROR:', err);
+                });
+                //entity_arr.push(sent_dict);
+            })
+        
+            json.entities = entity_arr;
+            cb();
+
+      })
+      .catch((err) => {
+        console.error('ERROR:', err);
+      });
+}
 function analyzeSentences (json, cb) {
   // Imports the Google Cloud client library
   const Language = require('@google-cloud/language');
@@ -10,13 +86,6 @@ function analyzeSentences (json, cb) {
     keyFilename: auth
   });
 
-  // Reading in file
-  //console.log('Reading Files...');
-  /*var fs = require('fs');
-  var contents = fs.readFileSync(file);
-  var jsonContent = JSON.parse(contents);
-  var new_file = require(file);
-*/
   const document = {
     'content': json.review,
     type: 'PLAIN_TEXT'
@@ -62,30 +131,30 @@ function analyzeSentences (json, cb) {
     
 }
 
-function analyzeEntitySentimentOfText (auth_fp, file) {
+function analyzeEntitySentimentOfText (json, cb) {
     // [START language_entity_sentiment_string]
+    // Imports the Google Cloud client library
     const Language = require('@google-cloud/language');
+  
+    // Instantiates a client
+    var auth = "./Models/analysis_module/gcloud_auth_key.json"
     const language = Language({
-      keyFilename: auth_fp
+      keyFilename: auth
     });
 
     // Reading in file
     //console.log('Reading Files...');
-    var fs = require('fs');
-    var contents = fs.readFileSync(file);
-    var jsonContent = JSON.parse(contents);
-    var json = require(file);
     var entity_arr = [];
 
-    jsonContent.sentences.forEach((sentence) => {
+    json.sentences.forEach((sentence) => {
       var sent = sentence["Sentence"];
       const request = {
         document: {
-          "content": JSON.stringify(sent),
-          "type": 'PLAIN_TEXT'
+          'content': json.review,
+          type: 'PLAIN_TEXT'
         }
       };
-      var sent_dict = []
+      //var sent_dict = []
       language.analyzeEntitySentiment(request)
         .then((results) => {
           const entities = results[0].entities;
@@ -96,7 +165,7 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
               //console.log(`  Type: ${entity.type}`);
               //console.log(`  Score: ${entity.sentiment.score}`);
               //console.log(`  Magnitude: ${entity.sentiment.magnitude}`);
-              sent_dict.push({
+              entity_arr.push({
                 Name: entity.name,
                 Type: entity.type,
                 Score: entity.sentiment.score,
@@ -108,11 +177,12 @@ function analyzeEntitySentimentOfText (auth_fp, file) {
         }).catch((err) => {
           console.error('ERROR:', err);
         });
-        entity_arr.push(sent_dict);
+        //entity_arr.push(sent_dict);
     })
 
     json.entities = entity_arr;
-    fs.writeFileSync(file, JSON.stringify(json, null, 2));
+    //fs.writeFileSync(file, JSON.stringify(json, null, 2));
+    cb();
 
     // [END language_entity_sentiment_string]
   }
