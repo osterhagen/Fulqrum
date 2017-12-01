@@ -1,5 +1,53 @@
-<% include partials/header %>
-<div id="container">
-  <h1>Welcome!</h2>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Fulqrum</title>
+      <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>      
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+      integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+      <link rel="stylesheet" href="app.css">
+      <html lang="en">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A free to use customer service analytics web application" />
+      <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+        
+  </head>
+  <body>
+      <section class="fdb-block">
+          <div id="container" class="container">
+            <div class="row justify-content-center">
+              <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+        
+                <div class="row">
+                  <div class="col text-center">
+                    <h1>Welcome to</h1>
+                    <img class="center" src="imgs/img_logo.png">
+                  </div>
+                </div>
+        
+                  <div class="row align-items-center mt-4">
+                    <div class="col">
+                        <button class="form-control btn-primary btn mt-4" onclick="location.href='/register'">Create an Account!</button>
+                        
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mt-4">
+                      <div class="col">
+                          <button class="form-control btn-primary btn mt-4" onclick="location.href='/login'">Login to an Account!</button>
+                          
+                      </div>
+                    </div>
+        
+        
+                
+        
+        
+              </div>
+            </div>
+          </div>
+        </section>
+        
 <% include partials/footer %>
