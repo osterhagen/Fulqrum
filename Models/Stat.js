@@ -12,9 +12,33 @@ function getKeywords(reviews, num, cb) {
 
 exports.getOccurencesOfKeywords = getOccurencesOfKeywords;
 function getOccurencesOfKeywords(keywords, cb) {
-    var keywordSet = [];
+    var keywordSet = {};
     //Keyword //TotalScore //number
+    for(var i = 0; i < keywords.length; i++) {
+        
+        keywordSet[keywords[i].Name] = new Object();
+        keywordSet[keywords[i].Name].totalScore = 0;
+        keywordSet[keywords[i].Name].number = 0;
+        keywordSet[keywords[i].Name].name = keywords[i].Name;
+        keywordSet[keywords[i].Name].score = keywords[i].Score;
+        
+
+        
+
+    }
+    for(var i = 0; i < keywords.length; i++) {
+        keywordSet[keywords[i].Name].number += 1;
+    }
+
+    console.log(JSON.stringify(keywordSet));
+    var result = [];
+    for(var key in keywordSet) {
+        result.push(keywordSet[key]);
+    }
+    cb(result);
+
     
+
 }
 
 exports.getPositiveKeywords = getPositiveKeywords;

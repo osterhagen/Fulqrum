@@ -1,5 +1,5 @@
 /*
- * This will scrape and gather reviews about companies from 
+ * This will scrape and gather reviews about companies from
  * the internet
  */
 
@@ -31,7 +31,7 @@ function scrape(company, hasPriorAnalytics, cb) {
                     //Last review
                     console.log("Last Review");
                     Analysis.analyze(reviews[i], function(review) {
-                        
+
                         cb(reviews);
                     });
                 }else {
@@ -42,7 +42,7 @@ function scrape(company, hasPriorAnalytics, cb) {
 
             }
             //cb(reviews);
-            
+
         });
     } else {
         //TODO call WebScraper Method for when analytics already exist
@@ -56,7 +56,7 @@ function freshScrape(company, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        
+
         console.log("Final Number of Reviews: " + reviews.length);
         cb(reviews);
     });
@@ -68,7 +68,7 @@ function rescrape(company, reviews, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        
+
     });
 
     //TODO Get all reviews and analytics currently stored for company
@@ -87,7 +87,7 @@ function scrapeYelp(company, reviews, cb) {
         //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
         companyPageURLByDate += "start=";
-        
+
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
             cb(null);
@@ -226,7 +226,6 @@ function findYelpCompanyPage(company, cb) {
 
 
 function googleSearchScrape(companyName) {
-
     //Default url for rest API
     var url = "https://www.googleapis.com/customsearch/v1?";
     //Add our API token
@@ -235,9 +234,7 @@ function googleSearchScrape(companyName) {
     url += "&cx=" + searchEngineAPI;
     //Add queries
     url += "&q=" + companyName;
-
     console.log("Searching for: " + companyName);
-
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
@@ -251,6 +248,7 @@ function findYelpCompetitors(company, radius, cb) {
     var url = "https://www.yelp.com/search?find_desc=&find_loc=";
     url += "" + tagAddress + "+" + tagCity + "+" + tagState + "+" + company.zipcode;
     url += "&radius=" + radius;
+    console.log("" + url);
     //console.log("competitor search address " + url);
     //url += "&ns=1";
     var companies = [];
@@ -264,14 +262,14 @@ function findYelpCompetitors(company, radius, cb) {
 
                 while (i < 5) {
                     var company = new Object();
-
+                    //console.log("please help");
                     //As of 9/29/17 to identify yelps first search result that is not an ad is...
                     //The first list entry with this class <li class="regular-search-result">
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
                     company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
 
-                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
+                    company.name = $('span.indexed-biz-name a').eq(i).text();
                     //i++;
                     //now to change the <br> to a space so the street addr and city
                     //aren't right next to each other
@@ -288,14 +286,11 @@ function findYelpCompetitors(company, radius, cb) {
 
                     company.streetAddress = String(company.streetAddress).substring(endNeighbor);
                     company.streetAddress = String(company.streetAddress).trim();
+                    //company.companyName = $('span.indexed-biz-name a').eq(i).text();
 
-
-
-                    company.companyName = $('span.indexed-biz-name a').eq(i).text();
-                    
                     i++;
                     console.log("i: " + i);
-                    console.log("company name: " + company.companyName);
+                    console.log("company name: " + company.name);
 
                     //split adddress into different fields.
                     var finAddress = String(company.streetAddress).split(", ");
@@ -309,14 +304,17 @@ function findYelpCompetitors(company, radius, cb) {
                     // console.log("company street address: " + company.state);
                     // console.log("company street address: " + company.zipcode);
                     companies.push(company);
+                    //companies[i] = company;
                 }
           } else {
                 //cb("ERROR");
                 console.log("ERROR");
           }
         //console.log("what the fuck");
+        console.log("company: " + companies[0].name);
         cb(companies);
+        //return companies;
 
     });
-
-}
+    console.log("there is no god");
+  }
