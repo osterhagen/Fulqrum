@@ -1,0 +1,52 @@
+<% include partials/header %>
+
+
+<form method="POST" action="/reviews">
+    <select name="sort" class="form-control" required>
+            <option value="">Sort by...</option>
+            <option value="4">Earliest Date</option>
+            <option value="5">Latest Date</option>
+            <option value="3">Highest Rating</option>
+            <option value="2">Lowest Rating</option>
+            <option value="1">Alphabetically</option>
+    </select>
+    <button type="submit" class="btn-primary btn mt-4">Submit</button>
+    
+</form>
+<div id="body">
+        <div id="positiveReviews" class="col-md-6 pre-scrollable ">
+            <table id="positiveTable" class="table well ">
+            <thead>
+            <tr>
+                <th>Reviewer</th>
+                <th>Rating</th>
+                <th>Date</th>                                
+                <th>Reviews</th>
+                <th>Average Sentiment</th>
+                
+            </tr>
+            </thead>
+            <tbody>
+                
+                    <% for(var i = 0; i < reviews.length; i++) {%>
+                        <tr>
+                        
+                        <td><%-reviews[i].name_of_reviewer%></td>
+                        <td><%-reviews[i].rating%></td>
+                        <td><%-reviews[i].date_of_review%></td>                        
+                        <td><%-reviews[i].review%></td>
+                        <td><%-reviews[i].sentimentAverage%></td>
+                        
+                    </tr>
+                    <%}%>
+                    
+
+                
+            </tbody>
+        </table>
+        </div>
+       
+    </div>
+
+    <% include partials/footer %>
+    

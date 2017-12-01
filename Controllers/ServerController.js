@@ -45,6 +45,57 @@ module.exports = function (app) {
         };
     });
 
+    app.post("/reviews", function(request, response){
+        //Get analytics for the user with specific ID
+        //Get Company through cookie and return their reviews object
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("/");
+                }else {
+                    var sort = request.body.sort;
+                    if(sort === undefined || sort === null) {
+                        sort = 1;
+                    }
+                    Stat.sortReviews(company.reviews, sort, function(){
+                        response.render("reviews", {reviews : company.reviews});
+                        
+                    });
+                }
+            });
+        }
+    });
+
+
+
+    app.get("/reviews", function(request, response){
+        //Get analytics for the user with specific ID
+        //Get Company through cookie and return their reviews object
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("/");
+                }else {
+                    response.render("reviews", {reviews : company.reviews});
+                }
+            });
+        }
+    });
+
     app.get("/keywords", function(request, response){
         //Get analytics for the user with specific ID
         //Get Company through cookie and return there reviews object
