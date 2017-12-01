@@ -3,7 +3,7 @@
  * and setting for the server are chosen
  */
 
-
+//var WebScraper = require("../Models/WebScraper.js");
 var express = require('express');
 var app = express();
 var fs = require('fs');
@@ -40,7 +40,9 @@ var ServerController = require("./Controllers/ServerController.js");
 ServerController(app);
 
 app.listen(app.get('port'), function () {
+
     console.log("Node app is running on port", app.get("port"));
+
 });
 
 //exports = module.exports = app;

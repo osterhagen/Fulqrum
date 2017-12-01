@@ -22,7 +22,19 @@ module.exports = function (app) {
     
     //Database.listCompanies();
     //Database.clearDatabase();
-    
+    var company = {
+        name: "Pizza Hut",
+    streetAddress: "3349 Mission St",
+    city: "San Francisco",
+    state: "CA",
+    zipcode: "94110"
+};
+    //var companies = WebScraper.findYelpCompetitors(company, "1000");
+    //console.log("Node app is running on port", app.get("port"));
+    //console.log("" + companies[0]);
+    //console.log("" + companies[1]);
+
+    //once i get page, i can integrate the competitors shit.
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
@@ -45,10 +57,91 @@ module.exports = function (app) {
         };
     });
 
-    app.get("/settings", function(requrest, response){
+    app.get("/settings", function(request, response){
       response.render("settings", {error : undefined})
     });
+    app.get("/competitorsearch", function(request, response) {
+        response.render("competitorsearch", {error : undefined})
+    });
+    app.post("/competitorsearch", function(request, response) {
+        var token = request.cookies.token;
+        if(token === undefined) {
+            response.render("welcome");
+        }
+        else {
+            Database.getCompany(token, function (company) {
+                if (company === undefined || company === null) {
+                    response.clearCookie("token");
+                    response.render("welcome");
 
+                }
+                else {
+                    var rad;
+                    switch (request.body.Radius) {
+                        //the conversions from miles to meters
+                        case "1":
+                            rad = 5000;
+                            break;
+                        case "2":
+                            rad = 10000;
+                            break;
+                        case "3":
+                            rad = 20000;
+                            break;
+                        case "4":
+                            rad = 30000;
+                            break;
+                        case "5":
+                            rad = 40000;
+                            break;
+                        default:
+                            rad = 15000;
+
+                    }
+                    WebScraper.findYelpCompetitors(company, rad, function (comp) {
+                            //console.log("Competitors...");
+                            //console.log(comp);
+
+
+                        var hasReviews = false;
+                            WebScraper.scrape(comp[0], hasReviews, function(reviews) {
+                                comp[0].reviews = reviews;
+                                //console.log(comp[0].reviews[0]);
+                                WebScraper.scrape(comp[1], hasReviews, function(reviews) {
+                                    comp[1].reviews = reviews;
+                                    WebScraper.scrape(comp[2], hasReviews, function(reviews) {
+                                        comp[2].reviews = reviews;
+                                        WebScraper.scrape(comp[3], hasReviews, function(reviews) {
+                                            comp[3].reviews = reviews;
+                                            WebScraper.scrape(comp[4], hasReviews, function(reviews) {
+                                                comp[4].reviews = reviews;
+                                                company.competitors = comp;
+                                                Database.updateCompany(company, function() {
+                                                    response.redirect("/");
+                                                });
+
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+
+
+
+
+                    });
+
+
+
+                }
+            });
+        };
+
+
+    });
+    //have to do the post part. probably need to check token for login
+    //then use that company to send to the findcompetitors function, as well
+    //as the chosen radius.
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})
