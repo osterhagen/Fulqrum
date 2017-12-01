@@ -12,6 +12,8 @@ var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 var Stat = require("../Models/Stat.js");
 var Competitors = require("../Models/competitors.js");
+var date = require("date-and-time");
+
 
 module.exports = function (app) {
     /*var company = new Object();
@@ -39,7 +41,7 @@ module.exports = function (app) {
                     response.render("welcome");
                 }else {
                     console.log(company.sendEmails);
-                    response.render("homepage", {company : company});
+                    response.render("homepage", {company : company, feed:company.feed});
                 }
             })
         };
@@ -311,11 +313,14 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
+                        let now = new Date();
+                        var mes = date.format(now, "MM/DD/YY HH:mm")
+                        company.feed = "You Updated Analytics!\n" + mes + "\n" + company.feed;
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
-
-                                        response.render("analytics", {company:company, reviews:company.reviews});
+                                        
+                                        response.redirect("/analytics");
 
                         });
                         var subject = "We have run new Analytics on your company!";

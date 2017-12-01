@@ -12,6 +12,8 @@ var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 var assert = require("assert");
 var cookieParser = require('cookie-parser');
+var date = require("date-and-time");
+
 //Database setup
   var MongoClient = require('mongodb').MongoClient,
   test = require('assert');
@@ -23,6 +25,9 @@ MongoClient.connect(url, function(err, db) {
   console.log("Database connected correctly to server.");
   db.close();
 });
+
+
+
 //
 app.use(cookieParser());
 app.use(bodyParser.json());

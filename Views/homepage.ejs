@@ -5,5 +5,14 @@
   <h2 class="center"><%=company.name%></h2>
   <img class="center" src="imgs/img_logo.png">
 </div>
-
+<div>
+    <h3 class="center">Feed...</h3>
+  <h5 class="center">
+    <%var find = '\n';
+    var re = new RegExp(find, 'g');
+    
+    feed = feed.replace(re, "<br>");%>
+    <%-feed%>
+  </h5>
+</div>
 <% include partials/footer %>
