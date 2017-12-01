@@ -1,5 +1,5 @@
 /*
- * This will scrape and gather reviews about companies from 
+ * This will scrape and gather reviews about companies from
  * the internet
  */
 
@@ -31,7 +31,7 @@ function scrape(company, hasPriorAnalytics, cb) {
                     //Last review
                     console.log("Last Review");
                     Analysis.analyze(reviews[i], function(review) {
-                        
+
                         cb(reviews);
                     });
                     //cb(reviews);
@@ -43,7 +43,7 @@ function scrape(company, hasPriorAnalytics, cb) {
 
             }
             //cb(reviews);
-            
+
         });
     } else {
         //TODO call WebScraper Method for when analytics already exist
@@ -57,7 +57,7 @@ function freshScrape(company, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        
+
         console.log("Final Number of Reviews: " + reviews.length);
         cb(reviews);
     });
@@ -69,7 +69,7 @@ function rescrape(company, reviews, cb) {
     var reviews = [];
     //Scrape Yelp
     scrapeYelp(company, reviews, function (error) {
-        
+
     });
 
     //TODO Get all reviews and analytics currently stored for company
@@ -100,11 +100,15 @@ function scrapeYelp(company, reviews, cb) {
             companyPageURLByDate+="?";
         }
         companyPageURLByDate += "start=";
+<<<<<<< HEAD
         if (companyPageURLByDate.indexOf("undefined") !== -1) {
             cb(null);
             return;
         }
         
+=======
+
+>>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
     cb(null);
@@ -273,7 +277,6 @@ function findYelpCompanyPage(company, cb) {
 
 
 function googleSearchScrape(companyName) {
-
     //Default url for rest API
     var url = "https://www.googleapis.com/customsearch/v1?";
     //Add our API token
@@ -282,12 +285,14 @@ function googleSearchScrape(companyName) {
     url += "&cx=" + searchEngineAPI;
     //Add queries
     url += "&q=" + companyName;
-
     console.log("Searching for: " + companyName);
-
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
 function findYelpCompetitors(company, radius, cb) {
     //just going to use zip code to find 5 nearby competitors.
     //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
@@ -338,13 +343,19 @@ function findYelpCompetitors(company, radius, cb) {
 
                     company.streetAddress = String(company.streetAddress).substring(endNeighbor);
                     company.streetAddress = String(company.streetAddress).trim();
+                    //company.companyName = $('span.indexed-biz-name a').eq(i).text();
 
+<<<<<<< HEAD
 
 
                     //company.companyName = $('span.indexed-biz-name a').eq(i).text();
                     
                     i++;
                     //console.log("i: " + i);
+=======
+                    i++;
+                    console.log("i: " + i);
+>>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
                     console.log("company name: " + company.name);
 
                     //split adddress into different fields.
@@ -366,12 +377,21 @@ function findYelpCompetitors(company, radius, cb) {
                 console.log("ERROR");
           }
         //console.log("what the fuck");
+<<<<<<< HEAD
         //console.log("company: " + companies[0].name);
+=======
+        console.log("company: " + companies[0].name);
+>>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
         cb(companies);
         //return companies;
 
     });
+<<<<<<< HEAD
     //console.log("there is no god");
 
 
 }
+=======
+    console.log("there is no god");
+  }
+>>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
