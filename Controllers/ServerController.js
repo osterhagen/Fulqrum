@@ -61,7 +61,7 @@ module.exports = function (app) {
 
                 }
                 else {
-                    var rad=10000;
+                    var rad=16093;
                         //the conversions from miles to meters
                     WebScraper.findYelpCompetitors(company, rad, function (comp) {
                             //console.log("Competitors...");
@@ -114,7 +114,7 @@ module.exports = function (app) {
                     if(competitorOption === null || competitorOption=== undefined) {
                         competitorOption =2;
                     }
-                    var rad = 15000;
+                    var rad = 16093;
                     WebScraper.findYelpCompetitors(company, rad, function (comp) {
                         //console.log("Competitors...");
                         //console.log(comp);
