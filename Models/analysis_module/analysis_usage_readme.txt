@@ -5,9 +5,6 @@ Analysis Module -- Notes for Sprint 1 Demo
 Use this account in order to begin doing analysis. Just use these credentials to
 authenticate when prompted.
 
-user: fulqrum307@gmail.com
-password: thecarisblue
-
 First, install Google SDK. Do these commands if you're a Mac user (if you need help
 go to this site https://cloud.google.com/sdk/downloads)
 

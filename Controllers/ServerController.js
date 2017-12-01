@@ -332,7 +332,77 @@ module.exports = function (app) {
 
     //competitors GET request - Map View of local competitors
     app.get("/competitors", function(request, response){
+        console.log('INSIDE THE COMPETITORS');
+      	var token = request.cookies.token;
+      	if(token === undefined) {
+      		//Welcome screen
+      		response.render("welcome");
+      	} else {
+      		Database.getCompany(token, function(company) {
+      			if(company === undefined) {
+      				//Token wasn't valid so delete token
+      				response.clearCookie("token");
+      				response.render("welcome");
+      			} else {
+      				Database.getCompany(token, function(company) {
+      					if (company === undefined || company === null) {
+      						response.clearCookie("token");
+      						response.render("welcome");
 
+      					}
+      					else {
+
+                  console.log("INSIDE COMPANY");
+      						var rad;
+      						switch(request.body.Radius) {
+      							case "1":
+      								rad = 8047;
+      								break;
+      							case "2":
+      								rad = 16093;
+      								break;
+      							case "3":
+      								rad = 24140;
+      								break;
+      							case "4":
+      								rad = 32187;
+      								break;
+      							case "5":
+      								rad = 40000;
+      								break;
+      							default:
+      								rad = 15000;
+
+      						}
+      						var competitors = [];
+      						competitors = WebScraper.findYelpCompetitors(competitors, rad);
+      						company.competitors = companies;
+      						console.log("Company name: " + companies[0]);
+
+      						Database.updateCompany(company, function() {
+      						});
+      						//time 2 analytics the competitors
+      						var i = 0;
+      						for (i; i < 5; i++) {
+      							var hasReviews = false;
+      							console.log("Company name: " + company.competitors[i].name);
+      							WebScraper.scrape(company.competitors[i], hasReviews, function (reviews) {
+      								company.competitors[i].reviews = reviews;
+      								Database.updateCompany(company.competitors[i], function () {
+      									response.render("analytics", {company: company.competitors[i], reviews: company.competitors[i].reviews});
+      								});
+      							});
+      						}
+
+      						Competitors.initMap(company.streetAddress, competitors);
+                  response.render("competitors");
+      						//END else statement
+      					}
+      					//END Database.getCompany
+      				})
+      			}
+      		})
+      	};
 
     });
     app.get("*", function(request, response){
