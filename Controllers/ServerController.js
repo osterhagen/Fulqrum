@@ -12,8 +12,9 @@ var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 var Stat = require("../Models/Stat.js");
 var Competitors = require("../Models/competitors.js");
-var date = require("date-and-time");
-
+var googleMapsClient = require('@google/maps').createClient({
+    key: 'AIzaSyCpksPkdlVYeAG1pP3ySzE8rdbK56NVYGE'
+});
 
 module.exports = function (app) {
     /*var company = new Object();
@@ -41,61 +42,10 @@ module.exports = function (app) {
                     response.render("welcome");
                 }else {
                     console.log(company.sendEmails);
-                    response.render("homepage", {company : company, feed:company.feed});
+                    response.render("homepage", {company : company});
                 }
             })
         };
-    });
-
-    app.post("/reviews", function(request, response){
-        //Get analytics for the user with specific ID
-        //Get Company through cookie and return their reviews object
-        var token = request.cookies.token;
-        if(token === undefined) {
-            //Welcome screen
-            response.render("welcome");
-        } else {
-            //Use token to get company information
-            Database.getCompany(token, function(company) {
-                if(company === undefined) {
-                    //Token wasn't valid so delete token
-                    response.clearCookie("token");
-                    response.redirect("/");
-                }else {
-                    var sort = request.body.sort;
-                    if(sort === undefined || sort === null) {
-                        sort = 1;
-                    }
-                    Stat.sortReviews(company.reviews, sort, function(){
-                        response.render("reviews", {reviews : company.reviews});
-                        
-                    });
-                }
-            });
-        }
-    });
-
-
-
-    app.get("/reviews", function(request, response){
-        //Get analytics for the user with specific ID
-        //Get Company through cookie and return their reviews object
-        var token = request.cookies.token;
-        if(token === undefined) {
-            //Welcome screen
-            response.render("welcome");
-        } else {
-            //Use token to get company information
-            Database.getCompany(token, function(company) {
-                if(company === undefined) {
-                    //Token wasn't valid so delete token
-                    response.clearCookie("token");
-                    response.redirect("/");
-                }else {
-                    response.render("reviews", {reviews : company.reviews});
-                }
-            });
-        }
     });
 
     app.get("/keywords", function(request, response){
@@ -115,8 +65,16 @@ module.exports = function (app) {
                 }else {
                     //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
                     //3 = by rating high
-                    Stat.getAverage(company.reviews, function(mode){
-                        console.log(mode);
+                    var option = "5";
+                    Stat.getKeywords(company.reviews, 10000, function(keywords) {
+                        Stat.getPositiveKeywords(keywords, 10000, function(positiveKeywords) {
+                            Stat.getOccurencesOfKeywords(positiveKeywords, function(result) {
+
+                                response.render("test", {keywords : result});
+
+                            });
+                        });
+
                     });
                 }
             })
@@ -126,88 +84,7 @@ module.exports = function (app) {
     app.get("/settings", function(requrest, response){
       response.render("settings", {error : undefined})
     });
-    app.get("/competitorsearch", function(request, response) {
-        response.render("competitorsearch", {error : undefined})
-    });
-    app.post("/competitorsearch", function(request, response) {
-        var token = request.cookies.token;
-        if(token === undefined) {
-            response.render("welcome");
-        }
-        else {
-            Database.getCompany(token, function (company) {
-                if (company === undefined || company === null) {
-                    response.clearCookie("token");
-                    response.render("welcome");
 
-                }
-                else {
-                    var rad;
-                    switch (request.body.Radius) {
-                        //the conversions from miles to meters
-                        case "1":
-                            rad = 5000;
-                            break;
-                        case "2":
-                            rad = 10000;
-                            break;
-                        case "3":
-                            rad = 20000;
-                            break;
-                        case "4":
-                            rad = 30000;
-                            break;
-                        case "5":
-                            rad = 40000;
-                            break;
-                        default:
-                            rad = 15000;
-
-                    }
-                    WebScraper.findYelpCompetitors(company, rad, function (comp) {
-                            //console.log("Competitors...");
-                            //console.log(comp);
-
-
-                        var hasReviews = false;
-                            WebScraper.scrape(comp[0], hasReviews, function(reviews) {
-                                comp[0].reviews = reviews;
-                                //console.log(comp[0].reviews[0]);
-                                WebScraper.scrape(comp[1], hasReviews, function(reviews) {
-                                    comp[1].reviews = reviews;
-                                    WebScraper.scrape(comp[2], hasReviews, function(reviews) {
-                                        comp[2].reviews = reviews;
-                                        WebScraper.scrape(comp[3], hasReviews, function(reviews) {
-                                            comp[3].reviews = reviews;
-                                            WebScraper.scrape(comp[4], hasReviews, function(reviews) {
-                                                comp[4].reviews = reviews;
-                                                company.competitors = comp;
-                                                Database.updateCompany(company, function() {
-                                                    response.redirect("/");
-                                                });
-
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-
-
-
-
-                    });
-
-
-
-                }
-            });
-        };
-
-
-    });
-    //have to do the post part. probably need to check token for login
-    //then use that company to send to the findcompetitors function, as well
-    //as the chosen radius.
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})
@@ -274,22 +151,9 @@ module.exports = function (app) {
                 }else {
                     //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
                     //3 = by rating high
+                    var option = "5";
                         //response.render("analytics", {company : company, reviews:company.reviews});
-                        Stat.getKeywords(company.reviews, 1000, function(keywords){
-                            Stat.getPositiveKeywords(keywords, 1000, function(positiveKeywords){
-                                Stat.getNegativeKeywords(keywords, 1000, function(negativeKeywords){
-                                        Stat.getOccurencesOfKeywords(positiveKeywords, function(pOccurences){
-                                            Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
-                                                Stat.getAverage(company.reviews, function(average) {
-                                                    Stat.getModeRating(company.reviews, function(mode) {
-                                                        response.render("index2",{pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
-                                                    });
-                                                });
-                                            });
-                                        });
-                                });
-                            });
-                        });
+                        response.render("index2");
                 }
             })
         };
@@ -313,14 +177,11 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
-                        let now = new Date();
-                        var mes = date.format(now, "MM/DD/YY HH:mm")
-                        company.feed = "You Updated Analytics!\n" + mes + "\n" + company.feed;
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
-                                        
-                                        response.redirect("/analytics");
+
+                                        response.render("analytics", {company:company, reviews:company.reviews});
 
                         });
                         var subject = "We have run new Analytics on your company!";
@@ -499,28 +360,6 @@ module.exports = function (app) {
         response.redirect("contact");
     });
 
-    app.post("/competitors", function(request, response) {
-        var token = request.cookies.token;
-        if(token === undefined) {
-            //Welcome screen
-            response.render("welcome");
-        } else {
-            //Use token to get company information
-            Database.getCompany(token, function(company) {
-                if(company === undefined) {
-                    //Token wasn't valid so delete token
-                    response.clearCookie("token");
-                    response.render("welcome");
-                }else {
-                    var radius = 8047;
-                    WebScraper.findYelpCompetitors(company, radius, function(competitors){
-                            console.log("Competitors" + competitors);
-                    });
-                }
-            })
-        };
-    });
-
     app.get("/contact", function(request, response) {
         response.render("contact", {error : undefined});
     });
@@ -531,76 +370,70 @@ module.exports = function (app) {
     });
 
 
-    
-
+    //competitors POST request - Map View of local competitors
     //competitors POST request - Map View of local competitors
     app.post("/competitors", function(request, response){
         console.log('INSIDE THE COMPETITORS');
-      	var token = request.cookies.token;
-      	if(token === undefined) {
-      		//Welcome screen
-      		response.render("welcome");
-      	} else {
-      		Database.getCompany(token, function(company) {
-      			if(company === undefined) {
-      				//Token wasn't valid so delete token
-      				response.clearCookie("token");
-      				response.render("welcome");
-      			} else {
-      						var rad;
-      						switch(request.body.Radius) {
-      							case "1":
-      								rad = 8047;
-      								break;
-      							case "2":
-      								rad = 16093;
-      								break;
-      							case "3":
-      								rad = 24140;
-      								break;
-      							case "4":
-      								rad = 32187;
-      								break;
-      							case "5":
-      								rad = 40000;
-      								break;
-      							default:
-      								rad = 15000;
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.render("welcome");
+                } else {
+                    var rad;
+                    switch(request.body.Radius) {
+                        case "1":
+                            rad = 8047;
+                            break;
+                        case "2":
+                            rad = 16093;
+                            break;
+                        case "3":
+                            rad = 24140;
+                            break;
+                        case "4":
+                            rad = 32187;
+                            break;
+                        case "5":
+                            rad = 40000;
+                            break;
+                        default:
+                            rad = 15000;
 
-      						}
-      						WebScraper.findYelpCompetitors(company, rad, function(comp){
-                    company.competitors = comp;
-                    //console.log(JSON.stringify(company.competitors));
-                    Database.updateCompany(company, function() {
-                       // Geocode an address.
-                        var addressHome, competitors;
-                        addressHome = company.streetAddress+ ", "+ company.city+", "+ company.state;
-                        var competitor0 =  company.competitors[0].streetAddress + ", "+ company.competitors[0].city + ", "+  company.competitors[0].state;
-                        var competitor1 =  company.competitors[1].streetAddress + ", "+ company.competitors[1].city + ", "+  company.competitors[1].state;
-                        var competitor2 =  company.competitors[2].streetAddress + ", "+ company.competitors[2].city + ", "+  company.competitors[2].state;
-                        var competitor3 =  company.competitors[3].streetAddress + ", "+ company.competitors[3].city + ", "+  company.competitors[3].state;
-                        var competitor4 =  company.competitors[4].streetAddress + ", "+ company.competitors[4].city + ", "+  company.competitors[4].state;
+                    }
+                    WebScraper.findYelpCompetitors(company, rad, function(comp){
+                        company.competitors = comp;
+                        //console.log(JSON.stringify(company.competitors));
+                        Database.updateCompany(company, function() {
+                            // Geocode an address.
+
+                            var addressHome = company.streetAddress+ ", "+ company.city+", "+ company.state;
+                            var competitor0 =  company.competitors[0].streetAddress + ", "+ company.competitors[0].city + ", "+  company.competitors[0].state;
+                            var competitor1 =  company.competitors[1].streetAddress + ", "+ company.competitors[1].city + ", "+  company.competitors[1].state;
+                            var competitor2 =  company.competitors[2].streetAddress + ", "+ company.competitors[2].city + ", "+  company.competitors[2].state;
+                            var competitor3 =  company.competitors[3].streetAddress + ", "+ company.competitors[3].city + ", "+  company.competitors[3].state;
+                            var competitor4 =  company.competitors[4].streetAddress + ", "+ company.competitors[4].city + ", "+  company.competitors[4].state;
 
 
 
-                        //Competitors.getVars(addressHome, competitors);
-                        //Competitors.initMap(company.streetAddress, company.competitors);
+                            //Competitors.getVars(addressHome, competitors);
+                            //Competitors.initMap(company.streetAddress, company.competitors);
 
-                        response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
+                            response.render("competitors", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
 
                         })
-                  })
+                    })
 
-      			}
-      		})
-      	}
+                }
+            })
+        }
 
     });
-
-    app.get("/getstarted", function(request, response){
-      response.render("getStarted");
-    });
-    
     app.get("*", function(request, response){
         //All requests that don't match one of the above
         response.render("noSuchPage");
