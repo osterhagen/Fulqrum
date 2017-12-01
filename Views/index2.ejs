@@ -1,7 +1,5 @@
 <% include partials/header %>
-<form method="POST" action="/analytics">
-    <button class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Update</button>
-  </form>
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,19 +14,15 @@
     <!-- Sidebar Holder -->
     <nav id="sidebar" class="">
         <div class="sidebar-header">
-            <h3>Fulqrum</h3>
+            <h3>Analytics</h3>
         </div>
 
         <ul class="list-unstyled components">
             <p> </p>
             <li>
-                <a onclick="analyticsChange()">Analytics</a>
-                <a href="https://bootstrapious.com/tutorial/sidebar/index.html#pageSubmenu" data-toggle="collapse" aria-expanded="false">Competitors</a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                    <li onclick="comparitorsChange()"><a>Map View</a></li>
-
-                </ul>
-            </li>
+                <form method="POST" action="/analytics">
+                    <button id="update" class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Update</button>
+                </form>
 
         </ul>
 
@@ -40,7 +34,7 @@
         <p id="hey">//document.getElementById("hey2").removeAttribute("hidden");//document.getElementById("hey2").removeAttribute("hidden");</p>
       <!--  <div class="line"></div> -->
 
-        <h3 id="Header">Analytics</h3>
+        <h3 id="Header"></h3>
         <div id="body">
             <div id="positiveReviews" class="col-md-6 pre-scrollable ">
                 <table id="positiveTable" class="table well ">
@@ -108,19 +102,7 @@
 
 <script type="text/javascript">
     displayPositive(pKeys);
-    console.log("Chicken");
-    function analyticsChange() {
-        var renderAnalytics = "  ";
-        document.getElementById("Header").innerHTML = "Analytics";
-        document.getElementById("body").innerHTML ="";
 
-        // document.getElementById("hey2").setAttribute("hidden", true);
-    }
-    function comparitorsChange() {
-        document.getElementById("Header").innerHTML = "Competitors";
-        document.getElementById("body").innerHTML = " ";
-        //document.getElementById("hey2").removeAttribute("hidden");
-    }
     function displayPositive(inp) {
         //more interactive and better if user can see the newest one first
         for (var i = 0; i < inp.keyWords.length; i++) {
