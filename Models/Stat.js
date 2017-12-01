@@ -1,13 +1,5 @@
 
-//Get averageReviewScore
-//Get withKeyword
-//Get Best Reviews By Rating
-//Get Worst Reviews By Rating
-//Get Best Reviews By averageSentiment
-//Get Worst Reviews By averageSentiment
-//Get Reviews Before Date
-//Get Reviews After Date
-//Get Reviews Between Dates
+
 
 exports.getAverage = averageReviewScore;
 function averageReviewScore(reviews, cb) {
