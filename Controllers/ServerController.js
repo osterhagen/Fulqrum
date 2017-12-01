@@ -379,33 +379,6 @@ module.exports = function (app) {
                     })
                   })
 
-                  /*
-      						competitors = WebScraper.findYelpCompetitors(competitors, rad);
-      						company.competitors = companies;
-      						console.log("Company name: " + companies[0]);
-
-      						Database.updateCompany(company, function() {
-      						});
-
-      						//time 2 analytics the competitors
-
-      						var i = 0;
-      						for (i; i < 5; i++) {
-      							var hasReviews = false;
-      							console.log("Company name: " + company.competitors[i].name);
-      							WebScraper.scrape(company.competitors[i], hasReviews, function (reviews) {
-      								company.competitors[i].reviews = reviews;
-      								Database.updateCompany(company.competitors[i], function () {
-      									response.render("analytics", {company: company.competitors[i], reviews: company.competitors[i].reviews});
-      								});
-      							});
-      						}
-                  */
-
-
-      						//END else statement
-
-      					//END Database.getCompany
       			}
       		})
       	};
