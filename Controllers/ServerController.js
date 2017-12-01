@@ -22,23 +22,7 @@ module.exports = function (app) {
     });*/
     //Database.listCompanies();
     //Database.clearDatabase();
-<<<<<<< HEAD
-    var company = {
-        name: "Pizza Hut",
-    streetAddress: "3349 Mission St",
-    city: "San Francisco",
-    state: "CA",
-    zipcode: "94110"
-};
-    //var companies = WebScraper.findYelpCompetitors(company, "1000");
-    //console.log("Node app is running on port", app.get("port"));
-    //console.log("" + companies[0]);
-    //console.log("" + companies[1]);
 
-    //once i get page, i can integrate the competitors shit.
-=======
-
->>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen

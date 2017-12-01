@@ -91,7 +91,7 @@ function scrapeYelp(company, reviews, cb) {
         //Note company page url has format https://www.yelp.com/biz/<CompanyName>?osq=<OriginalSearchQuery>
         //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
         var index = String(companyPageURL).lastIndexOf("?");
-
+        console.log("url v2: " + companyPageURL);
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
         if (index == -1) {
             companyPageURLByDate = companyPageURL;
@@ -100,15 +100,12 @@ function scrapeYelp(company, reviews, cb) {
             companyPageURLByDate+="?";
         }
         companyPageURLByDate += "start=";
-<<<<<<< HEAD
         if (companyPageURLByDate.indexOf("undefined") !== -1) {
             cb(null);
             return;
         }
         
-=======
 
->>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
     cb(null);
@@ -236,7 +233,8 @@ function findYelpCompanyPage(company, cb) {
     url += "find_desc=" + companyName;
     url += "&find_loc=" + address;
     console.log("url: " + url);
-    if (company.companyURL !== null) {
+    console.log("companyURL: " + company.companyURL);
+    if (company.companyURL !== null && company.companyURL !== undefined) {
         request(company.companyURL, function () {
             cb(null, company.companyURL);
         })
@@ -261,7 +259,7 @@ function findYelpCompanyPage(company, cb) {
                 if (addition === undefined) {
                     error = "ERROR";
                 }
-                if (company.companyURL !== null) {
+                if (company.companyURL !== null && company.companyURL !== undefined) {
                     companyURL = company.companyURL;
                 }
                 console.log(companyURL);
@@ -289,10 +287,7 @@ function googleSearchScrape(companyName) {
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
-<<<<<<< HEAD
-=======
 
->>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
 function findYelpCompetitors(company, radius, cb) {
     //just going to use zip code to find 5 nearby competitors.
     //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
@@ -345,17 +340,12 @@ function findYelpCompetitors(company, radius, cb) {
                     company.streetAddress = String(company.streetAddress).trim();
                     //company.companyName = $('span.indexed-biz-name a').eq(i).text();
 
-<<<<<<< HEAD
-
 
                     //company.companyName = $('span.indexed-biz-name a').eq(i).text();
                     
                     i++;
                     //console.log("i: " + i);
-=======
-                    i++;
-                    console.log("i: " + i);
->>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
+
                     console.log("company name: " + company.name);
 
                     //split adddress into different fields.
@@ -377,21 +367,14 @@ function findYelpCompetitors(company, radius, cb) {
                 console.log("ERROR");
           }
         //console.log("what the fuck");
-<<<<<<< HEAD
         //console.log("company: " + companies[0].name);
-=======
-        console.log("company: " + companies[0].name);
->>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
+
         cb(companies);
         //return companies;
 
     });
-<<<<<<< HEAD
     //console.log("there is no god");
 
 
 }
-=======
-    console.log("there is no god");
-  }
->>>>>>> 080202bd20fbfbc1d7a64d8b77f6fc2a2a542f0f
+
