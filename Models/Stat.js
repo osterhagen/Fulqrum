@@ -2,6 +2,9 @@
 exports.getKeywords = getKeywords;
 function getKeywords(reviews, num, cb) {
     var keywords = [];
+    if(reviews === undefined) {
+        reviews=[];
+    }
     for(var i = 0; i < reviews.length; i++) {
         for(var j = 0; reviews[i].entities != undefined && j < reviews[i].entities.length; j++) {
             keywords.push(reviews[i].entities[j]);
@@ -135,6 +138,9 @@ function getBestKeyword(reviews, num, cb) {
 
 exports.getAverage = averageReviewScore;
 function averageReviewScore(reviews, cb) {
+    if(reviews === undefined){
+        reviews = [];
+    }
     if(reviews.length === 0) {
         cb(0);
         return;
@@ -151,6 +157,10 @@ function averageReviewScore(reviews, cb) {
 exports.getModeRating = getModeRating;
 function getModeRating(reviews, cb) {
     var ratingsSet = [];
+    if(reviews === undefined){
+        reviews = [];
+    }
+
     for(var i = 0 ;i < reviews.length; i++) {
         if(ratingsSet[reviews[i].rating] === undefined) {
             ratingsSet[reviews[i].rating]=0;

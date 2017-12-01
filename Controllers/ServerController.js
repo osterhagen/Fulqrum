@@ -47,8 +47,112 @@ module.exports = function (app) {
             })
         };
     });
+
+    app.get("/competitorScrape", function(request, response) {
+        var token = request.cookies.token;
+        if(token === undefined) {
+            response.render("welcome");
+        }
+        else {
+            Database.getCompany(token, function (company) {
+                if (company === undefined || company === null) {
+                    response.clearCookie("token");
+                    response.render("welcome");
+
+                }
+                else {
+                    var rad=10000;
+                        //the conversions from miles to meters
+                    WebScraper.findYelpCompetitors(company, rad, function (comp) {
+                            //console.log("Competitors...");
+                            //console.log(comp);
+
+
+                        var hasReviews = false;
+                            WebScraper.scrape(comp[0], hasReviews, function(reviews) {
+                                comp[0].reviews = reviews;
+                                //console.log(comp[0].reviews[0]);
+                                WebScraper.scrape(comp[1], hasReviews, function(reviews) {
+                                    comp[1].reviews = reviews;
+                                    response.redirect("/soleCompetitor");
+                                    
+                                });
+                            });
+
+
+
+
+                    });
+
+
+
+                }
+            });
+        };
+
+
+    });
     app.get("/getstarted", function(request, response){
               response.render("getStarted");
+    });
+
+    app.get("/soleCompetitor", function(request, response) {
+        var token = request.cookies.token;
+        
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("/");
+                }else {
+                    var competitorOption = request.body.competitor;
+                    if(competitorOption === null || competitorOption=== undefined) {
+                        competitorOption =2;
+                    }
+                    var rad = 15000;
+                    WebScraper.findYelpCompetitors(company, rad, function (comp) {
+                        //console.log("Competitors...");
+                        //console.log(comp);
+
+
+                    var hasReviews = false;
+                            //console.log(comp[0].reviews[0]);
+                            WebScraper.scrape(comp[competitorOption], hasReviews, function(reviews) {
+                                comp[competitorOption].reviews = reviews;
+                                //console.log(comp[competitorOption].reviews[0]);
+                                company = comp[competitorOption];
+                                Stat.getKeywords(company.reviews, 1000, function(keywords){
+                                    Stat.getPositiveKeywords(keywords, 1000, function(positiveKeywords){
+                                        Stat.getNegativeKeywords(keywords, 1000, function(negativeKeywords){
+                                                Stat.getOccurencesOfKeywords(positiveKeywords, function(pOccurences){
+                                                    Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
+                                                        Stat.getAverage(company.reviews, function(average) {
+                                                            Stat.getModeRating(company.reviews, function(mode) {
+                                                                response.render("soleCompetitor",{company:company, pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                        });
+                                    });
+                                });
+                            });
+                        
+
+
+
+
+                });
+
+                    
+                }
+            });
+        }
     });
 
     app.post("/reviews", function(request, response){
@@ -249,8 +353,7 @@ module.exports = function (app) {
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
 
-                                        response.render("analytics", {company:company, reviews:company.reviews});
-
+                                response.redirect("/analytics");
                         });
                         var subject = "We have run new Analytics on your company!";
                         var message = "Hello " + company.name + ",\nnew analytics have been made!";
@@ -475,10 +578,7 @@ module.exports = function (app) {
 
                     }
                     WebScraper.findYelpCompetitors(company, rad, function(comp){
-                        company.competitors = comp;
-                        //console.log(JSON.stringify(company.competitors));
-                        Database.updateCompany(company, function() {
-                            // Geocode an address.
+                        
 
                             var addressHome = company.streetAddress+ ", "+ company.city+", "+ company.state;
                             var competitor0 =  company.competitors[0].streetAddress + ", "+ company.competitors[0].city + ", "+  company.competitors[0].state;
@@ -487,15 +587,16 @@ module.exports = function (app) {
                             var competitor3 =  company.competitors[3].streetAddress + ", "+ company.competitors[3].city + ", "+  company.competitors[3].state;
                             var competitor4 =  company.competitors[4].streetAddress + ", "+ company.competitors[4].city + ", "+  company.competitors[4].state;
 
-
-
+                            var hasReviews = false;
+                            response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
+                            
+                           
                             //Competitors.getVars(addressHome, competitors);
                             //Competitors.initMap(company.streetAddress, company.competitors);
 
-                            response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
 
-                        })
-                    })
+                        
+                    });
 
                 }
             })
