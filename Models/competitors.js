@@ -1,3 +1,5 @@
+
+
 function initMap(addressHome,competitors, cb) {
     console.log("s");
     var uluru = {lat: 0, lng: 0};
