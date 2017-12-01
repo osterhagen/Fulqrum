@@ -531,6 +531,8 @@ module.exports = function (app) {
     });
 
 
+    
+
     //competitors POST request - Map View of local competitors
     app.post("/competitors", function(request, response){
         console.log('INSIDE THE COMPETITORS');
@@ -569,15 +571,30 @@ module.exports = function (app) {
       						}
       						WebScraper.findYelpCompetitors(company, rad, function(comp){
                     company.competitors = comp;
+                    //console.log(JSON.stringify(company.competitors));
                     Database.updateCompany(company, function() {
-                      response.render("competitors");
-                      Competitors.initMap(company.streetAddress, company.competitors);
-                    })
+                       // Geocode an address.
+                        var addressHome, competitors;
+                        addressHome = company.streetAddress+ ", "+ company.city+", "+ company.state;
+                        var competitor0 =  company.competitors[0].streetAddress + ", "+ company.competitors[0].city + ", "+  company.competitors[0].state;
+                        var competitor1 =  company.competitors[1].streetAddress + ", "+ company.competitors[1].city + ", "+  company.competitors[1].state;
+                        var competitor2 =  company.competitors[2].streetAddress + ", "+ company.competitors[2].city + ", "+  company.competitors[2].state;
+                        var competitor3 =  company.competitors[3].streetAddress + ", "+ company.competitors[3].city + ", "+  company.competitors[3].state;
+                        var competitor4 =  company.competitors[4].streetAddress + ", "+ company.competitors[4].city + ", "+  company.competitors[4].state;
+
+
+
+                        //Competitors.getVars(addressHome, competitors);
+                        //Competitors.initMap(company.streetAddress, company.competitors);
+
+                        response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
+
+                        })
                   })
 
       			}
       		})
-      	};
+      	}
 
     });
     app.get("*", function(request, response){
