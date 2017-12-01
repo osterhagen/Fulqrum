@@ -147,14 +147,16 @@ module.exports = function (app) {
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
-                                        var subject = "We have run new Analytics on your company!";
-                                        var message = "Hello " + company.name + ",\nnew analytics have been made!";
-                                        if(company.sendEmails === "on") {
-                                            Email.sendEmail(company.email, subject, message);
-                                        }
+                                        
                                         response.render("analytics", {company:company, reviews:company.reviews});
                                         
                         });
+                        var subject = "We have run new Analytics on your company!";
+                        var message = "Hello " + company.name + ",\nnew analytics have been made!";
+                        if(company.sendEmails === "on") {
+                            
+                            Email.sendEmail(company.email, subject, message);
+                        }
 
                     });
                 }

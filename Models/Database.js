@@ -82,7 +82,7 @@ function getCompany(token, cb) {
                 cb(null);
             }else {
                 //Company exists
-                console.log(result.sendEmails);
+                //console.log(result.sendEmails);
                 cb(result);
             }
         });
