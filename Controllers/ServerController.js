@@ -329,9 +329,14 @@ module.exports = function (app) {
         response.render("contact", {error : undefined});
     });
 
+    //competitors GET request
+    app.get("/competitors", function(request, response) {
+        response.render("competitors", {error : undefined});
+    });
 
-    //competitors GET request - Map View of local competitors
-    app.get("/competitors", function(request, response){
+
+    //competitors POST request - Map View of local competitors
+    app.post("/competitors", function(request, response){
         console.log('INSIDE THE COMPETITORS');
       	var token = request.cookies.token;
       	if(token === undefined) {
@@ -344,14 +349,6 @@ module.exports = function (app) {
       				response.clearCookie("token");
       				response.render("welcome");
       			} else {
-      				Database.getCompany(token, function(company) {
-      					if (company === undefined || company === null) {
-      						response.clearCookie("token");
-      						response.render("welcome");
-
-      					}
-      					else {
-
                   console.log("INSIDE COMPANY");
       						var rad;
       						switch(request.body.Radius) {
@@ -374,14 +371,24 @@ module.exports = function (app) {
       								rad = 15000;
 
       						}
-      						var competitors = [];
+      						WebScraper.findYelpCompetitors(company, rad, function(comp){
+                    company.competitors = comp;
+                    Database.updateCompany(company, function() {
+                      response.render("competitors");
+                      Competitors.initMap(company.streetAddress, company.competitors);
+                    })
+                  })
+
+                  /*
       						competitors = WebScraper.findYelpCompetitors(competitors, rad);
       						company.competitors = companies;
       						console.log("Company name: " + companies[0]);
 
       						Database.updateCompany(company, function() {
       						});
+
       						//time 2 analytics the competitors
+
       						var i = 0;
       						for (i; i < 5; i++) {
       							var hasReviews = false;
@@ -393,13 +400,12 @@ module.exports = function (app) {
       								});
       							});
       						}
+                  */
 
-      						Competitors.initMap(company.streetAddress, competitors);
-                  response.render("competitors");
+
       						//END else statement
-      					}
+
       					//END Database.getCompany
-      				})
       			}
       		})
       	};
