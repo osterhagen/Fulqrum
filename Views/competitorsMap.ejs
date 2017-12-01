@@ -1,22 +1,5 @@
 <% include partials/header %>
-<form method="GET" action="/soleCompetitor">
-    
-                        <div class="row align-items-center">
-                            <div class="col mt-4">
-                                <select name="competitor" class="form-control" required>
-                                    <option value="">Select Company Number</option>
-                                    <option value="0">Company 1</option>
-                                    <option value="1">Company 2</option>
-                                    <option value="2">Company 3</option>
-                                    <option value="3">Company 4</option>
-                                    <option value="4">Company 5</option>
-                                </select>
-                            </div>
-                        </div>
-    
-                        <button type="submit" class="btn-primary btn mt-4">Submit</button>
-    
-</form>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,25 +69,49 @@
         location.reload();
     }
     function listChange() {
-        document.getElementById("content").innerHTML= "\n" +
-            "        <div id=\"positiveReviews\" class=\"col-md-6 pre-scrollable \">\n" +
-            "            <table id=\"positiveTable\" class=\"table well \">\n" +
-            "                <thead>\n" +
-            "                <tr>\n" +
-            "                    <th>Positive Keywords</th>\n" +
-            "                    <th>Frequency</th>\n" +
-            "                    <th>Average Score</th>\n" +
-            "                </tr>\n" +
-            "                </thead>\n" +
-            "                <tbody>\n" +
+        var o1 = <%- JSON.stringify(out1) %>;
+        var o2 = <%- JSON.stringify(out2) %>;
+        var o3 = <%- JSON.stringify(out3) %>;
+        var o4 = <%- JSON.stringify(out4) %>;
+        var o5 = <%- JSON.stringify(out5) %>;
+        document.getElementById("content").innerHTML=
+            "<div id=\"positiveReviews\" class=\"col-md-6 pre-scrollable \">\n" +
+            "    <table id=\"positiveTable\" class=\"table well \">\n" +
+            "        <thead>\n" +
+            "            <tr>\n" +
+            "                <th>Competitor Name</th>\n" +
+            "                <th>Average Review Score</th>\n" +
+            "                <th>Average Rating</th>\n" +
+            "            </tr>\n" +
+            "        </thead>\n" +
+            "        <tbody>\n" +
+            "            <tr>\n" +
+            "                <td>"+o1+" </td>\n" +
             "                <td></td>\n" +
             "                <td></td>\n" +
+            "            </tr>\n" +
+            "            <tr>\n" +
+            "                <td>"+ o2 +" </td>\n" +
             "                <td></td>\n" +
-            "                </tbody>\n" +
-            "            </table>\n" +
-            "        </div>\n" +
-            "        \n" +
-            "        ";
+            "                <td></td>\n" +
+            "            </tr>\n" +
+            "            <tr>\n" +
+            "                <td>"+ o3 +" </td>\n" +
+            "                <td></td>\n" +
+            "                <td></td>\n" +
+            "            </tr>\n" +
+            "            <tr>\n" +
+            "                <td>"+ o4 +" </td>\n" +
+            "                <td></td>\n" +
+            "                <td></td>\n" +
+            "            </tr>\n" +
+            "            <tr>\n" +
+            "                <td>"+ o5 +" </td>\n" +
+            "                <td></td>\n" +
+            "                <td></td>\n" +
+            "            </tr>\n" +
+            "        </tbody>\n" +
+            "    </table>\n";
     }
     function initMap(competitors, cb) {
         //alert(JSON.stringify( companyList[0]));
@@ -114,38 +121,43 @@
             center: uluru
         });
         var address1 = <%- JSON.stringify(addressHome) %> ;
+        var name = <%- JSON.stringify(out) %> ;
         var geocoder = new google.maps.Geocoder();
-        geocodeAddress(geocoder, map, address1);
+        geocodeAddress(geocoder, map, address1, name);
 
 
         var address2 = <%- JSON.stringify(competitor0) %> ;
+        var name1 = <%- JSON.stringify(out1) %> ;
         var geocoder2 = new google.maps.Geocoder();
-        geocodeAddress(geocoder2, map, address2);
+        geocodeAddress(geocoder2, map, address2, name1);
 
 
         var geocoder3 = new google.maps.Geocoder();
+        var name2 = <%- JSON.stringify(out2) %> ;
         var address3  = <%- JSON.stringify(competitor1) %> ;
-        geocodeAddress(geocoder3, map, address3);
+        geocodeAddress(geocoder3, map, address3, name2);
 
 
         var geocoder4 = new google.maps.Geocoder();
+        var name3 = <%- JSON.stringify(out3) %> ;
         var address4  = <%- JSON.stringify(competitor2) %> ;
-        geocodeAddress(geocoder4, map, address4);
+        geocodeAddress(geocoder4, map, address4, out3);
 
 
         var geocoder5 = new google.maps.Geocoder();
+        var name4 = <%- JSON.stringify(out4) %> ;
         var address5  = <%- JSON.stringify(competitor3) %> ;
-        geocodeAddress(geocoder5, map, address5);
+        geocodeAddress(geocoder5, map, address5, name4);
 
 
         var geocoder6 = new google.maps.Geocoder();
+        var name5 = <%- JSON.stringify(out5) %> ;
         var address6  = <%- JSON.stringify(competitor4) %> ;
-        geocodeAddress(geocoder6, map, address6);
+        geocodeAddress(geocoder6, map, address6, out5);
 
         //cb(competitors);
-        var companyList = <%- JSON.stringify(competitorList) %> ;
 
-        function geocodeAddress(geocoder, resultsMap, address) {
+        function geocodeAddress(geocoder, resultsMap, address, name) {
             geocoder.geocode({'address': address}, function(results, status) {
                 if (status === 'OK') {
 
@@ -156,7 +168,7 @@
                         position: results[0].geometry.location
                     });
                     var infoWindow = new google.maps.InfoWindow({
-                        content: '<h1>s</h1>'
+                        content: name
                     });
                     marker.addListener('click', function () {
                         infoWindow.open(map, marker);
