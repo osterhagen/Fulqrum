@@ -89,7 +89,7 @@ describe("Check Stat Functions ", function() {
 describe("Check Sort Functions ", function() {
 
     it("Get Best review score", function() {
-        Stat.getBestReviews(reviewsSet1, 1, function(reviews) {
+        Stat.getBestReviewsByRating(reviewsSet1, 1, function(reviews) {
             var worked = false;
             if(reviews.length === 1 && reviews[0].rating === "5") {
                 worked = true;
@@ -99,7 +99,7 @@ describe("Check Sort Functions ", function() {
     });
 
     it("Get Worst review score", function() {
-        Stat.getWorstReviews(reviewsSet1, 1, function(reviews) {
+        Stat.getWorstReviewsByRating(reviewsSet1, 1, function(reviews) {
             var worked = false;
             if(reviews.length === 1 && reviews[0].rating === "1") {
                 worked = true;
@@ -109,7 +109,7 @@ describe("Check Sort Functions ", function() {
     });
 
     it("Get 3 Best review scores", function() {
-        Stat.getBestReviews(reviewsSet1, 3, function(reviews) {
+        Stat.getBestReviewsByRating(reviewsSet1, 3, function(reviews) {
             console.log(reviews);
             var worked = false;
             if(reviews.length === 3 && reviews[0].rating === "5" && reviews[1].rating === "4"
@@ -121,7 +121,7 @@ describe("Check Sort Functions ", function() {
     });
 
     it("Get 3 Worst review scores", function() {
-        Stat.getWorstReviews(reviewsSet1, 3, function(reviews) {
+        Stat.getWorstReviewsByRating(reviewsSet1, 3, function(reviews) {
             console.log(reviews);
             var worked = false;
             if(reviews.length === 3 && reviews[0].rating === "1" && reviews[1].rating === "2"
@@ -133,7 +133,7 @@ describe("Check Sort Functions ", function() {
     });
 
     it("Get Best review scores when number is larger than number of reviews", function() {
-        Stat.getBestReviews(reviewsSet1, 100, function(reviews) {
+        Stat.getBestReviewsByRating(reviewsSet1, 100, function(reviews) {
             console.log(reviews);
             var worked = false;
             if(reviews.length === 5) {

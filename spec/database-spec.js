@@ -2,7 +2,6 @@ var Database = require("../Models/Database.js");
 
 describe("Register Company: ", function() {
     it("Register Company 1", function() {
-        Database.clearDatabase();        
         var company = {
             name: "Company 1",
             streetAddress: "123 Street",
@@ -16,7 +15,6 @@ describe("Register Company: ", function() {
         
     });
     it("Register multiple companies", function() {
-        Database.clearDatabase();        
         var company = {
             name: "Company 1",
             streetAddress: "123 Street",
@@ -38,7 +36,6 @@ describe("Register Company: ", function() {
         
     });
     it("Register already existing company", function() {
-        Database.clearDatabase();
         var company = {
             name: "Company 1",
             streetAddress: "123 Street",
@@ -58,7 +55,6 @@ describe("Register Company: ", function() {
 
 describe("Login Company: ", function() {
     it("Login Company 1", function() {
-        Database.clearDatabase();        
         var company = {
             name: "Company 1",
             streetAddress: "123 Street",
@@ -70,7 +66,7 @@ describe("Login Company: ", function() {
 
         Database.registerCompany(company, function(error) {
             Database.login(company.username, company.password, function(result) {
-                console.log(result);
+                //console.log(result);
                 expect(result.username).toBe(password.username);
             });
         });
@@ -78,11 +74,11 @@ describe("Login Company: ", function() {
         
     });
     it("Login Nonexistent company", function() {
-        Database.clearDatabase();        
-        var username = "abc";
-        var password = "123";
+        //Database.clearDatabase();        
+        var username = "zzz";
+        var password = "4545";
         Database.login(username, password, function(result) {
-            console.log(result);
+            //console.log(result);
             expect(result).toBe(null);
         });
         
@@ -93,4 +89,9 @@ describe("Login Company: ", function() {
     
 
     
+});
+describe("Email and feedback tests ", function() {
+    fit("Database stores email enable settings", function() {
+        Database.listCompanies();
+    });
 });
