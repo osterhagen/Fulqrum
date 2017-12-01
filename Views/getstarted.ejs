@@ -1,0 +1,55 @@
+<% include partials/header %>
+
+<section class="fdb-block">
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <h1>Getting Started</h1>
+
+        <div class="row text-left pt-4">
+          <div class="col-12">
+            <h2 class="text-center"> Step 1: Create an Account </h2>
+            <p class="text-h3">
+              The first step to using fulqrum is creating an account through the register page.
+              Begin by simply clicking on the registration page, and filling out your account information.
+              Don't worry, all your information is kept securely and is strictly confidential. Fulqrum is
+              free to use and always will be.
+            </p>
+            <h2 class="text-center"> Step 2: Update Your Analytics </h2>
+            <p class="text-h3">
+              The primary function of fulqrum is to provide you with unique insights into your business.
+              You will conveniently find your analytics on the homepage of the application, where your
+              analytics will be displayed. On your analytics homepage, there will be several grids displaying
+              key information. The first two grids at the top of the homepage will display the most common positive
+              keywords and the most common negative keywords from the reviews. The 'score:' of the sentiment ranges between -1.0 (negative) and 1.0 (positive) and corresponds to the overall emotional leaning of the text.
+              'magnitude:' indicates the overall strength of emotion (both positive and negative) within the given text, between 0.0 and +inf. Unlike score,
+               magnitude is not normalized; each expression of emotion within the text (both positive and negative) contributes to the text's magnitude
+               (so longer text blocks may have greater magnitudes).
+            </p>
+            <p class="text-h3">
+              The score of a document's sentiment indicates the overall emotion of a document. The magnitude of a document's sentiment indicates how much
+              emotional content is present within the document, and this value is often proportional to the length of the document.
+              A document with a neutral score (around 0.0) may indicate a low-emotion document, or may indicate mixed emotions, with both high positive
+              and negative values which cancel each out. Generally, you can use magnitude values to disambiguate these cases, as truly neutral documents
+              will have a low magnitude value, while mixed documents will have higher magnitude values.
+            </p>
+            <p class="text-h3">
+              Entity Analysis provides information about entities in the text, which generally refer to named "things" such as famous individuals,
+              landmarks, common objects, etc. Entities broadly fall into two categories: proper nouns that map to unique entities (specific people, places, etc.)
+              or common nouns (also called "nominals" in natural language processing). A good general practice to follow is that if something is a noun, it
+              qualifies as an "entity." Entities are returned as indexed offsets into the original text.
+            </p>
+            <h2 class="text-center"> Step 3: Keep Track of the Competition </h2>
+            <p class="text-h3">
+              Another key feature of our application allows you to compare your analytics to the analytics of your competitors. You can see a variety
+              of statistics such as average review rating, rating score over time, and more. We hope to continue to expand the statistical features that fulqrum
+              will provide, so that users will get the absolute most out of the raw information available to you publically.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% include partials/footer %>

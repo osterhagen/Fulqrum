@@ -349,7 +349,6 @@ module.exports = function (app) {
       				response.clearCookie("token");
       				response.render("welcome");
       			} else {
-                  console.log("INSIDE COMPANY");
       						var rad;
       						switch(request.body.Radius) {
       							case "1":
@@ -411,6 +410,11 @@ module.exports = function (app) {
       	};
 
     });
+
+    app.get("/getstarted", function(request, response){
+      response.render("getStarted");
+    });
+    
     app.get("*", function(request, response){
         //All requests that don't match one of the above
         response.render("noSuchPage");
