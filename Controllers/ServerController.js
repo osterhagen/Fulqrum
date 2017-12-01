@@ -45,6 +45,35 @@ module.exports = function (app) {
         };
     });
 
+    app.get("/keywords", function(request, response){
+        //Get analytics for the user with specific ID
+        //Get Company through cookie and return there reviews object
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("/");
+                }else {
+                    //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
+                    //3 = by rating high
+                    var option = "5";
+                    Stat.getKeywords(company.reviews, 10000, function(keywords) {
+                        Stat.getPositiveKeywords(keywords, 10000, function(positiveKeywords) {
+                            response.render("test", {keywords : positiveKeywords});                            
+                        });
+                        
+                    });
+                }
+            })
+        };
+    });
+
     app.get("/settings", function(requrest, response){
       response.render("settings", {error : undefined})
     });
@@ -325,6 +354,28 @@ module.exports = function (app) {
         message += "\n\nThe user can be reached at: " + request.body.email;
         Email.sendEmail("fulqrumpurdue@gmail.com", subject, message);
         response.redirect("contact");
+    });
+
+    app.post("/competitors", function(request, response) {
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.render("welcome");
+                }else {
+                    var radius = 8047;
+                    WebScraper.findYelpCompetitors(company, radius, function(competitors){
+                            console.log("Competitors" + competitors);
+                    });
+                }
+            })
+        };
     });
 
     app.get("/contact", function(request, response) {

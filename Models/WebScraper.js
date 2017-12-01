@@ -241,7 +241,7 @@ function googleSearchScrape(companyName) {
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
-function findYelpCompetitors(company, radius) {
+function findYelpCompetitors(company, radius, cb) {
     //just going to use zip code to find 5 nearby competitors.
     //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
     var tagAddress = company.streetAddress.replace(/ /g, "+");
@@ -255,7 +255,7 @@ function findYelpCompetitors(company, radius) {
     //url += "&ns=1";
     var companies = [];
     request(url, function (error, response, html) {
-            // First we'll check to make sure no errors occurred when making the request
+        // First we'll check to make sure no errors occurred when making the request
         //console.log("sup bitch");
         if (!error) {
             var i = 0;
@@ -315,7 +315,7 @@ function findYelpCompetitors(company, radius) {
                 console.log("ERROR");
           }
         //console.log("what the fuck");
-        return companies;
+        cb(companies);
 
     });
 
