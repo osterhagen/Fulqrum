@@ -1,10 +1,10 @@
 /*
- * This take's care of database logic 
+ * This take's care of database logic
  * such as verification of inputs
  * retrieving info from database
  * and updating info to database
- * 
- */ 
+ *
+ */
 
  var assert = require("assert");
  //Database setup
@@ -12,9 +12,6 @@
  test = require('assert');
 // Connection url
 var url = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-01-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-02-o5o8f.mongodb.net:27017/test?ssl=true&replicaSet=fulqrumCluster-shard-0&authSource=admin";
-
-
-
 var randtoken = require('rand-token');
 
 exports.encryptPassword = encryptPassword;
@@ -34,7 +31,7 @@ function registerCompany(company, callback) {
 
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
-    
+
         db.collection('companies').findOne( { "name": company.name, "password" : company.password }, function(err, result) {
             if(result == null) {
                 //Company doesn't exist
@@ -48,8 +45,8 @@ function registerCompany(company, callback) {
             }
         });
     });
-    
-   
+
+
 }
 
 exports.login = login;
@@ -58,7 +55,7 @@ function login(username, password, cb) {
     encryptPassword(password, function(encryptedPassword) {
         MongoClient.connect(url, function(err, db) {
             assert.equal(null, err);
-        
+
             db.collection('companies').findOne( { "username": username, "password" : encryptedPassword }, function(err, result) {
                 //if(result === null) {
                   //  result = "NONE";
@@ -67,7 +64,7 @@ function login(username, password, cb) {
             });
         });
     });
-    
+
 
 }
 
@@ -75,13 +72,14 @@ exports.getCompany = getCompany;
 function getCompany(token, cb) {
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
-    
+
         db.collection('companies').findOne( { "token": token }, function(err, result) {
             if(result === null || result === undefined) {
                 //Company doesn't exist
                 cb(null);
             }else {
                 //Company exists
+                //console.log(result.sendEmails);
                 cb(result);
             }
         });
@@ -119,7 +117,7 @@ function clearDatabase() {
      };
      MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
-      
+
         removeAll(db, function() {
             db.close();
         });
@@ -135,6 +133,6 @@ function updateCompany(company, cb){
             db.close();
             cb();
         });
-        
+
     });
 }

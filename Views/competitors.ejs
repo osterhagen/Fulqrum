@@ -1,0 +1,46 @@
+<% include partials/header %>
+
+<body>
+<section class="fdb-block">
+    <div id="container" class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+
+                <div class="row">
+                    <div class="col text-center">
+                        <h1>Search for Competitors</h1>
+                        <p> Choose a search radius to find information on your competitors</p>
+                    </div>
+                </div>
+
+                <form method="POST" action="/competitors">
+
+                    <div class="row align-items-center">
+                        <div class="col mt-4">
+                            <select name="Radius" class="form-control" required>
+                                <option value="">Select Search Range</option>
+                                <option value="1">5 miles</option>
+                                <option value="2">10 miles</option>
+                                <option value="3">15 miles</option>
+                                <option value="4">20 miles</option>
+                                <option value="5">25 miles</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn mt-4">Submit</button>
+
+                    <div id="map"></div>
+                    <script type="text/javascript" src="../Models/competitors.js"></script>
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+                    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initMap"></script>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+<% include partials/footer %>

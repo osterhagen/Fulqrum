@@ -11,6 +11,7 @@ var Database = require("../Models/Database.js");
 var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 var Stat = require("../Models/Stat.js");
+var Competitors = require("../Models/competitors.js");
 
 module.exports = function (app) {
     /*var company = new Object();
@@ -19,10 +20,9 @@ module.exports = function (app) {
     WebScraper.freshScrape(company, function() {
         console.log("Hello");
     });*/
-    
     //Database.listCompanies();
     //Database.clearDatabase();
-    
+
     app.get("/", function(request, response) {
         //Check if user is logged in if so send to homepage
         //Else send to welcome screen
@@ -65,15 +65,13 @@ module.exports = function (app) {
                     var message = "Hello " + company.name + ",\nYour account has been created";
                         Email.sendEmail(company.email, subject, message);
                         response.redirect("/");
-                    
+
                 }else {
                     //Error occured
                     response.render("register", {error : error});
                 }
             });
         });
-
-
     });
 
     app.get("/login", function(request, response){
@@ -102,7 +100,7 @@ module.exports = function (app) {
 
     app.get("/analytics", function(request, response){
         //Get analytics for the user with specific ID
-        //Get Company through cookie and return there reviews object
+        //Get Company through cookie and return their reviews object
         var token = request.cookies.token;
         if(token === undefined) {
             //Welcome screen
@@ -119,12 +117,13 @@ module.exports = function (app) {
                     //3 = by rating high
                     var option = "5";
                     Stat.sortReviews(company.reviews, option, function() {
-                        response.render("analytics", {company : company, reviews:company.reviews});                        
+                        response.render("analytics", {company : company, reviews:company.reviews});
                     });
                 }
             })
         };
     });
+
     app.post("/analytics", function(request, response) {
         //Update analytics
         //Get analytics
@@ -143,13 +142,19 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
-                        //response.render("analytics",{company:company});
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
+
                                         response.render("analytics", {company:company, reviews:company.reviews});
-                                        
+
                         });
+                        var subject = "We have run new Analytics on your company!";
+                        var message = "Hello " + company.name + ",\nnew analytics have been made!";
+                        if(company.sendEmails === "on") {
+
+                            Email.sendEmail(company.email, subject, message);
+                        }
 
                     });
                 }
@@ -201,7 +206,7 @@ module.exports = function (app) {
                             Database.encryptPassword(newPassword, function(encryptedPassword){
                                 company.password = encryptedPassword;
                                 Database.updateCompany(company, function() {
-                                    response.redirect("settings");                                    
+                                    response.redirect("settings");
                                 });
                             });
                         }
@@ -227,10 +232,10 @@ module.exports = function (app) {
                     response.redirect("welcome");
                 }else {
                     company.sendEmails = request.body.sendEmails;
-                    
+
                     console.log(company.sendEmails);
                     Database.updateCompany(company, function(){
-                        response.redirect("settings");                        
+                        response.redirect("settings");
                     });
                 }
             })
@@ -253,10 +258,10 @@ module.exports = function (app) {
                     response.redirect("welcome");
                 }else {
                     company.email = request.body.email;
-                    
+
                     console.log(company.sendEmails);
                     Database.updateCompany(company, function(){
-                        response.redirect("settings");                        
+                        response.redirect("settings");
                     });
                 }
             })
@@ -277,10 +282,10 @@ module.exports = function (app) {
                     //Token wasn't valid so delete token
                     response.clearCookie("token");
                     response.redirect("welcome");
-                }else {
+                } else {
                     company.sendEmails = request.body.sendEmails;
                     Database.updateCompany(company, function(){
-                        response.redirect("settings");                        
+                        response.redirect("settings");
                     });
                 }
             })
@@ -304,7 +309,7 @@ module.exports = function (app) {
                 }else {
                     company.username = request.body.username;
                     Database.updateCompany(company, function(){
-                        response.redirect("settings");                        
+                        response.redirect("settings");
                     });
                 }
             })
@@ -324,8 +329,93 @@ module.exports = function (app) {
         response.render("contact", {error : undefined});
     });
 
+    //competitors GET request
+    app.get("/competitors", function(request, response) {
+        response.render("competitors", {error : undefined});
+    });
+
+
+    //competitors POST request - Map View of local competitors
+    app.post("/competitors", function(request, response){
+        console.log('INSIDE THE COMPETITORS');
+      	var token = request.cookies.token;
+      	if(token === undefined) {
+      		//Welcome screen
+      		response.render("welcome");
+      	} else {
+      		Database.getCompany(token, function(company) {
+      			if(company === undefined) {
+      				//Token wasn't valid so delete token
+      				response.clearCookie("token");
+      				response.render("welcome");
+      			} else {
+                  console.log("INSIDE COMPANY");
+      						var rad;
+      						switch(request.body.Radius) {
+      							case "1":
+      								rad = 8047;
+      								break;
+      							case "2":
+      								rad = 16093;
+      								break;
+      							case "3":
+      								rad = 24140;
+      								break;
+      							case "4":
+      								rad = 32187;
+      								break;
+      							case "5":
+      								rad = 40000;
+      								break;
+      							default:
+      								rad = 15000;
+
+      						}
+      						WebScraper.findYelpCompetitors(company, rad, function(comp){
+                    company.competitors = comp;
+                    Database.updateCompany(company, function() {
+                      response.render("competitors");
+                      Competitors.initMap(company.streetAddress, company.competitors);
+                    })
+                  })
+
+                  /*
+      						competitors = WebScraper.findYelpCompetitors(competitors, rad);
+      						company.competitors = companies;
+      						console.log("Company name: " + companies[0]);
+
+      						Database.updateCompany(company, function() {
+      						});
+
+      						//time 2 analytics the competitors
+
+      						var i = 0;
+      						for (i; i < 5; i++) {
+      							var hasReviews = false;
+      							console.log("Company name: " + company.competitors[i].name);
+      							WebScraper.scrape(company.competitors[i], hasReviews, function (reviews) {
+      								company.competitors[i].reviews = reviews;
+      								Database.updateCompany(company.competitors[i], function () {
+      									response.render("analytics", {company: company.competitors[i], reviews: company.competitors[i].reviews});
+      								});
+      							});
+      						}
+                  */
+
+
+      						//END else statement
+
+      					//END Database.getCompany
+      			}
+      		})
+      	};
+
+    });
     app.get("*", function(request, response){
         //All requests that don't match one of the above
         response.render("noSuchPage");
     });
-}
+
+    //competitors POST
+    //END of module.exports()
+  }

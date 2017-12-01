@@ -1,4 +1,59 @@
 
+exports.getBestKeyword = getBestKeyword;
+function getBestKeyword(reviews, num, cb) {
+    var map = {};
+    for(var i = 0; i < reviews.length; i++) {
+        for(var j = 0; j < reviews[i].entities.length; j++) {
+            if(map[JSON.stringify(reviews[i].entities[j])] === undefined || map[JSON.stringify(reviews[i].entities[j])]) {
+                map[JSON.stringify(reviews[i].entities[j])] = 0;
+            }else {
+                map[JSON.stringify(reviews[i].entities[j])] = map[JSON.stringify(reviews[i].entities[j])] + 1;
+            }
+        }
+    }
+
+    //Now get the num greatest entities
+    var entities = [];
+    var i = 0;
+    var cutoff = 0;
+    for (var key in map) {
+        if(i >= num ) {
+            break;
+        }
+        if (map.hasOwnProperty(key)) {
+            entities.push(JSON.parse(key));
+            i++;
+        }
+    }
+
+
+    for(var key in map) {
+        if(map.hasOwnProperty(key)) {
+            //If the rating is better replace
+            if(map[key] > cutoff) {
+                //Found a better rating than the worst one in the array
+                //Replace that review with this one
+                for(var j = 0; j < entities.length; j++) {
+                    if(map[JSON.stringify[entities[j]]] <= cutoff) {
+                        //Repace with new rating
+                        entities[j] = JSON.parse(key);
+                        cutoff = map[key];
+                        break;
+                    }
+                }
+                //Calculate new lowest rating
+                for(var j = 0; j < entities.length; j++) {
+                    if(map[JSON.stringify[entities[j]]] <= cutoff) {
+                        cutoff = map[JSON.stringify[entities[j]]];
+                    }
+                }
+            }
+        }
+    }
+
+    cb(entities);
+    
+}
 
 
 exports.getAverage = averageReviewScore;
@@ -294,6 +349,8 @@ function getReviewsBetweenDates(reviews, startDate, endDate, cb) {
     }
     cb(reviewsBetweenDates);
 }
+
+
 
 
 
