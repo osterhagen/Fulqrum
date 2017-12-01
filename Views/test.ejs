@@ -1,0 +1,9 @@
+<% include partials/header %>
+
+<% if(keywords != null && keywords != undefined) {
+    for(var i = 0; i < keywords.length; i++) {%>
+   <p><%- JSON.stringify(keywords[i]) %></p>
+<%   } 
+   }%>
+
+<% include partials/footer %>

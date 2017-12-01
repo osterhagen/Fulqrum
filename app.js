@@ -3,7 +3,7 @@
  * and setting for the server are chosen
  */
 
-
+//var WebScraper = require("../Models/WebScraper.js");
 var express = require('express');
 var app = express();
 var fs = require('fs');
@@ -12,6 +12,8 @@ var cheerio = require('cheerio');``
 var bodyParser = require('body-parser');
 var assert = require("assert");
 var cookieParser = require('cookie-parser');
+var date = require("date-and-time");
+
 //Database setup
   var MongoClient = require('mongodb').MongoClient,
   test = require('assert');
@@ -23,6 +25,9 @@ MongoClient.connect(url, function(err, db) {
   console.log("Database connected correctly to server.");
   db.close();
 });
+
+
+
 //
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -40,7 +45,9 @@ var ServerController = require("./Controllers/ServerController.js");
 ServerController(app);
 
 app.listen(app.get('port'), function () {
+
     console.log("Node app is running on port", app.get("port"));
+
 });
 
 //exports = module.exports = app;

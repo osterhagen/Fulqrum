@@ -15,7 +15,7 @@ var Analysis = require("./analysis_module/analysis.js");
 var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
 var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
-var maxReviews = 100;
+var maxReviews = 20;
 exports.scrape = scrape;
 function scrape(company, hasPriorAnalytics, cb) {
     //Subject to change based on how we want to receive the company name
@@ -34,6 +34,7 @@ function scrape(company, hasPriorAnalytics, cb) {
 
                         cb(reviews);
                     });
+                    //cb(reviews);
                 }else {
                     Analysis.analyze(reviews[i], function(review) {
 
@@ -81,22 +82,40 @@ function scrapeYelp(company, reviews, cb) {
     var companyPageURL;
 
     findYelpCompanyPage(company, function (error, data) {
+        if(error === "ERROR") {
+            cb(error);
+            return;
+        }
         //Manipulate URL to match yelps expected GET request
         companyPageURL = data;
         //Note company page url has format https://www.yelp.com/biz/<CompanyName>?osq=<OriginalSearchQuery>
         //To sort reviews from newest to oldest change argument osq argument to sort_by=date_desc
+        var index = String(companyPageURL).lastIndexOf("?");
+        console.log("url v2: " + companyPageURL);
         var companyPageURLByDate = String(companyPageURL).slice(0, String(companyPageURL).lastIndexOf("?")+1);
+        if (index == -1) {
+            companyPageURLByDate = companyPageURL;
+        }
+        if(companyPageURLByDate.charAt(companyPageURLByDate.length-1) != '?') {
+            companyPageURLByDate+="?";
+        }
         companyPageURLByDate += "start=";
+        if (companyPageURLByDate.indexOf("undefined") !== -1) {
+            cb(null);
+            return;
+        }
+        
 
         //Go fill the reviews data structure with reviews
         gatherYelpReviews(company, reviews, companyPageURLByDate, function (error) {
-            cb(null);
-        });
+    cb(null);
+});
 
-    });
+});
 }
 
 function gatherYelpReviews(company, reviews, url, cb) {
+    //bugged because the url says start=0,
     var reviewStartIndex = 0;
     var plainURL = url;
     url += reviewStartIndex;
@@ -104,7 +123,18 @@ function gatherYelpReviews(company, reviews, url, cb) {
     console.log("Currently have 0 reviews scraped");
     console.log("Now scraping: " + url);
     console.log("\n");
-    request(url, cheerioYelpParser);
+    var ind = plainURL.indexOf("undefined");
+    if (ind !== -1) {
+        //bullshiet
+        console.log("hi mom");
+        reviews = null;
+        cb(null);
+        return;
+
+    }
+    else {
+        request(url, cheerioYelpParser);
+
     function cheerioYelpParser(error, response, html) {
         // First we'll check to make sure no errors occurred when making the request
         if (!error) {
@@ -112,7 +142,8 @@ function gatherYelpReviews(company, reviews, url, cb) {
             var i = 0;
             //Count usernames to find number of reviews
             var numReviews = $('div.review a.user-display-name').get().length;
-            if (numReviews == 0  || reviewStartIndex >maxReviews) {
+            console.log("" + numReviews);
+            if (numReviews == 0 || reviewStartIndex > maxReviews) {
                 cb(null);
             }
             while (i < numReviews) {
@@ -151,7 +182,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
                 i++;
 
             }//while
-            if (reviewStartIndex < maxReviews && reviews.length%20 === 0 ) {
+            if (reviewStartIndex < maxReviews && reviews.length % 20 === 0) {
 
                 url = plainURL;
                 url += reviewStartIndex;
@@ -167,6 +198,7 @@ function gatherYelpReviews(company, reviews, url, cb) {
             cb(null);
         }
     }
+}
 
 
 }
@@ -201,27 +233,44 @@ function findYelpCompanyPage(company, cb) {
     url += "find_desc=" + companyName;
     url += "&find_loc=" + address;
     console.log("url: " + url);
-    request(url, function (error, response, html) {
+    console.log("companyURL: " + company.companyURL);
+    if (company.companyURL !== null && company.companyURL !== undefined) {
+        request(company.companyURL, function () {
+            cb(null, company.companyURL);
+        })
+    }
+    else {
+        request(url, function (error, response, html) {
 
-        // First we'll check to make sure no errors occurred when making the request
+            // First we'll check to make sure no errors occurred when making the request
 
-        if (!error) {
-            // Next, we'll utilize the cheerio library on the returned html which will essentially give us jQuery functionality
-            //console.log(html);
-            var $ = cheerio.load(html);
+            if (!error) {
+                // Next, we'll utilize the cheerio library on the returned html which will essentially give us jQuery functionality
+                //console.log(html);
+                var $ = cheerio.load(html);
 
-            //As of 9/29/17 to identify yelps first search result that is not an ad is...
-            //The first list entry with this class <li class="regular-search-result">
-            //Then it is the anchor tag with the class <biz-name> and we need the href
-            companyURL = "https://www.yelp.com"
-            companyURL += $('li.regular-search-result a').attr('href');
-            //console.log(companyURL);
-            cb(null, companyURL);
+                //As of 9/29/17 to identify yelps first search result that is not an ad is...
+                //The first list entry with this class <li class="regular-search-result">
+                //Then it is the anchor tag with the class <biz-name> and we need the href
+                var companyURL = "https://www.yelp.com"
+                var addition = $('li.regular-search-result a').attr('href');
+                var error;
+                companyURL += addition;
+                if (addition === undefined) {
+                    error = "ERROR";
+                }
+                if (company.companyURL !== null && company.companyURL !== undefined) {
+                    companyURL = company.companyURL;
+                }
+                console.log(companyURL);
+                cb(error, companyURL);
 
-        } else {
-            cb("ERROR");
-        }
-    });
+            } else {
+                console.log("DONE FUCKED");
+                cb("ERROR");
+            }
+        });
+    }
 }
 
 
@@ -238,7 +287,6 @@ function googleSearchScrape(companyName) {
 }
 
 exports.findYelpCompetitors = findYelpCompetitors;
-
 function findYelpCompetitors(company, radius, cb) {
     //just going to use zip code to find 5 nearby competitors.
     //https://www.yelp.com/search?find_desc=&find_loc=46845&ns=1
@@ -254,21 +302,23 @@ function findYelpCompetitors(company, radius, cb) {
     //url += "&ns=1";
     var companies = [];
     request(url, function (error, response, html) {
-            // First we'll check to make sure no errors occurred when making the request
+        // First we'll check to make sure no errors occurred when making the request
         //console.log("sup bitch");
         if (!error) {
-            var i = 0;
+            var i = 1;
             //html.replace(/<br\s?\/?>/gi, " ");
             var $ = cheerio.load(html);
 
-                while (i < 5) {
+                while (i < 6) {
                     var company = new Object();
                     //console.log("please help");
                     //As of 9/29/17 to identify yelps first search result that is not an ad is...
                     //The first list entry with this class <li class="regular-search-result">
                     //Then it is the anchor tag with the class <biz-name> and we need the href
                     company.companyURL = "https://www.yelp.com"
-                    company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
+                    company.companyURL += $('span.indexed-biz-name a').eq(i).attr('href');
+                    //company.companyURL += $('li.regular-search-result a').eq(i).attr('href');
+                    console.log("" + company.companyURL);
 
                     company.name = $('span.indexed-biz-name a').eq(i).text();
                     //i++;
@@ -283,14 +333,18 @@ function findYelpCompetitors(company, radius, cb) {
                     // had to get rid of leading thing which was a neighborhood option
                     company.streetAddress = String(company.streetAddress).substring(0, endOfAddress).trim();
                     var endNeighbor = String(company.streetAddress).lastIndexOf('\n');
-                    console.log("last tab at: " + endNeighbor);
+                    //console.log("last tab at: " + endNeighbor);
 
                     company.streetAddress = String(company.streetAddress).substring(endNeighbor);
                     company.streetAddress = String(company.streetAddress).trim();
                     //company.companyName = $('span.indexed-biz-name a').eq(i).text();
 
+
+                    //company.companyName = $('span.indexed-biz-name a').eq(i).text();
+                    
                     i++;
-                    console.log("i: " + i);
+                    //console.log("i: " + i);
+
                     console.log("company name: " + company.name);
 
                     //split adddress into different fields.
@@ -312,10 +366,14 @@ function findYelpCompetitors(company, radius, cb) {
                 console.log("ERROR");
           }
         //console.log("what the fuck");
-        console.log("company: " + companies[0].name);
+        //console.log("company: " + companies[0].name);
+
         cb(companies);
         //return companies;
 
     });
-    console.log("there is no god");
-  }
+    //console.log("there is no god");
+
+
+}
+
