@@ -13,6 +13,7 @@
 // Connection url
 var url = "mongodb://fulqrumPurdue:cs307sucks!@fulqrumcluster-shard-00-00-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-01-o5o8f.mongodb.net:27017,fulqrumcluster-shard-00-02-o5o8f.mongodb.net:27017/test?ssl=true&replicaSet=fulqrumCluster-shard-0&authSource=admin";
 var randtoken = require('rand-token');
+var date = require("date-and-time");
 
 exports.encryptPassword = encryptPassword;
 function encryptPassword(password, cb) {
@@ -35,6 +36,11 @@ function registerCompany(company, callback) {
         db.collection('companies').findOne( { "name": company.name, "password" : company.password }, function(err, result) {
             if(result == null) {
                 //Company doesn't exist
+                //add feed
+                company.feed = "";
+                let now = new Date();
+                var mes = date.format(now, "MM/DD/YY HH:mm")
+                company.feed = "You Registered!\n" + mes + "\n" + company.feed;
                 db.collection('companies').insertOne(company, function(err, result) {
                     console.log("Company Inserted");
                     callback(false);
@@ -80,6 +86,7 @@ function getCompany(token, cb) {
             }else {
                 //Company exists
                 //console.log(result.sendEmails);
+                console.log(result.feed);
                 cb(result);
             }
         });

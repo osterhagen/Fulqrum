@@ -1,10 +1,87 @@
 
+exports.getKeywords = getKeywords;
+function getKeywords(reviews, num, cb) {
+    var keywords = [];
+    for(var i = 0; i < reviews.length; i++) {
+        for(var j = 0; reviews[i].entities != undefined && j < reviews[i].entities.length; j++) {
+            keywords.push(reviews[i].entities[j]);
+        }
+    }
+    cb(keywords);
+}
+
+
+
+exports.getOccurencesOfKeywords = getOccurencesOfKeywords;
+function getOccurencesOfKeywords(keywords, cb) {
+    var keywordSet = {};
+    //Keyword //TotalScore //number
+    for(var i = 0; i < keywords.length; i++) {
+        
+        keywordSet[keywords[i].Name] = new Object();
+        keywordSet[keywords[i].Name].totalScore = 0;
+        keywordSet[keywords[i].Name].number = 0;
+        keywordSet[keywords[i].Name].name = keywords[i].Name;
+        keywordSet[keywords[i].Name].score = keywords[i].Score;
+        
+
+        
+
+    }
+    for(var i = 0; i < keywords.length; i++) {
+        keywordSet[keywords[i].Name].number += 1;
+    }
+
+    //console.log(JSON.stringify(keywordSet));
+    var result = [];
+    for(var key in keywordSet) {
+        result.push(keywordSet[key]);
+    }
+    cb(result);
+
+    
+
+}
+
+exports.getPositiveKeywords = getPositiveKeywords;
+function getPositiveKeywords(keywords, num, cb) {
+    var positiveKeywords = [];
+    var count = 0;
+    for(var i = 0; i < keywords.length; i++) {
+        if(parseFloat(keywords[i].Score) > 0) {
+            positiveKeywords.push(keywords[i]);
+        }
+        count++;
+        if(count > num) {
+            break;
+        }
+    }
+
+    cb(positiveKeywords);
+}
+
+exports.getNegativeKeywords = getNegativeKeywords;
+function getNegativeKeywords(keywords, num, cb) {
+    var negativeKeywords = [];
+    var count = 0;
+    for(var i = 0; i < keywords.length; i++) {
+        if(parseFloat(keywords[i].Score) < 0) {
+            negativeKeywords.push(keywords[i]);
+        }
+        count++;
+        if(count > num) {
+            break;
+        }
+    }
+    cb(negativeKeywords);
+}
+
 exports.getBestKeyword = getBestKeyword;
 function getBestKeyword(reviews, num, cb) {
     var map = {};
     for(var i = 0; i < reviews.length; i++) {
-        for(var j = 0; j < reviews[i].entities.length; j++) {
-            if(map[JSON.stringify(reviews[i].entities[j])] === undefined || map[JSON.stringify(reviews[i].entities[j])]) {
+        for(var j = 0; reviews[i].entities != undefined && j < reviews[i].entities.length; j++) {
+            if(map[JSON.stringify(reviews[i].entities[j])] === undefined || map[JSON.stringify(reviews[i].entities[j])]===null) {
                 map[JSON.stringify(reviews[i].entities[j])] = 0;
             }else {
                 map[JSON.stringify(reviews[i].entities[j])] = map[JSON.stringify(reviews[i].entities[j])] + 1;
@@ -69,6 +146,27 @@ function averageReviewScore(reviews, cb) {
     var averageScore = totalScore / reviews.length;
 
     cb(averageScore);
+}
+
+exports.getModeRating = getModeRating;
+function getModeRating(reviews, cb) {
+    var ratingsSet = [];
+    for(var i = 0 ;i < reviews.length; i++) {
+        if(ratingsSet[reviews[i].rating] === undefined) {
+            ratingsSet[reviews[i].rating]=0;
+        }
+        ratingsSet[reviews[i].rating]+=1;
+    }
+    var maxNum=0;
+    var modeRating;
+    for(var key in ratingsSet) {
+        if(ratingsSet[key] > maxNum) {
+            modeRating = key;
+            maxNum = ratingsSet[key];
+        }
+    }
+    cb(modeRating);
+
 }
 
 exports.getReviewsWithKeyword = getReviewsWithKeyword;

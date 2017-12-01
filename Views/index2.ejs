@@ -1,0 +1,164 @@
+<% include partials/header %>
+<form method="POST" action="/analytics">
+    <button class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Update</button>
+  </form>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+            <!-- Bootstrap CSS CDN -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <!-- Our Custom CSS -->
+            <link rel="stylesheet" href="style.css">
+
+<div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar" class="">
+        <div class="sidebar-header">
+            <h3>Fulqrum</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            <p> </p>
+            <li>
+                <a onclick="analyticsChange()">Analytics</a>
+                <a href="https://bootstrapious.com/tutorial/sidebar/index.html#pageSubmenu" data-toggle="collapse" aria-expanded="false">Competitors</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li onclick="comparitorsChange()"><a>Map View</a></li>
+
+                </ul>
+            </li>
+
+        </ul>
+
+
+    </nav>
+
+    <!-- Page Content Holder -->
+    <div id="content">
+        <p id="hey">//document.getElementById("hey2").removeAttribute("hidden");//document.getElementById("hey2").removeAttribute("hidden");</p>
+      <!--  <div class="line"></div> -->
+
+        <h3 id="Header">Analytics</h3>
+        <div id="body">
+            <div id="positiveReviews" class="col-md-6 pre-scrollable ">
+                <table id="positiveTable" class="table well ">
+                <thead>
+                <tr>
+                    <th>Positive Keywords</th>
+                    <th>Frequency</th>
+                    <th>Average Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                    
+                        <% for(var i = 0; i < pKeys.length; i++) {%>
+                            <tr>
+                            
+                            <td><%-pKeys[i].name%></td>
+                            <td><%-pKeys[i].number%></td>
+                            <td><%-pKeys[i].score.toFixed(4)%></td>
+                        </tr>
+                        <%}%>
+                        
+
+                    
+                </tbody>
+            </table>
+            </div>
+            <div id="negativeReviews" class="col-md-6 pre-scrollable inline">
+                <table id="negativeTable" class="table well">
+                    <thead>
+                    <tr>
+                        <th>Negative Keywords</th>
+                        <th>Frequency</th>
+                        <th>Average Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                            <% for(var i = 0; i < nKeys.length; i++) {%>
+                                <tr>
+                                
+                                <td><%-nKeys[i].name%></td>
+                                <td><%-nKeys[i].number%></td>
+                                <td><%-nKeys[i].score.toFixed(4)%></td>
+                            </tr>
+                            <%}%>
+
+                    </tbody>
+                </table>
+            </div>
+            <div id="analytics">
+                    <br><br>
+                    <h1>Mean Rating: <%=mean%></h1> 
+                    <h1>Mode Rating: <%=mode%></h1>                     
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<!-- Bootstrap Js CDN -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    displayPositive(pKeys);
+    console.log("Chicken");
+    function analyticsChange() {
+        var renderAnalytics = "  ";
+        document.getElementById("Header").innerHTML = "Analytics";
+        document.getElementById("body").innerHTML ="";
+
+        // document.getElementById("hey2").setAttribute("hidden", true);
+    }
+    function comparitorsChange() {
+        document.getElementById("Header").innerHTML = "Competitors";
+        document.getElementById("body").innerHTML = " ";
+        //document.getElementById("hey2").removeAttribute("hidden");
+    }
+    function displayPositive(inp) {
+        //more interactive and better if user can see the newest one first
+        for (var i = 0; i < inp.keyWords.length; i++) {
+            var table = document.getElementById("positiveTable");
+            var row = table.insertRow(1);
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML = inp[i].name;
+            var cell2 = row.insertCell(1);
+            cell2.innerHTML = inp[i].score;
+            var cell3 = row.insertCell(2);
+            cell3.innerHTML = inp[i].number;
+
+        }
+
+    }
+
+    function displayNegative(inp) {
+        //more interactive and better if user can see the newest one first
+        for (var i = 0; i < inp.keyWords.length; i++) {
+            var table = document.getElementById("negativeTable");
+            var row = table.insertRow(1);
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML = inp.keyWords[i];
+            var cell2 = row.insertCell(1);
+            cell2.innerHTML = inp.frequency[i];
+            var cell3 = row.insertCell(2);
+            cell3.innerHTML = inp.avgScore[i];
+
+        }
+
+    }
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+
+
+</body>
+</html>
