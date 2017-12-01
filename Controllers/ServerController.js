@@ -543,6 +543,8 @@ module.exports = function (app) {
 
     //competitors POST request - Map View of local competitors
     //competitors POST request - Map View of local competitors
+   //competitors POST request - Map View of local competitors
+    //competitors POST request - Map View of local competitors
     app.post("/competitors", function(request, response){
         console.log('INSIDE THE COMPETITORS');
         var token = request.cookies.token;
@@ -578,7 +580,16 @@ module.exports = function (app) {
 
                     }
                     WebScraper.findYelpCompetitors(company, rad, function(comp){
-                        
+                        company.competitors = comp;
+                        //console.log(JSON.stringify(company.competitors));
+                        Database.updateCompany(company, function() {
+                            // Geocode an address.
+                            var out = company.name;
+                            var out1 = company.competitors[0].name;
+                            var out2 = company.competitors[1].name;
+                            var out3 = company.competitors[2].name;
+                            var out4 = company.competitors[3].name;
+                            var out5 = company.competitors[4].name;
 
                             var addressHome = company.streetAddress+ ", "+ company.city+", "+ company.state;
                             var competitor0 =  company.competitors[0].streetAddress + ", "+ company.competitors[0].city + ", "+  company.competitors[0].state;
@@ -587,16 +598,15 @@ module.exports = function (app) {
                             var competitor3 =  company.competitors[3].streetAddress + ", "+ company.competitors[3].city + ", "+  company.competitors[3].state;
                             var competitor4 =  company.competitors[4].streetAddress + ", "+ company.competitors[4].city + ", "+  company.competitors[4].state;
 
-                            var hasReviews = false;
-                            response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
-                            
-                           
+
+
                             //Competitors.getVars(addressHome, competitors);
                             //Competitors.initMap(company.streetAddress, company.competitors);
 
+                            response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, out:out, out1:out1, out2:out2, out3:out3,out4:out4,out5:out5});
 
-                        
-                    });
+                        })
+                    })
 
                 }
             })
