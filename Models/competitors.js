@@ -24,7 +24,7 @@ function initMap(addressHome,competitors, cb) {
     var address6 = competitors[4].streetAddress;
     geocodeAddress(geocoder6, map, address6);
 
-    cb();
+    cb(competitors);
 }
 
 function geocodeAddress(geocoder, resultsMap, address, cb) {
