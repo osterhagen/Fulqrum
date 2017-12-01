@@ -12,6 +12,8 @@ var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 var Stat = require("../Models/Stat.js");
 var Competitors = require("../Models/competitors.js");
+var date = require("date-and-time");
+
 /*var googleMapsClient = require('@google/maps').createClient({
     key: 'AIzaSyCpksPkdlVYeAG1pP3ySzE8rdbK56NVYGE'
 });*/
@@ -349,6 +351,9 @@ module.exports = function (app) {
                     var hasReviews = false;
                     WebScraper.scrape(company, hasReviews, function(reviews) {
                         company.reviews = reviews;
+                        let now = new Date();
+                         var mes = date.format(now, "MM/DD/YY HH:mm")
+                         company.feed = "You Updated Analytics!\n" + mes + "\n" + company.feed;
                         //Update database with new reviews
                         Database.updateCompany(company, function(){
                                         //Render analytics page with new reviews
