@@ -12,9 +12,9 @@ var Analysis = require("../Models/analysis_module/analysis.js");
 var Email = require("../Models/Email.js");
 var Stat = require("../Models/Stat.js");
 var Competitors = require("../Models/competitors.js");
-var googleMapsClient = require('@google/maps').createClient({
+/*var googleMapsClient = require('@google/maps').createClient({
     key: 'AIzaSyCpksPkdlVYeAG1pP3ySzE8rdbK56NVYGE'
-});
+});*/
 
 module.exports = function (app) {
     /*var company = new Object();
@@ -42,10 +42,64 @@ module.exports = function (app) {
                     response.render("welcome");
                 }else {
                     console.log(company.sendEmails);
-                    response.render("homepage", {company : company});
+                    response.render("homepage", {company : company, feed:company.feed});
                 }
             })
         };
+    });
+    app.get("/getstarted", function(request, response){
+              response.render("getStarted");
+    });
+
+    app.post("/reviews", function(request, response){
+        //Get analytics for the user with specific ID
+        //Get Company through cookie and return their reviews object
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("/");
+                }else {
+                    var sort = request.body.sort;
+                    if(sort === undefined || sort === null) {
+                        sort = 1;
+                    }
+                    Stat.sortReviews(company.reviews, sort, function(){
+                        response.render("reviews", {reviews : company.reviews});
+                        
+                    });
+                }
+            });
+        }
+    });
+
+
+
+    app.get("/reviews", function(request, response){
+        //Get analytics for the user with specific ID
+        //Get Company through cookie and return their reviews object
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.redirect("/");
+                }else {
+                    response.render("reviews", {reviews : company.reviews});
+                }
+            });
+        }
     });
 
     app.get("/keywords", function(request, response){
@@ -153,7 +207,21 @@ module.exports = function (app) {
                     //3 = by rating high
                     var option = "5";
                         //response.render("analytics", {company : company, reviews:company.reviews});
-                        response.render("index2");
+                        Stat.getKeywords(company.reviews, 1000, function(keywords){
+                            Stat.getPositiveKeywords(keywords, 1000, function(positiveKeywords){
+                                Stat.getNegativeKeywords(keywords, 1000, function(negativeKeywords){
+                                        Stat.getOccurencesOfKeywords(positiveKeywords, function(pOccurences){
+                                            Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
+                                                Stat.getAverage(company.reviews, function(average) {
+                                                    Stat.getModeRating(company.reviews, function(mode) {
+                                                        response.render("index2",{pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                    });
+                                                });
+                                            });
+                                        });
+                                });
+                            });
+                        });
                 }
             })
         };
