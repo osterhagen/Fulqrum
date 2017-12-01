@@ -10,6 +10,8 @@ function getKeywords(reviews, num, cb) {
     cb(keywords);
 }
 
+
+
 exports.getOccurencesOfKeywords = getOccurencesOfKeywords;
 function getOccurencesOfKeywords(keywords, cb) {
     var keywordSet = {};
@@ -30,7 +32,7 @@ function getOccurencesOfKeywords(keywords, cb) {
         keywordSet[keywords[i].Name].number += 1;
     }
 
-    console.log(JSON.stringify(keywordSet));
+    //console.log(JSON.stringify(keywordSet));
     var result = [];
     for(var key in keywordSet) {
         result.push(keywordSet[key]);
@@ -144,6 +146,27 @@ function averageReviewScore(reviews, cb) {
     var averageScore = totalScore / reviews.length;
 
     cb(averageScore);
+}
+
+exports.getModeRating = getModeRating;
+function getModeRating(reviews, cb) {
+    var ratingsSet = [];
+    for(var i = 0 ;i < reviews.length; i++) {
+        if(ratingsSet[reviews[i].rating] === undefined) {
+            ratingsSet[reviews[i].rating]=0;
+        }
+        ratingsSet[reviews[i].rating]+=1;
+    }
+    var maxNum=0;
+    var modeRating;
+    for(var key in ratingsSet) {
+        if(ratingsSet[key] > maxNum) {
+            modeRating = key;
+            maxNum = ratingsSet[key];
+        }
+    }
+    cb(modeRating);
+
 }
 
 exports.getReviewsWithKeyword = getReviewsWithKeyword;

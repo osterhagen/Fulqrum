@@ -62,16 +62,8 @@ module.exports = function (app) {
                 }else {
                     //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
                     //3 = by rating high
-                    var option = "5";
-                    Stat.getKeywords(company.reviews, 10000, function(keywords) {
-                        Stat.getPositiveKeywords(keywords, 10000, function(positiveKeywords) {
-                            Stat.getOccurencesOfKeywords(positiveKeywords, function(result) {
-                            
-                                response.render("test", {keywords : result});                                                            
-    
-                            });
-                        });
-                        
+                    Stat.getAverage(company.reviews, function(mode){
+                        console.log(mode);
                     });
                 }
             })
@@ -148,9 +140,22 @@ module.exports = function (app) {
                 }else {
                     //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
                     //3 = by rating high
-                    var option = "5";
                         //response.render("analytics", {company : company, reviews:company.reviews});
-                        response.render("index2");
+                        Stat.getKeywords(company.reviews, 1000, function(keywords){
+                            Stat.getPositiveKeywords(keywords, 1000, function(positiveKeywords){
+                                Stat.getNegativeKeywords(keywords, 1000, function(negativeKeywords){
+                                        Stat.getOccurencesOfKeywords(positiveKeywords, function(pOccurences){
+                                            Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
+                                                Stat.getAverage(company.reviews, function(average) {
+                                                    Stat.getModeRating(company.reviews, function(mode) {
+                                                        response.render("index2",{pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                    });
+                                                });
+                                            });
+                                        });
+                                });
+                            });
+                        });
                 }
             })
         };
