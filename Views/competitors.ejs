@@ -32,9 +32,54 @@
 
                     <div id="map"></div>
                     <script type="text/javascript" src="../Models/competitors.js"></script>
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-                    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initMap"></script>
+                    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpksPkdlVYeAG1pP3ySzE8rdbK56NVYGE&callback=initMap">
+                    </script>
 
+                    <script>
+                    function initMap(addressHome,competitors) {
+                        console.log("s");
+                        var uluru = {lat: 0, lng: 0};
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 16,
+                            center: uluru
+                        });
+
+                        var geocoder = new google.maps.Geocoder();
+                        var address = addressHome;
+                        geocodeAddress(geocoder, map, address);
+                        var geocoder2 = new google.maps.Geocoder();
+                        var address2 = competitors[0].streetAddress;
+                        geocodeAddress(geocoder2, map, address2);
+                        var geocoder3 = new google.maps.Geocoder();
+                        var address3 = competitors[1].streetAddress;
+                        geocodeAddress(geocoder3, map, address3);
+                        var geocoder4 = new google.maps.Geocoder();
+                        var address4 = competitors[2].streetAddress;
+                        geocodeAddress(geocoder4, map, address4);
+                        var geocoder5 = new google.maps.Geocoder();
+                        var address5 = competitors[3].streetAddress;
+                        geocodeAddress(geocoder5, map, address5);
+                        var geocoder6 = new google.maps.Geocoder();
+                        var address6 = competitors[4].streetAddress;
+                        geocodeAddress(geocoder6, map, address6);
+                    }
+
+                    function geocodeAddress(geocoder, resultsMap, address) {
+                        geocoder.geocode({'address': address}, function(results, status) {
+                            if (status === 'OK') {
+                                resultsMap.setCenter(results[0].geometry.location);
+                                var marker = new google.maps.Marker({
+                                    map: resultsMap,
+                                    position: results[0].geometry.location
+                                });
+                            } else {
+                                alert('Geocode was not successful for the following reason: ' + status);
+                            }
+                        });
+                    }
+                    </script>
+                    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpksPkdlVYeAG1pP3ySzE8rdbK56NVYGE&callback=initMap">
+                    </script>
 
                 </form>
             </div>

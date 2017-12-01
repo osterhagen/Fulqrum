@@ -124,7 +124,88 @@ module.exports = function (app) {
     app.get("/settings", function(requrest, response){
       response.render("settings", {error : undefined})
     });
+    app.get("/competitorsearch", function(request, response) {
+        response.render("competitorsearch", {error : undefined})
+    });
+    app.post("/competitorsearch", function(request, response) {
+        var token = request.cookies.token;
+        if(token === undefined) {
+            response.render("welcome");
+        }
+        else {
+            Database.getCompany(token, function (company) {
+                if (company === undefined || company === null) {
+                    response.clearCookie("token");
+                    response.render("welcome");
 
+                }
+                else {
+                    var rad;
+                    switch (request.body.Radius) {
+                        //the conversions from miles to meters
+                        case "1":
+                            rad = 5000;
+                            break;
+                        case "2":
+                            rad = 10000;
+                            break;
+                        case "3":
+                            rad = 20000;
+                            break;
+                        case "4":
+                            rad = 30000;
+                            break;
+                        case "5":
+                            rad = 40000;
+                            break;
+                        default:
+                            rad = 15000;
+
+                    }
+                    WebScraper.findYelpCompetitors(company, rad, function (comp) {
+                            //console.log("Competitors...");
+                            //console.log(comp);
+
+
+                        var hasReviews = false;
+                            WebScraper.scrape(comp[0], hasReviews, function(reviews) {
+                                comp[0].reviews = reviews;
+                                //console.log(comp[0].reviews[0]);
+                                WebScraper.scrape(comp[1], hasReviews, function(reviews) {
+                                    comp[1].reviews = reviews;
+                                    WebScraper.scrape(comp[2], hasReviews, function(reviews) {
+                                        comp[2].reviews = reviews;
+                                        WebScraper.scrape(comp[3], hasReviews, function(reviews) {
+                                            comp[3].reviews = reviews;
+                                            WebScraper.scrape(comp[4], hasReviews, function(reviews) {
+                                                comp[4].reviews = reviews;
+                                                company.competitors = comp;
+                                                Database.updateCompany(company, function() {
+                                                    response.redirect("/");
+                                                });
+
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+
+
+
+
+                    });
+
+
+
+                }
+            });
+        };
+
+
+    });
+    //have to do the post part. probably need to check token for login
+    //then use that company to send to the findcompetitors function, as well
+    //as the chosen radius.
     app.get("/register", function(request, response){
         //New user register screen
         response.render("register", {error : undefined})
@@ -489,33 +570,6 @@ module.exports = function (app) {
                     })
                   })
 
-                  /*
-      						competitors = WebScraper.findYelpCompetitors(competitors, rad);
-      						company.competitors = companies;
-      						console.log("Company name: " + companies[0]);
-
-      						Database.updateCompany(company, function() {
-      						});
-
-      						//time 2 analytics the competitors
-
-      						var i = 0;
-      						for (i; i < 5; i++) {
-      							var hasReviews = false;
-      							console.log("Company name: " + company.competitors[i].name);
-      							WebScraper.scrape(company.competitors[i], hasReviews, function (reviews) {
-      								company.competitors[i].reviews = reviews;
-      								Database.updateCompany(company.competitors[i], function () {
-      									response.render("analytics", {company: company.competitors[i], reviews: company.competitors[i].reviews});
-      								});
-      							});
-      						}
-                  */
-
-
-      						//END else statement
-
-      					//END Database.getCompany
       			}
       		})
       	};

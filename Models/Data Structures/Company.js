@@ -7,6 +7,7 @@ var company = {
     zipcode: null,
     rating: null,
     reviewCount: null,
-    reviews: null
+    reviews: null,
+    competitors: null
 
 };
