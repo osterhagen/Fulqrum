@@ -424,7 +424,7 @@ module.exports = function (app) {
                             //Competitors.getVars(addressHome, competitors);
                             //Competitors.initMap(company.streetAddress, company.competitors);
 
-                            response.render("competitors", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
+                            response.render("competitorsMap", {addressHome:addressHome, competitor0:competitor0, competitor1:competitor1, competitor2:competitor2, competitor3:competitor3, competitor4:competitor4, competitorList: company.competitors});
 
                         })
                     })
