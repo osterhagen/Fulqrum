@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <style>
+        #map {
+            height: 400px;
+            width: 40%;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map"></div>
+<div id="map2"></div>
+
+<script>
+    function initMap(competitors, cb) {
+        //alert(JSON.stringify( companyList[0]));
+        var uluru = {lat: 0, lng: 0};
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13,
+            center: uluru
+        });
+        var address1 = <%- JSON.stringify(addressHome) %> ;
+        var geocoder = new google.maps.Geocoder();
+        geocodeAddress(geocoder, map, address1);
+
+
+        var address2 = <%- JSON.stringify(competitor0) %> ;
+        var geocoder2 = new google.maps.Geocoder();
+         geocodeAddress(geocoder2, map, address2);
+
+
+         var geocoder3 = new google.maps.Geocoder();
+         var address3  = <%- JSON.stringify(competitor1) %> ;
+         geocodeAddress(geocoder3, map, address3);
+
+
+         var geocoder4 = new google.maps.Geocoder();
+         var address4  = <%- JSON.stringify(competitor2) %> ;
+         geocodeAddress(geocoder4, map, address4);
+
+
+         var geocoder5 = new google.maps.Geocoder();
+         var address5  = <%- JSON.stringify(competitor3) %> ;
+         geocodeAddress(geocoder5, map, address5);
+
+
+         var geocoder6 = new google.maps.Geocoder();
+         var address6  = <%- JSON.stringify(competitor4) %> ;
+         geocodeAddress(geocoder6, map, address6);
+
+        //cb(competitors);
+        var companyList = <%- JSON.stringify(competitorList) %> ;
+
+        function geocodeAddress(geocoder, resultsMap, address) {
+            geocoder.geocode({'address': address}, function(results, status) {
+                if (status === 'OK') {
+
+
+                    resultsMap.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: resultsMap,
+                        position: results[0].geometry.location
+                    });
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: '<h1>s</h1>'
+                    });
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+
+            //alert("made it");
+            //cb();
+        }
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpksPkdlVYeAG1pP3ySzE8rdbK56NVYGE&callback=initMap"></script>
+
+</body>
+</html>
