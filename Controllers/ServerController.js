@@ -98,7 +98,7 @@ module.exports = function (app) {
               response.render("getStarted");
     });
 
-    app.get("/soleCompetitor", function(request, response) {
+    app.post("/soleCompetitor", function(request, response) {
         var token = request.cookies.token;
         
         if(token === undefined) {
@@ -113,21 +113,25 @@ module.exports = function (app) {
                     response.redirect("/");
                 }else {
                     var competitorOption = request.body.competitor;
+                  
                     if(competitorOption === null || competitorOption=== undefined) {
                         competitorOption =2;
                     }
                     var rad = 16093;
                     WebScraper.findYelpCompetitors(company, rad, function (comp) {
                         //console.log("Competitors...");
-                        //console.log(comp);
-
+                        console.log(comp);
+                        console.log(competitorOption);
+                        console.log(comp[competitorOption]);
 
                     var hasReviews = false;
                             //console.log(comp[0].reviews[0]);
                             WebScraper.scrape(comp[competitorOption], hasReviews, function(reviews) {
-                                comp[competitorOption].reviews = reviews;
-                                //console.log(comp[competitorOption].reviews[0]);
+                                //console.log(competitorOption);
+                                //console.log(comp[competitorOption]);
                                 company = comp[competitorOption];
+                                company.reviews = reviews;
+                                //console.log(comp[competitorOption].reviews[0]);
                                 Stat.getKeywords(company.reviews, 1000, function(keywords){
                                     Stat.getPositiveKeywords(keywords, 1000, function(positiveKeywords){
                                         Stat.getNegativeKeywords(keywords, 1000, function(negativeKeywords){
