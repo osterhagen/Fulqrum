@@ -50,6 +50,34 @@ module.exports = function (app) {
         };
     });
 
+    app.get("/histogram", function(request, response) {
+        var token = request.cookies.token;
+        if(token === undefined) {
+            //Welcome screen
+            response.render("welcome");
+        } else {
+            //Use token to get company information
+            Database.getCompany(token, function(company) {
+                if(company === undefined || company === null) {
+                    //Token wasn't valid so delete token
+                    response.clearCookie("token");
+                    response.render("welcome");
+                }else {
+                    var histogramArray = [];
+                    for(var i = 0; i < company.reviews.length; i++) {
+                        histogramArray.push(parseFloat(company.reviews[i].sentimentAverage));
+                    }
+                    response.render("histogram", {histogramArray:histogramArray});
+                    
+                }
+            })
+        };
+        
+        
+        
+
+    });
+
     app.get("/competitorScrape", function(request, response) {
         var token = request.cookies.token;
         if(token === undefined) {
@@ -143,7 +171,11 @@ module.exports = function (app) {
                                                                     Stat.getBestReviewsByRating(bestAverageReviews,1000,function(bestReviews){
                                                                         Stat.getWorstReviewsByAverageSentiment(company.reviews, 1000, function(worstAverageReviews){
                                                                             Stat.getWorstReviewsByRating(worstAverageReviews,1000,function(worstReviews){
-                                                                                response.render("soleCompetitor",{worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                                var histogramArray = [];
+                                                                                for(var i = 0; i < company.reviews.length; i++) {
+                                                                                    histogramArray.push(parseFloat(company.reviews[i].sentimentAverage));
+                                                                                }
+                                                                                response.render("soleCompetitor",{histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
                                                                                 
                                                                             });
                                                                             
@@ -339,7 +371,12 @@ module.exports = function (app) {
                                                             Stat.getBestReviewsByRating(bestAverageReviews,1000,function(bestReviews){
                                                                 Stat.getWorstReviewsByAverageSentiment(company.reviews, 1000, function(worstAverageReviews){
                                                                     Stat.getWorstReviewsByRating(worstAverageReviews,1000,function(worstReviews){
-                                                                        response.render("index2",{worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                        var histogramArray = [];
+                                                                        for(var i = 0; i < company.reviews.length; i++) {
+                                                                            histogramArray.push(parseFloat(company.reviews[i].sentimentAverage));
+                                                                        }
+                                                                        
+                                                                        response.render("index2",{histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
                                                                         
                                                                     });
                                                                     
