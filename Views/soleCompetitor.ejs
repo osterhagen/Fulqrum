@@ -1,3 +1,5 @@
+
+
 <% include partials/header %>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -104,6 +106,16 @@
         <div class="sidebar-header">
             <h3>Fulqrum</h3>
         </div>
+        <ul class="list-unstyled components">
+                <p> </p>
+                <li>
+                    <form method="POST" action="/compare">
+                        <input type="hidden" value="<%-competitorOption%>" name="competitorOption">
+                        
+                        <button style="background-color: #FFFFFF;" id="update" class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Compare</button>
+                    </form>
+    
+        </ul>
 
         
 
@@ -258,8 +270,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-    displayPositive(pKeys);
-    console.log("Chicken");
     function analyticsChange() {
         var renderAnalytics = "  ";
         document.getElementById("Header").innerHTML = "Analytics";

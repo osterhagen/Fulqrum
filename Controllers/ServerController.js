@@ -50,33 +50,119 @@ module.exports = function (app) {
         };
     });
 
-    app.get("/histogram", function(request, response) {
+    app.post("/compare", function(request, response) {
         var token = request.cookies.token;
+        
         if(token === undefined) {
             //Welcome screen
             response.render("welcome");
         } else {
             //Use token to get company information
             Database.getCompany(token, function(company) {
-                if(company === undefined || company === null) {
+                if(company === undefined) {
                     //Token wasn't valid so delete token
                     response.clearCookie("token");
-                    response.render("welcome");
+                    response.redirect("/");
                 }else {
-                    var histogramArray = [];
-                    for(var i = 0; i < company.reviews.length; i++) {
-                        histogramArray.push(parseFloat(company.reviews[i].sentimentAverage));
+                    var competitorOption = request.body.competitor;
+                  
+                    if(competitorOption === null || competitorOption=== undefined) {
+                        competitorOption =2;
                     }
-                    response.render("histogram", {histogramArray:histogramArray});
+                    var rad = 16093;
+                    WebScraper.findYelpCompetitors(company, rad, function (comp) {
+                        //console.log("Competitors...");
+                        console.log(comp);
+                        console.log(competitorOption);
+                        console.log(comp[competitorOption]);
+
+                    var hasReviews = false;
+                            //console.log(comp[0].reviews[0]);
+                            WebScraper.scrape(comp[competitorOption], hasReviews, function(reviews) {
+                                //console.log(competitorOption);
+                                //console.log(comp[competitorOption]);
+                                company = comp[competitorOption];
+                                company.reviews = reviews;
+                                //console.log(comp[competitorOption].reviews[0]);
+                                Stat.getKeywords(company.reviews, 1000, function(keywords){
+                                    Stat.getPositiveKeywords(keywords, 1000, function(positiveKeywords){
+                                        Stat.getNegativeKeywords(keywords, 1000, function(negativeKeywords){
+                                                Stat.getOccurencesOfKeywords(positiveKeywords, function(pOccurences){
+                                                    Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
+                                                        Stat.getAverage(company.reviews, function(average) {
+                                                            Stat.getModeRating(company.reviews, function(mode) {
+                                                                Stat.getBestReviewsByAverageSentiment(company.reviews, 1000, function(bestAverageReviews){
+                                                                    Stat.getBestReviewsByRating(bestAverageReviews,1000,function(bestReviews){
+                                                                        Stat.getWorstReviewsByAverageSentiment(company.reviews, 1000, function(worstAverageReviews){
+                                                                            Stat.getWorstReviewsByRating(worstAverageReviews,1000,function(worstReviews){
+                                                                                var histogramArray = [];
+                                                                                for(var i = 0; i < company.reviews.length; i++) {
+                                                                                    histogramArray.push(parseFloat(company.reviews[i].sentimentAverage));
+                                                                                }
+                                                                                var pieChartCounter = {};
+                                                                                pieChartCounter["1.0"] = 0;
+                                                                                pieChartCounter["2.0"] = 0;
+                                                                                pieChartCounter["3.0"] = 0;
+                                                                                pieChartCounter["4.0"] = 0;
+                                                                                pieChartCounter["5.0"] = 0;
+                                                                                
+                                                                                for(var i = 0; i < company.reviews.length; i++) {
+                                                                                    pieChartCounter[company.reviews[i].rating]++;
+                                                                                }
+                                                                                var pieChartArray = [];
+                                                                                pieChartArray.push(pieChartCounter["1.0"]);
+                                                                                pieChartArray.push(pieChartCounter["2.0"]);
+                                                                                pieChartArray.push(pieChartCounter["3.0"]);
+                                                                                pieChartArray.push(pieChartCounter["4.0"]);
+                                                                                pieChartArray.push(pieChartCounter["5.0"]);
+                                                                                var years = [];
+                                                                                var months = [];
+                                                                                var days = [];
+                                                                                var ratings = [];
+                                                                                for(var j = 0;j < company.reviews.length; j++) {
+                                                                                    var month1 = company.reviews[j].date_of_review.slice(0, company.reviews[j].date_of_review.indexOf("/"));
+                                                                                    var day1 = company.reviews[j].date_of_review.slice(company.reviews[j].date_of_review.indexOf("/")+1, company.reviews[j].date_of_review.lastIndexOf("/"));
+                                                                                    var year1 = company.reviews[j].date_of_review.slice(company.reviews[j].date_of_review.lastIndexOf("/")+1, company.reviews[j].date_of_review.length);
+                                                                                    years.push(year1);
+                                                                                    months.push(month1);
+                                                                                    days.push(day1);
+        
+                                                                                    
+                                                                                    ratings.push(parseFloat(company.reviews[j].rating));
+                                                                                }
+                                                                                
+                                                                                response.render("compare",{competitorOption:competitorOption,ratings:ratings,months:months, days:days,years:years, pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                                
+                                                                            });
+                                                                            
+                                                                        })                                                                
+                                                                    });
+                                                                    
+                                                                })
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                        });
+                                    });
+                                });
+                            });
+                        
+
+
+
+
+                });
+
                     
                 }
-            })
-        };
-        
-        
-        
-
+            });
+        }
     });
+
+
+    
+
 
     app.get("/competitorScrape", function(request, response) {
         var token = request.cookies.token;
@@ -206,7 +292,8 @@ module.exports = function (app) {
                                                                                     
                                                                                     ratings.push(parseFloat(company.reviews[j].rating));
                                                                                 }
-                                                                                response.render("soleCompetitor",{ratings:ratings, months:months, days:days, years:years, pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                                
+                                                                                response.render("soleCompetitor",{competitorOption:competitorOption,ratings:ratings,months:months, days:days,years:years, pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
                                                                                 
                                                                             });
                                                                             
@@ -286,38 +373,7 @@ module.exports = function (app) {
         }
     });
 
-    app.get("/keywords", function(request, response){
-        //Get analytics for the user with specific ID
-        //Get Company through cookie and return there reviews object
-        var token = request.cookies.token;
-        if(token === undefined) {
-            //Welcome screen
-            response.render("welcome");
-        } else {
-            //Use token to get company information
-            Database.getCompany(token, function(company) {
-                if(company === undefined) {
-                    //Token wasn't valid so delete token
-                    response.clearCookie("token");
-                    response.redirect("/");
-                }else {
-                    //0 = default(order scraped), 1 = alphabetical, 2 = by rating low
-                    //3 = by rating high
-                    var option = "5";
-                    Stat.getKeywords(company.reviews, 10000, function(keywords) {
-                        Stat.getPositiveKeywords(keywords, 10000, function(positiveKeywords) {
-                            Stat.getOccurencesOfKeywords(positiveKeywords, function(result) {
-
-                                response.render("test", {keywords : result});
-
-                            });
-                        });
-
-                    });
-                }
-            })
-        };
-    });
+    
 
     app.get("/settings", function(requrest, response){
       response.render("settings", {error : undefined})

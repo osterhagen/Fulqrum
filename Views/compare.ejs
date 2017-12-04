@@ -1,3 +1,5 @@
+
+
 <% include partials/header %>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -52,39 +54,42 @@
       chart.draw(data, options);
     }
   </script>
-
-<script type="text/javascript">
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
-
-function drawChart() {
-  var data = new google.visualization.DataTable();
-  data.addColumn("number", "Date");
-  data.addColumn("number", "Rating");
-  var dayValues = [<%-days%>];
-  var monthValues = [<%-months%>];
-  var yearValues = [<%-years%>];
-
-  var ratingValues = [<%-ratings%>];
-
-  for(var i = 0; i < yearValues.length; i++) {
-      var value = yearValues[i] + monthValues[i]/12 + dayValues[i]/365;
-      data.addRow([value, ratingValues[i]]);
-  }
-  
-  var options = {
-    title: 'Rating vs Time comparison',
-    hAxis: {title: 'Date (Years)'},
-    vAxis: {title: 'Rating'},
-    legend: 'none'
-  };
-
-  var chart = new google.visualization.ScatterChart(document.getElementById('scatterRatings'));
-
-  chart.draw(data, options);
-}
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn("number", "Date");
+      data.addColumn("number", "Rating");
+      var dayValues = [<%-days%>];
+      var monthValues = [<%-months%>];
+      var yearValues = [<%-years%>];
+    
+      var ratingValues = [<%-ratings%>];
+    
+      for(var i = 0; i < yearValues.length; i++) {
+          var value = yearValues[i] + monthValues[i]/12 + dayValues[i]/365;
+          data.addRow([value, ratingValues[i]]);
+      }
+      
+      var options = {
+        title: 'Rating vs Time comparison',
+        hAxis: {title: 'Date (Years)'},
+        vAxis: {title: 'Rating'},
+        legend: 'none'
+      };
+    
+      var chart = new google.visualization.ScatterChart(document.getElementById('scatterRatings'));
+    
+      chart.draw(data, options);
+    }
 </script>
-
+<div id="container">
+<h1 class="center" >Welcome to The Competitor Analytics of</h2>
+<h2 class="center"><%=company.name%></h2>
+<img class="center" src="imgs/img_logo.png">
+</div>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -99,29 +104,30 @@ function drawChart() {
     <!-- Sidebar Holder -->
     <nav id="sidebar" class="">
         <div class="sidebar-header">
-            <h3>Analytics</h3>
+            <h3>Fulqrum</h3>
         </div>
-
         <ul class="list-unstyled components">
-            <p> </p>
-            <li>
-                <form method="POST" action="/analytics">
-                    <button style="background-color: #FFFFFF;" id="update" class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Update</button>
-                </form>
-
+                <p> </p>
+                <li>
+                    <form method="POST" action="/soleCompetitor">
+                        <input type="hidden" value="<%-competitorOption%>" name="competitorOption">
+                        
+                        <button style="background-color: #FFFFFF;" id="update" class="btn btn-primary btn-empty ml-md-3" value="Submit" type="submit">Back</button>
+                    </form>
+    
         </ul>
+
+        
 
 
     </nav>
 
     <!-- Page Content Holder -->
     <div id="content">
-            <h1 class="center" >Welcome to The Analytics of</h2>
-                <h2 class="center"><%=company.name%></h2>
         <p id="hey">//document.getElementById("hey2").removeAttribute("hidden");//document.getElementById("hey2").removeAttribute("hidden");</p>
       <!--  <div class="line"></div> -->
 
-        <h3 id="Header"></h3>
+        <h3 id="Header">Analytics of <%-company.name%></h3>
         <div id="body">
             <div id="positiveReviews" class="col-md-6 pre-scrollable ">
                 <table id="positiveTable" class="table well ">
@@ -134,7 +140,7 @@ function drawChart() {
                 </thead>
                 <tbody>
                     
-                        <% for(var i = 0; i < pKeys.length; i++) {%>
+                        <% for(var i = 0;pKeys != undefined && i < pKeys.length; i++) {%>
                             <tr>
                             
                             <td><%-pKeys[i].name%></td>
@@ -158,7 +164,7 @@ function drawChart() {
                     </tr>
                     </thead>
                     <tbody>
-                            <% for(var i = 0; i < nKeys.length; i++) {%>
+                            <% for(var i = 0;nKeys != undefined &&  i < nKeys.length; i++) {%>
                                 <tr>
                                 
                                 <td><%-nKeys[i].name%></td>
@@ -170,50 +176,12 @@ function drawChart() {
                     </tbody>
                 </table>
             </div>
-            
-            
-        </div>
-        <table id="positiveTable" class="table well ">
-                
-                <thead>
-                        
-                <tr>
-                    <th>Reviewer Highlights</th>
-                    <th>Rating</th>
-                    <th>Date</th>                                
-                    <th>Reviews</th>
-                    <th>Average Sentiment</th>
-                    
-                </tr>
-                </thead>
-                <tbody>
-                    
-                        <% for(var i = 0;bestReviews!=undefined  && i < bestReviews.length; i++) {
-                            if(parseFloat(bestReviews[i].rating) <=3 || parseFloat(bestReviews[i].sentimentAverage) <=0) {
-                                continue;
-                            }
-                            %>
-                            <tr>
-                            
-                            <td><%-bestReviews[i].name_of_reviewer%></td>
-                            <td><%-bestReviews[i].rating%></td>
-                            <td><%-bestReviews[i].date_of_review%></td>                        
-                            <td><%-bestReviews[i].review%></td>
-                            <td><%-bestReviews[i].sentimentAverage%></td>
-                            
-                        </tr>
-                        <%}%>
-                        
-    
-                    
-                </tbody>
-            </table>
             <table id="positiveTable" class="table well ">
                     
                     <thead>
                             
                     <tr>
-                        <th>Worst Reviews</th>
+                        <th>Reviewer Highlights</th>
                         <th>Rating</th>
                         <th>Date</th>                                
                         <th>Reviews</th>
@@ -223,18 +191,18 @@ function drawChart() {
                     </thead>
                     <tbody>
                         
-                            <% for(var i = 0;worstReviews!=undefined  && i < worstReviews.length; i++) {
-                                if(parseFloat(worstReviews[i].rating) >=3 || parseFloat(worstReviews[i].sentimentAverage) >=0) {
+                            <% for(var i = 0;bestReviews!=undefined  && i < bestReviews.length; i++) {
+                                if(parseFloat(bestReviews[i].rating) <=3 || parseFloat(bestReviews[i].sentimentAverage) <=0) {
                                     continue;
                                 }
                                 %>
                                 <tr>
                                 
-                                <td><%-worstReviews[i].name_of_reviewer%></td>
-                                <td><%-worstReviews[i].rating%></td>
-                                <td><%-worstReviews[i].date_of_review%></td>                        
-                                <td><%-worstReviews[i].review%></td>
-                                <td><%-worstReviews[i].sentimentAverage%></td>
+                                <td><%-bestReviews[i].name_of_reviewer%></td>
+                                <td><%-bestReviews[i].rating%></td>
+                                <td><%-bestReviews[i].date_of_review%></td>                        
+                                <td><%-bestReviews[i].review%></td>
+                                <td><%-bestReviews[i].sentimentAverage%></td>
                                 
                             </tr>
                             <%}%>
@@ -243,19 +211,54 @@ function drawChart() {
                         
                     </tbody>
                 </table>
-        <br><br>
-        <br />
-        <br />
-        
-        <h1>Average Rating: <%=mean.toFixed(4)%></h1> 
-        <h1>Mode Rating: <%=mode%></h1>     
-        <br />
-
-        <br />
-        <div id="chart_div" style="width: 900px; height: 500px;"></div>
-        <div id="piechart" style="width: 900px; height: 500px;"></div>
-        <div id="scatterRatings" style="width: 900px; height: 500px;"></div>
-        
+                <table id="positiveTable" class="table well ">
+                        
+                        <thead>
+                                
+                        <tr>
+                            <th>Worst Reviews</th>
+                            <th>Rating</th>
+                            <th>Date</th>                                
+                            <th>Reviews</th>
+                            <th>Average Sentiment</th>
+                            
+                        </tr>
+                        </thead>
+                        <tbody>
+                            
+                                <% for(var i = 0;worstReviews!=undefined  && i < worstReviews.length; i++) {
+                                    if(parseFloat(worstReviews[i].rating) >=3 || parseFloat(worstReviews[i].sentimentAverage) >=0) {
+                                        continue;
+                                    }
+                                    %>
+                                    <tr>
+                                    
+                                    <td><%-worstReviews[i].name_of_reviewer%></td>
+                                    <td><%-worstReviews[i].rating%></td>
+                                    <td><%-worstReviews[i].date_of_review%></td>                        
+                                    <td><%-worstReviews[i].review%></td>
+                                    <td><%-worstReviews[i].sentimentAverage%></td>
+                                    
+                                </tr>
+                                <%}%>
+                                
+            
+                            
+                        </tbody>
+                    </table>
+            <br><br>
+            <br />
+            <br />
+            
+            <h1>Mean Rating: <%=mean%></h1> 
+            <h1>Mode Rating: <%=mode%></h1>     
+            <br />
+    
+            <br />
+            <div id="chart_div" style="width: 900px; height: 500px;"></div>
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
+            <div id="scatterRatings" style="width: 900px; height: 500px;"></div>
+            
     </div>
 </div>
 
@@ -267,7 +270,18 @@ function drawChart() {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
+    function analyticsChange() {
+        var renderAnalytics = "  ";
+        document.getElementById("Header").innerHTML = "Analytics";
+        document.getElementById("body").innerHTML ="";
 
+        // document.getElementById("hey2").setAttribute("hidden", true);
+    }
+    function comparitorsChange() {
+        document.getElementById("Header").innerHTML = "Competitors";
+        document.getElementById("body").innerHTML = " ";
+        //document.getElementById("hey2").removeAttribute("hidden");
+    }
     function displayPositive(inp) {
         //more interactive and better if user can see the newest one first
         for (var i = 0; i < inp.keyWords.length; i++) {
@@ -305,9 +319,6 @@ function drawChart() {
         });
     });
 </script>
-            
-            
-            
 
 
 </body>

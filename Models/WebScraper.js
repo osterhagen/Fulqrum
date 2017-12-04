@@ -15,7 +15,7 @@ var Analysis = require("./analysis_module/analysis.js");
 var googleCustomSearchAPIKey = "AIzaSyBDYvvNE7hz7IuQxPBKPy6XD8M1kKI5aTM";
 var googleSearchEngineAPI = "000374492695807119950:gsm88fb1qaq";
 
-var maxReviews = 60;
+var maxReviews = 40;
 exports.scrape = scrape;
 function scrape(company, hasPriorAnalytics, cb) {
     //Subject to change based on how we want to receive the company name
