@@ -1,24 +1,5 @@
 <% include partials/header %>
 
-<form method="POST" action="/soleCompetitor">
-        
-                            <div class="row align-items-center">
-                                <div class="col mt-4">
-                                    <select name="competitor" class="form-control" required>
-                                        <option value="">Select Company Number</option>
-                                        <option value="0">Company 1</option>
-                                        <option value="1">Company 2</option>
-                                        <option value="2">Company 3</option>
-                                        <option value="3">Company 4</option>
-                                        <option value="4">Company 5</option>
-                                    </select>
-                                </div>
-                            </div>
-        
-                            <button type="submit" class="btn-primary btn mt-4">Submit</button>
-        
-    </form>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +19,11 @@
         width: 50%;
 
     }
-
+    #forms {
+        position:absolute;
+        left:800px;
+        top:170px;
+    }
 </style>
 <div class="wrapper">
     <!-- Sidebar Holder -->
@@ -71,7 +56,27 @@
         <p id="hey">//document.getElementById("hey2").removeAttribute("hidden");//document.getElementById("hey2").removeAttribute("hidden");</p>
         <!--  <div class="line"></div> -->
         <div id="body">
-            <div id="map"></div>
+            <div  id="map"></div>
+            <div id="forms">
+            <form method="POST" action="/soleCompetitor">
+
+                <div class="row align-items-center">
+                    <div class="col mt-4">
+                        <select name="competitor" class="form-control" required>
+                            <option value="">Select Company:</option>
+                            <option value="0"> <%- out1 %> </option>
+                            <option value="1"> <%- out2 %> </option>
+                            <option value="2"> <%- out3 %> </option>
+                            <option value="3"> <%- out4 %> </option>
+                            <option value="4"> <%- out5 %> </option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary btn mt-4">Submit</button>
+
+            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -99,46 +104,38 @@
             "        <thead>\n" +
             "            <tr>\n" +
             "                <th>Competitor Name</th>\n" +
-            "                <th>Average Review Score</th>\n" +
-            "                <th>Average Rating</th>\n" +
             "            </tr>\n" +
             "        </thead>\n" +
             "        <tbody>\n" +
             "            <tr>\n" +
             "                <td>"+o1+" </td>\n" +
-            "                <td></td>\n" +
-            "                <td></td>\n" +
             "            </tr>\n" +
             "            <tr>\n" +
             "                <td>"+ o2 +" </td>\n" +
-            "                <td></td>\n" +
-            "                <td></td>\n" +
             "            </tr>\n" +
             "            <tr>\n" +
             "                <td>"+ o3 +" </td>\n" +
-            "                <td></td>\n" +
-            "                <td></td>\n" +
             "            </tr>\n" +
             "            <tr>\n" +
             "                <td>"+ o4 +" </td>\n" +
-            "                <td></td>\n" +
-            "                <td></td>\n" +
             "            </tr>\n" +
             "            <tr>\n" +
             "                <td>"+ o5 +" </td>\n" +
-            "                <td></td>\n" +
-            "                <td></td>\n" +
             "            </tr>\n" +
             "        </tbody>\n" +
             "    </table>\n";
+        
+
     }
     function initMap(competitors, cb) {
+
         //alert(JSON.stringify( companyList[0]));
         var uluru = {lat: 0, lng: 0};
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 13,
             center: uluru
         });
+
         var address1 = <%- JSON.stringify(addressHome) %> ;
         var name = <%- JSON.stringify(out) %> ;
         var geocoder = new google.maps.Geocoder();
@@ -197,8 +194,6 @@
                 }
             });
 
-            //alert("made it");
-            //cb();
         }
     }
 </script>
