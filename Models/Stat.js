@@ -216,11 +216,11 @@ function getBestReviewsByRating(reviews, number, cb) {
     if(i === reviews.length) {
         //Requested all reviews
         for(var i = 0; i < bestReviews.length; i++) {
-            console.log(bestReviews[i].name_of_reviewer);
-            console.log(bestReviews[i].rating);
+            //console.log(bestReviews[i].name_of_reviewer);
+            //console.log(bestReviews[i].rating);
             
             if(parseFloat(bestReviews[i].rating) <=3) {
-                console.log(bestReviews[i].name_of_reviewer);
+                //console.log(bestReviews[i].name_of_reviewer);
                 bestReviews.splice(i, 1);
             }
         }

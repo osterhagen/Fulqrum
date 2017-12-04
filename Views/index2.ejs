@@ -27,6 +27,31 @@
     chart.draw(data, options);
   }
 </script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn("string", "Rating");
+        data.addColumn('number', 'Occurrences');
+        var values = [<%-pieChartArray%>];
+        data.addRow(["1.0", values[0]]);
+        data.addRow(["2.0", values[1]]);
+        data.addRow(["3.0", values[2]]);
+        data.addRow(["4.0", values[3]]);
+        data.addRow(["5.0", values[4]]);
+
+      var options = {
+        title: 'Ratings by Percentage'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  </script>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -194,6 +219,8 @@
         <br />
 
         <br />
+        <div id="chart_div" style="width: 900px; height: 500px;"></div>
+        <div id="piechart" style="width: 900px; height: 500px;"></div>
     </div>
 </div>
 
@@ -205,7 +232,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-    displayPositive(pKeys);
 
     function displayPositive(inp) {
         //more interactive and better if user can see the newest one first
@@ -244,7 +270,8 @@
         });
     });
 </script>
-            <div id="chart_div" style="width: 900px; height: 500px;"></div>
+            
+            
             
 
 
