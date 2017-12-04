@@ -324,7 +324,7 @@ module.exports = function (app) {
                                             Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
                                                 Stat.getAverage(company.reviews, function(average) {
                                                     Stat.getModeRating(company.reviews, function(mode) {
-                                                        response.render("index2",{pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                        response.render("index2",{company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
                                                     });
                                                 });
                                             });
