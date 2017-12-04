@@ -139,7 +139,18 @@ module.exports = function (app) {
                                                     Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
                                                         Stat.getAverage(company.reviews, function(average) {
                                                             Stat.getModeRating(company.reviews, function(mode) {
-                                                                response.render("soleCompetitor",{company:company, pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                Stat.getBestReviewsByAverageSentiment(company.reviews, 1000, function(bestAverageReviews){
+                                                                    Stat.getBestReviewsByRating(bestAverageReviews,1000,function(bestReviews){
+                                                                        Stat.getWorstReviewsByAverageSentiment(company.reviews, 1000, function(worstAverageReviews){
+                                                                            Stat.getWorstReviewsByRating(worstAverageReviews,1000,function(worstReviews){
+                                                                                response.render("soleCompetitor",{worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                                
+                                                                            });
+                                                                            
+                                                                        })                                                                
+                                                                    });
+                                                                    
+                                                                })
                                                             });
                                                         });
                                                     });
@@ -324,7 +335,18 @@ module.exports = function (app) {
                                             Stat.getOccurencesOfKeywords(negativeKeywords, function(nOccurences){
                                                 Stat.getAverage(company.reviews, function(average) {
                                                     Stat.getModeRating(company.reviews, function(mode) {
-                                                        response.render("index2",{company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                        Stat.getBestReviewsByAverageSentiment(company.reviews, 1000, function(bestAverageReviews){
+                                                            Stat.getBestReviewsByRating(bestAverageReviews,1000,function(bestReviews){
+                                                                Stat.getWorstReviewsByAverageSentiment(company.reviews, 1000, function(worstAverageReviews){
+                                                                    Stat.getWorstReviewsByRating(worstAverageReviews,1000,function(worstReviews){
+                                                                        response.render("index2",{worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                        
+                                                                    });
+                                                                    
+                                                                })                                                                
+                                                            });
+                                                            
+                                                        })
                                                     });
                                                 });
                                             });

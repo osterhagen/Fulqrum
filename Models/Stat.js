@@ -215,6 +215,16 @@ function getBestReviewsByRating(reviews, number, cb) {
     }
     if(i === reviews.length) {
         //Requested all reviews
+        for(var i = 0; i < bestReviews.length; i++) {
+            console.log(bestReviews[i].name_of_reviewer);
+            console.log(bestReviews[i].rating);
+            
+            if(parseFloat(bestReviews[i].rating) <=3) {
+                console.log(bestReviews[i].name_of_reviewer);
+                bestReviews.splice(i, 1);
+            }
+        }
+        //console.log(bestReviews);
         cb(bestReviews);
         return;
     }
@@ -240,7 +250,13 @@ function getBestReviewsByRating(reviews, number, cb) {
             }
         }
     }
-
+    for(var i = 0; i < bestReviews.length; i++) {
+        if(parseFloat(bestReviews[i].rating) <=3) {
+            bestReviews.splice(i, 1);
+        }
+    }
+    console.log("Chicken");
+    console.log(bestReviews);
     cb(bestReviews);
 }
 

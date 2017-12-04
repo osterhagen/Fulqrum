@@ -81,13 +81,85 @@
                     </tbody>
                 </table>
             </div>
-            <div id="analytics">
-                    <br><br>
-                    <h1>Mean Rating: <%=mean%></h1> 
-                    <h1>Mode Rating: <%=mode%></h1>                     
-
-            </div>
-        </div>
+            <table id="positiveTable" class="table well ">
+                    
+                    <thead>
+                            
+                    <tr>
+                        <th>Reviewer Highlights</th>
+                        <th>Rating</th>
+                        <th>Date</th>                                
+                        <th>Reviews</th>
+                        <th>Average Sentiment</th>
+                        
+                    </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <% for(var i = 0;bestReviews!=undefined  && i < bestReviews.length; i++) {
+                                if(parseFloat(bestReviews[i].rating) <=3 || parseFloat(bestReviews[i].sentimentAverage) <=0) {
+                                    continue;
+                                }
+                                %>
+                                <tr>
+                                
+                                <td><%-bestReviews[i].name_of_reviewer%></td>
+                                <td><%-bestReviews[i].rating%></td>
+                                <td><%-bestReviews[i].date_of_review%></td>                        
+                                <td><%-bestReviews[i].review%></td>
+                                <td><%-bestReviews[i].sentimentAverage%></td>
+                                
+                            </tr>
+                            <%}%>
+                            
+        
+                        
+                    </tbody>
+                </table>
+                <table id="positiveTable" class="table well ">
+                        
+                        <thead>
+                                
+                        <tr>
+                            <th>Worst Reviews</th>
+                            <th>Rating</th>
+                            <th>Date</th>                                
+                            <th>Reviews</th>
+                            <th>Average Sentiment</th>
+                            
+                        </tr>
+                        </thead>
+                        <tbody>
+                            
+                                <% for(var i = 0;worstReviews!=undefined  && i < worstReviews.length; i++) {
+                                    if(parseFloat(worstReviews[i].rating) >=3 || parseFloat(worstReviews[i].sentimentAverage) >=0) {
+                                        continue;
+                                    }
+                                    %>
+                                    <tr>
+                                    
+                                    <td><%-worstReviews[i].name_of_reviewer%></td>
+                                    <td><%-worstReviews[i].rating%></td>
+                                    <td><%-worstReviews[i].date_of_review%></td>                        
+                                    <td><%-worstReviews[i].review%></td>
+                                    <td><%-worstReviews[i].sentimentAverage%></td>
+                                    
+                                </tr>
+                                <%}%>
+                                
+            
+                            
+                        </tbody>
+                    </table>
+            <br><br>
+            <br />
+            <br />
+            
+            <h1>Mean Rating: <%=mean%></h1> 
+            <h1>Mode Rating: <%=mode%></h1>     
+            <br />
+    
+            <br />
     </div>
 </div>
 
