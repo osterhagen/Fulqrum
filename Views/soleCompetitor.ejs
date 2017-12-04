@@ -1,5 +1,88 @@
 <% include partials/header %>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load("current", {packages:["corechart"]});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+  /*  var data = google.visualization.arrayToDataTable([       
+      ['Length'],
+      [12.2],
+      [9.1],
+      [12.2],
+      [ 22.9]
+  ]);*/
+  var data = new google.visualization.DataTable();
+  data.addColumn('number', 'Sentiment');
+  var values = [<%-histogramArray%>];
+  for(var i = 0; i < values.length; i++) {
+      data.addRow([values[i]]);
+  }
 
+    var options = {
+      title: 'Average Sentiment of Reviews',
+      legend: { position: 'none' },
+    };
+
+    var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+</script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn("string", "Rating");
+        data.addColumn('number', 'Occurrences');
+        var values = [<%-pieChartArray%>];
+        data.addRow(["1.0", values[0]]);
+        data.addRow(["2.0", values[1]]);
+        data.addRow(["3.0", values[2]]);
+        data.addRow(["4.0", values[3]]);
+        data.addRow(["5.0", values[4]]);
+
+      var options = {
+        title: 'Ratings by Percentage'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  </script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn("number", "Date");
+      data.addColumn("number", "Rating");
+      var dayValues = [<%-days%>];
+      var monthValues = [<%-months%>];
+      var yearValues = [<%-years%>];
+    
+      var ratingValues = [<%-ratings%>];
+    
+      for(var i = 0; i < yearValues.length; i++) {
+          var value = yearValues[i] + monthValues[i]/12 + dayValues[i]/365;
+          data.addRow([value, ratingValues[i]]);
+      }
+      
+      var options = {
+        title: 'Rating vs Time comparison',
+        hAxis: {title: 'Date (Years)'},
+        vAxis: {title: 'Rating'},
+        legend: 'none'
+      };
+    
+      var chart = new google.visualization.ScatterChart(document.getElementById('scatterRatings'));
+    
+      chart.draw(data, options);
+    }
+    </script>
 <div id="container">
 <h1 class="center" >Welcome to The Competitor Analytics of</h2>
 <h2 class="center"><%=company.name%></h2>
@@ -160,6 +243,10 @@
             <br />
     
             <br />
+            <div id="chart_div" style="width: 900px; height: 500px;"></div>
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
+            <div id="scatterRatings" style="width: 900px; height: 500px;"></div>
+            
     </div>
 </div>
 

@@ -175,11 +175,38 @@ module.exports = function (app) {
                                                                                 for(var i = 0; i < company.reviews.length; i++) {
                                                                                     histogramArray.push(parseFloat(company.reviews[i].sentimentAverage));
                                                                                 }
-                                                                                var pieChartArray = [];
+                                                                                var pieChartCounter = {};
+                                                                                pieChartCounter["1.0"] = 0;
+                                                                                pieChartCounter["2.0"] = 0;
+                                                                                pieChartCounter["3.0"] = 0;
+                                                                                pieChartCounter["4.0"] = 0;
+                                                                                pieChartCounter["5.0"] = 0;
+                                                                                
                                                                                 for(var i = 0; i < company.reviews.length; i++) {
-                                                                                    pieChartArray.push(parseFloat(company.reviews[i].rating));
+                                                                                    pieChartCounter[company.reviews[i].rating]++;
                                                                                 }
-                                                                                response.render("soleCompetitor",{pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                                var pieChartArray = [];
+                                                                                pieChartArray.push(pieChartCounter["1.0"]);
+                                                                                pieChartArray.push(pieChartCounter["2.0"]);
+                                                                                pieChartArray.push(pieChartCounter["3.0"]);
+                                                                                pieChartArray.push(pieChartCounter["4.0"]);
+                                                                                pieChartArray.push(pieChartCounter["5.0"]);
+                                                                                var years = [];
+                                                                                var months = [];
+                                                                                var days = [];
+                                                                                var ratings = [];
+                                                                                for(var j = 0;j < company.reviews.length; j++) {
+                                                                                    var month1 = company.reviews[j].date_of_review.slice(0, company.reviews[j].date_of_review.indexOf("/"));
+                                                                                    var day1 = company.reviews[j].date_of_review.slice(company.reviews[j].date_of_review.indexOf("/")+1, company.reviews[j].date_of_review.lastIndexOf("/"));
+                                                                                    var year1 = company.reviews[j].date_of_review.slice(company.reviews[j].date_of_review.lastIndexOf("/")+1, company.reviews[j].date_of_review.length);
+                                                                                    years.push(year1);
+                                                                                    months.push(month1);
+                                                                                    days.push(day1);
+        
+                                                                                    
+                                                                                    ratings.push(parseFloat(company.reviews[j].rating));
+                                                                                }
+                                                                                response.render("soleCompetitor",{ratings:ratings, months:months, days:days, years:years, pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
                                                                                 
                                                                             });
                                                                             
@@ -395,8 +422,23 @@ module.exports = function (app) {
                                                                         pieChartArray.push(pieChartCounter["3.0"]);
                                                                         pieChartArray.push(pieChartCounter["4.0"]);
                                                                         pieChartArray.push(pieChartCounter["5.0"]);
+                                                                        var years = [];
+                                                                        var months = [];
+                                                                        var days = [];
+                                                                        var ratings = [];
+                                                                        for(var j = 0;j < company.reviews.length; j++) {
+                                                                            var month1 = company.reviews[j].date_of_review.slice(0, company.reviews[j].date_of_review.indexOf("/"));
+                                                                            var day1 = company.reviews[j].date_of_review.slice(company.reviews[j].date_of_review.indexOf("/")+1, company.reviews[j].date_of_review.lastIndexOf("/"));
+                                                                            var year1 = company.reviews[j].date_of_review.slice(company.reviews[j].date_of_review.lastIndexOf("/")+1, company.reviews[j].date_of_review.length);
+                                                                            years.push(year1);
+                                                                            months.push(month1);
+                                                                            days.push(day1);
+
+                                                                            
+                                                                            ratings.push(parseFloat(company.reviews[j].rating));
+                                                                        }
                                                                         
-                                                                        response.render("index2",{pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
+                                                                        response.render("index2",{ratings:ratings,months:months, days:days,years:years, pieChartArray:pieChartArray,histogramArray:histogramArray, worstReviews: worstReviews,bestReviews: bestReviews,company: company,pKeys: pOccurences, nKeys: nOccurences, mean:average, mode:mode});//Reviews,                                                                                                         
                                                                         
                                                                     });
                                                                     

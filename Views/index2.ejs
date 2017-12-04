@@ -52,6 +52,39 @@
       chart.draw(data, options);
     }
   </script>
+
+<script type="text/javascript">
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+  var data = new google.visualization.DataTable();
+  data.addColumn("number", "Date");
+  data.addColumn("number", "Rating");
+  var dayValues = [<%-days%>];
+  var monthValues = [<%-months%>];
+  var yearValues = [<%-years%>];
+
+  var ratingValues = [<%-ratings%>];
+
+  for(var i = 0; i < yearValues.length; i++) {
+      var value = yearValues[i] + monthValues[i]/12 + dayValues[i]/365;
+      data.addRow([value, ratingValues[i]]);
+  }
+  
+  var options = {
+    title: 'Rating vs Time comparison',
+    hAxis: {title: 'Date (Years)'},
+    vAxis: {title: 'Rating'},
+    legend: 'none'
+  };
+
+  var chart = new google.visualization.ScatterChart(document.getElementById('scatterRatings'));
+
+  chart.draw(data, options);
+}
+</script>
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -221,6 +254,8 @@
         <br />
         <div id="chart_div" style="width: 900px; height: 500px;"></div>
         <div id="piechart" style="width: 900px; height: 500px;"></div>
+        <div id="scatterRatings" style="width: 900px; height: 500px;"></div>
+        
     </div>
 </div>
 
