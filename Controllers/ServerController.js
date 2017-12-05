@@ -209,7 +209,7 @@ module.exports = function (app) {
 
     });
     app.get("/getstarted", function(request, response){
-              response.render("getStarted");
+              response.render("getStarted1.ejs");
     });
 
     app.post("/soleCompetitor", function(request, response) {

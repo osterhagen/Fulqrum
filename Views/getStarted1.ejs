@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Fulqrum</title>
+      <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+      integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+      <link rel="stylesheet" href="app.css">
+      <html lang="en">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A free to use customer service analytics web application" />
+      <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+      <header>
+        <div class="container">
+          <nav class="navbar navbar-expand-md">
+            <a class="navbar-brand">
+              <img src="imgs/img_logo.png" height="30">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav11" aria-controls="navbarNav11" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav11">
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/analytics">Analytics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reviews">Reviews</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/competitors">Competitors</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/contact">Contacts</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/getstarted">Get Started</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="settings">Settings</a>
+                </li>
+              </ul>
+
+              <a class="btn btn-primary btn-empty ml-md-3" href="/logout">Logout</a>
+            </div>
+          </nav>
+        </div>
+      </header>
+  </head>
+  <body>
+
+<section class="fdb-block">
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <h1>Getting Started</h1>
+
+        <div class="row text-left pt-4">
+          <div class="col-12">
+            <h2 class="text-center"> Step 1: Create an Account </h2>
+            <p class="text-h3">
+              The first step to using fulqrum is creating an account through the register page.
+              Begin by simply clicking on the registration page, and filling out your account information.
+              Don't worry, all your information is kept securely and is strictly confidential. Fulqrum is
+              free to use and always will be.
+            </p>
+            <h2 class="text-center"> Step 2: Update Your Analytics </h2>
+            <p class="text-h3">
+              The primary function of fulqrum is to provide you with unique insights into your business.
+              You will conveniently find your analytics on the homepage of the application, where your
+              analytics will be displayed. On your analytics homepage, there will be several grids displaying
+              key information. The first two grids at the top of the homepage will display the most common positive
+              keywords and the most common negative keywords from the reviews. The 'score:' of the sentiment ranges between -1.0 (negative) and 1.0 (positive) and corresponds to the overall emotional leaning of the text.
+              'magnitude:' indicates the overall strength of emotion (both positive and negative) within the given text, between 0.0 and +inf. Unlike score,
+               magnitude is not normalized; each expression of emotion within the text (both positive and negative) contributes to the text's magnitude
+               (so longer text blocks may have greater magnitudes).
+            </p>
+            <p class="text-h3">
+              The score of a document's sentiment indicates the overall emotion of a document. The magnitude of a document's sentiment indicates how much
+              emotional content is present within the document, and this value is often proportional to the length of the document.
+              A document with a neutral score (around 0.0) may indicate a low-emotion document, or may indicate mixed emotions, with both high positive
+              and negative values which cancel each out. Generally, you can use magnitude values to disambiguate these cases, as truly neutral documents
+              will have a low magnitude value, while mixed documents will have higher magnitude values.
+            </p>
+            <p class="text-h3">
+              Entity Analysis provides information about entities in the text, which generally refer to named "things" such as famous individuals,
+              landmarks, common objects, etc. Entities broadly fall into two categories: proper nouns that map to unique entities (specific people, places, etc.)
+              or common nouns (also called "nominals" in natural language processing). A good general practice to follow is that if something is a noun, it
+              qualifies as an "entity." Entities are returned as indexed offsets into the original text.
+            </p>
+            <h2 class="text-center"> Step 3: Keep Track of the Competition </h2>
+            <p class="text-h3">
+              Another key feature of our application allows you to compare your analytics to the analytics of your competitors. You can see a variety
+              of statistics such as average review rating, rating score over time, and more. We hope to continue to expand the statistical features that fulqrum
+              will provide, so that users will get the absolute most out of the raw information available to you publically.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer  class="navbar-fixed-bottom fdb-block footer-small stickBottom navbar-fixed-bottom">
+    
+        <div class="row text-center align-items-center navbar-fixed-bottom">
+          <div class="col">
+            <ul class="nav justify-content-center navbar-fixed-bottom">
+              <li class="nav-item">
+                <a class="nav-link active" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://www.froala.com">Features</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/contact">Contact</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://www.froala.com">Terms</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="https://www.froala.com">About</a>
+              </li>
+            </ul>
+    
+            <p class="">&copy; 2017 Fulqrum </p>
+          </div>
+        </div>
+    
+    </footer>
+    
+    </body>
+    </html>
+    
